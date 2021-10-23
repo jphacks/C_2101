@@ -1,5 +1,13 @@
 # サンプル（プロダクト名）
 
+![build](https://github.com/jphacks/C_2101/workflows/build/badge.svg)
+![test](https://github.com/jphacks/C_2101/workflows/test/badge.svg)
+![lint](https://github.com/jphacks/C_2101/workflows/lint/badge.svg)
+![deploy](https://github.com/jphacks/C_2101/workflows/deploy/badge.svg)
+![prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)
+![version 1.0](https://img.shields.io/badge/version-1.0-yellow.svg)
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+
 [![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2021/07/JPHACKS2021_ogp.jpg)](https://www.youtube.com/watch?v=LUPQFB4QyVo)
 
 ## 製品概要
