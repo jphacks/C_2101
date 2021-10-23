@@ -1,4 +1,4 @@
-package jphacks.abelab.dev;
+package dev.abelab.jphacks;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
