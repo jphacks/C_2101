@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `room` (
   `title` VARCHAR(255) NOT NULL,
   `description` VARCHAR(45) NOT NULL,
   `owner_id` INT UNSIGNED NOT NULL,
-  `strat_at` DATETIME NOT NULL,
+  `start_at` DATETIME NOT NULL,
   `finish_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_room_owner_id_idx` (`owner_id` ASC) VISIBLE,

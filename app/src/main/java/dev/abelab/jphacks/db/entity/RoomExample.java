@@ -455,63 +455,63 @@ public class RoomExample {
             return (Criteria) this;
         }
 
-        public Criteria andStratAtIsNull() {
-            addCriterion("strat_at is null");
+        public Criteria andStartAtIsNull() {
+            addCriterion("start_at is null");
             return (Criteria) this;
         }
 
-        public Criteria andStratAtIsNotNull() {
-            addCriterion("strat_at is not null");
+        public Criteria andStartAtIsNotNull() {
+            addCriterion("start_at is not null");
             return (Criteria) this;
         }
 
-        public Criteria andStratAtEqualTo(Date value) {
-            addCriterion("strat_at =", value, "stratAt");
+        public Criteria andStartAtEqualTo(Date value) {
+            addCriterion("start_at =", value, "startAt");
             return (Criteria) this;
         }
 
-        public Criteria andStratAtNotEqualTo(Date value) {
-            addCriterion("strat_at <>", value, "stratAt");
+        public Criteria andStartAtNotEqualTo(Date value) {
+            addCriterion("start_at <>", value, "startAt");
             return (Criteria) this;
         }
 
-        public Criteria andStratAtGreaterThan(Date value) {
-            addCriterion("strat_at >", value, "stratAt");
+        public Criteria andStartAtGreaterThan(Date value) {
+            addCriterion("start_at >", value, "startAt");
             return (Criteria) this;
         }
 
-        public Criteria andStratAtGreaterThanOrEqualTo(Date value) {
-            addCriterion("strat_at >=", value, "stratAt");
+        public Criteria andStartAtGreaterThanOrEqualTo(Date value) {
+            addCriterion("start_at >=", value, "startAt");
             return (Criteria) this;
         }
 
-        public Criteria andStratAtLessThan(Date value) {
-            addCriterion("strat_at <", value, "stratAt");
+        public Criteria andStartAtLessThan(Date value) {
+            addCriterion("start_at <", value, "startAt");
             return (Criteria) this;
         }
 
-        public Criteria andStratAtLessThanOrEqualTo(Date value) {
-            addCriterion("strat_at <=", value, "stratAt");
+        public Criteria andStartAtLessThanOrEqualTo(Date value) {
+            addCriterion("start_at <=", value, "startAt");
             return (Criteria) this;
         }
 
-        public Criteria andStratAtIn(List<Date> values) {
-            addCriterion("strat_at in", values, "stratAt");
+        public Criteria andStartAtIn(List<Date> values) {
+            addCriterion("start_at in", values, "startAt");
             return (Criteria) this;
         }
 
-        public Criteria andStratAtNotIn(List<Date> values) {
-            addCriterion("strat_at not in", values, "stratAt");
+        public Criteria andStartAtNotIn(List<Date> values) {
+            addCriterion("start_at not in", values, "startAt");
             return (Criteria) this;
         }
 
-        public Criteria andStratAtBetween(Date value1, Date value2) {
-            addCriterion("strat_at between", value1, value2, "stratAt");
+        public Criteria andStartAtBetween(Date value1, Date value2) {
+            addCriterion("start_at between", value1, value2, "startAt");
             return (Criteria) this;
         }
 
-        public Criteria andStratAtNotBetween(Date value1, Date value2) {
-            addCriterion("strat_at not between", value1, value2, "stratAt");
+        public Criteria andStartAtNotBetween(Date value1, Date value2) {
+            addCriterion("start_at not between", value1, value2, "startAt");
             return (Criteria) this;
         }
 
