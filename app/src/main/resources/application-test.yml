@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3307/jphacks?useSSL=false&allowPublicKeyRetrieval=true
+    username: jphacks
+    password: jphacks
+    driver: com.mysql.cj.jdbc.Driver
+
+logging:
+  level:
+    root: ERROR

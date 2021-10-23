@@ -35,3 +35,10 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
+      - name: Run back-end test
+        env:
+          TZ: "Asia/Tokyo"
+        run: |
+          docker-compose up -d
+          ./gradlew test
