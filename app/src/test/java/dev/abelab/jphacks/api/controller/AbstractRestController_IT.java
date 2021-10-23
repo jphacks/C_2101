@@ -24,12 +24,16 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import dev.abelab.jphacks.annotation.IntegrationTest;
+import dev.abelab.jphacks.api.response.ErrorResponse;
+import dev.abelab.jphacks.db.entity.User;
+import dev.abelab.jphacks.db.mapper.UserMapper;
 import dev.abelab.jphacks.util.ConvertUtil;
+import dev.abelab.jphacks.helper.sample.UserSample;
 import dev.abelab.jphacks.helper.util.RandomUtil;
 import dev.abelab.jphacks.exception.BaseException;
-import dev.abelab.jphacks.api.response.ErrorResponse;
 
 /**
  * Abstract Rest Controller Integration Test
@@ -44,16 +48,21 @@ public abstract class AbstractRestController_IT {
 	protected static final String SAMPLE_STR = "SAMPLE";
 	protected static final Boolean SAMPLE_BOOL = false;
 	protected static final String LOGIN_USER_EMAIL = RandomUtil.generateEmail();
-	protected static final String LOGIN_USER_PASSWORD = "f4BabxEr7xA6";
-	protected static final Integer LOGIN_USER_ADMISSION_AT = SAMPLE_INT;
+	protected static final String LOGIN_USER_PASSWORD = RandomUtil.generateAlphanumeric(10);
 
-	MockMvc mockMvc;
-
-	@Autowired
-	WebApplicationContext webApplicationContext;
+	protected MockMvc mockMvc;
 
 	@Autowired
-	private PlatformTransactionManager transactionManager;
+	protected WebApplicationContext webApplicationContext;
+
+	@Autowired
+	protected PlatformTransactionManager transactionManager;
+
+	@Autowired
+	protected PasswordEncoder passwordEncoder;
+
+	@Autowired
+	protected UserMapper userMapper;
 
 	/**
 	 * GET request
@@ -207,6 +216,23 @@ public abstract class AbstractRestController_IT {
 		}
 
 		return response;
+	}
+
+	/**
+	 * ログインユーザを作成
+	 *
+	 * @return loginUser
+	 */
+	public User createLoginUser(boolean insert) {
+		final var loginUser = UserSample.builder() //
+			.email(LOGIN_USER_EMAIL) //
+			.password(this.passwordEncoder.encode(LOGIN_USER_PASSWORD)) //
+			.build();
+		if (insert) {
+			this.userMapper.insert(loginUser);
+		}
+
+		return loginUser;
 	}
 
 	@BeforeEach
