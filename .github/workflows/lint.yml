@@ -29,9 +29,9 @@ jobs:
 
       - name: Install Dependencies
         run: npm install --prefer-offline
-        working-directory: ./client
+        working-directory: ~/client
 
       - name: Lint
         run: npm run check
-        working-directory: ./client
+        working-directory: ~/client
 
