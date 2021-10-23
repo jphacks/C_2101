@@ -22,14 +22,16 @@ jobs:
       - uses: actions/cache@v2
         id: npm-cache
         with:
-          path: ~/.npm
+          path: ~/client/.npm
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-
 
       - name: Install Dependencies
         run: npm install --prefer-offline
+        working-directory: ./client
 
       - name: Lint
         run: npm run check
+        working-directory: ./client
 
