@@ -31,5 +31,5 @@ jobs:
         run: cd client && npm install --prefer-offline
 
       - name: Lint
-        run: cd client && npm run check
+        run: cd client && npm run lint
 
