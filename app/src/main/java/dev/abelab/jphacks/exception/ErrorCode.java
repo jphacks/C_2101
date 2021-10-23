@@ -21,7 +21,9 @@ public enum ErrorCode {
 
     NOT_FOUND_USER(1101, "exception.not_found.user"),
 
-    NOT_FOUND_ATTACHMENT(1106, "exception.not_found.attachment"),
+    NOT_FOUND_ATTACHMENT(1102, "exception.not_found.attachment"),
+
+    NOT_FOUND_PARTICIPATION_TYPE(1103, "exception.not_found.participation_type"),
 
     /**
      * Conflict: 1200~1299
