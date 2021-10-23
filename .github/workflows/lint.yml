@@ -28,10 +28,8 @@ jobs:
             ${{ runner.os }}-npm-
 
       - name: Install Dependencies
-        run: npm install --prefer-offline
-        working-directory: ~/client
+        run: cd client && npm install --prefer-offline
 
       - name: Lint
-        run: npm run check
-        working-directory: ~/client
+        run: cd client && npm run check
 
