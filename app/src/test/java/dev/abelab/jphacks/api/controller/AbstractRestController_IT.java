@@ -50,19 +50,19 @@ public abstract class AbstractRestController_IT {
 	protected static final String LOGIN_USER_EMAIL = RandomUtil.generateEmail();
 	protected static final String LOGIN_USER_PASSWORD = RandomUtil.generateAlphanumeric(10);
 
-	protected MockMvc mockMvc;
+	private MockMvc mockMvc;
 
 	@Autowired
-	protected WebApplicationContext webApplicationContext;
+	private WebApplicationContext webApplicationContext;
 
 	@Autowired
-	protected PlatformTransactionManager transactionManager;
+	private PlatformTransactionManager transactionManager;
 
 	@Autowired
-	protected PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	protected UserMapper userMapper;
+	private UserMapper userMapper;
 
 	/**
 	 * GET request
