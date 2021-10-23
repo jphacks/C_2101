@@ -21,6 +21,7 @@ import dev.abelab.jphacks.api.request.LoginRequest;
 import dev.abelab.jphacks.api.request.SignupRequest;
 import dev.abelab.jphacks.api.response.AccessTokenResponse;
 import dev.abelab.jphacks.db.entity.User;
+import dev.abelab.jphacks.db.entity.UserExample;
 import dev.abelab.jphacks.db.mapper.UserMapper;
 import dev.abelab.jphacks.helper.sample.UserSample;
 import dev.abelab.jphacks.exception.ErrorCode;
@@ -38,6 +39,7 @@ public class AuthRestController_IT extends AbstractRestController_IT {
 	// API PATH
 	static final String BASE_PATH = "/api";
 	static final String LOGIN_PATH = BASE_PATH + "/login";
+	static final String SIGNUP_PATH = BASE_PATH + "/signup";
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -114,6 +116,103 @@ public class AuthRestController_IT extends AbstractRestController_IT {
 			 */
 			final var request = postRequest(LOGIN_PATH, requestBody);
 			execute(request, new UnauthorizedException(ErrorCode.WRONG_PASSWORD));
+		}
+
+	}
+
+	/**
+	 * サインアップAPIのテスト
+	 */
+	@Nested
+	@TestInstance(PER_CLASS)
+	class SignupTest extends AbstractRestControllerInitialization_IT {
+
+		@Test
+		void 正_ユーザがサインアップ() throws Exception {
+			/*
+			 * given
+			 */
+			final var user = UserSample.builder().password(LOGIN_USER_PASSWORD).build();
+			final var requestBody = modelMapper.map(user, SignupRequest.class);
+
+			/*
+			 * test
+			 */
+			final var request = postRequest(SIGNUP_PATH, requestBody);
+			final var response = execute(request, HttpStatus.CREATED, AccessTokenResponse.class);
+
+			/*
+			 * verify
+			 */
+			assertThat(response.getAccessToken()).isNotNull();
+			assertThat(response.getTokenType()).isEqualTo("Bearer");
+
+			final var createdUser = userMapper.selectByExample(new UserExample() {
+				{
+					createCriteria().andEmailEqualTo(user.getEmail());
+				}
+			}).stream().findFirst();
+			assertThat(createdUser.isPresent()).isTrue();
+			assertThat(createdUser.get()) //
+				.extracting(User::getEmail, User::getName) //
+				.containsExactly(user.getEmail(), user.getName());
+			assertThat(passwordEncoder.matches(user.getPassword(), createdUser.get().getPassword())).isTrue();
+			assertThat(createdUser.get().getIconUrl()).isNotNull();
+		}
+
+		@Test
+		void 異_メールアドレスが既に存在する() throws Exception {
+			/*
+			 * given
+			 */
+			final var user = UserSample.builder().password(LOGIN_USER_PASSWORD).build();
+			userMapper.insert(user);
+
+			final var requestBody = modelMapper.map(user, SignupRequest.class);
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(SIGNUP_PATH, requestBody);
+			execute(request, new ConflictException(ErrorCode.CONFLICT_EMAIL));
+		}
+
+		@ParameterizedTest
+		@MethodSource
+		void パスワードが有効かチェック(final String password, final BaseException exception) throws Exception {
+			/*
+			 * given
+			 */
+			final var user = UserSample.builder().password(password).build();
+			final var requestBody = modelMapper.map(user, SignupRequest.class);
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(SIGNUP_PATH, requestBody);
+			if (exception == null) {
+				execute(request, HttpStatus.CREATED);
+			} else {
+				execute(request, exception);
+			}
+		}
+
+		Stream<Arguments> パスワードが有効かチェック() {
+			return Stream.of( // パスワード、期待される例外
+				// 有効
+				arguments("f4BabxEr", null), //
+				arguments("f4BabxEr4gNsjdtRpH9Pfs6Atth9bqdA", null), //
+				// 無効：8文字以下
+				arguments("f4BabxE", new BadRequestException(ErrorCode.INVALID_PASSWORD_SIZE)), //
+				// 無効：33文字以上
+				arguments("f4BabxEr4gNsjdtRpH9Pfs6Atth9bqdAN", new BadRequestException(ErrorCode.INVALID_PASSWORD_SIZE)), //
+				// 無効：大文字を含まない
+				arguments("f4babxer", new BadRequestException(ErrorCode.TOO_SIMPLE_PASSWORD)), //
+				// 無効：小文字を含まない
+				arguments("F4BABXER", new BadRequestException(ErrorCode.TOO_SIMPLE_PASSWORD)), //
+				// 無効：数字を含まない
+				arguments("fxbabxEr", new BadRequestException(ErrorCode.TOO_SIMPLE_PASSWORD)) //
+			);
 		}
 
 	}
