@@ -69,7 +69,7 @@ public class AuthRestController {
     public AccessTokenResponse signup( //
         @Validated @ApiParam(name = "body", required = true, value = "サインアップ情報") @RequestBody final SignupRequest requestBody //
     ) {
-        return null;
+        return this.authService.signup(requestBody);
     }
 
 }
