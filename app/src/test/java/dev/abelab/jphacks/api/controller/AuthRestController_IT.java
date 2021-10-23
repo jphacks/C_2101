@@ -156,7 +156,7 @@ public class AuthRestController_IT extends AbstractRestController_IT {
 			assertThat(createdUser.get()) //
 				.extracting(User::getEmail, User::getName) //
 				.containsExactly(user.getEmail(), user.getName());
-			assertThat(passwordEncoder.matches(user.getPassword(), createdUser.get().getPassword())).isTrue();
+			assertThat(passwordEncoder.matches(requestBody.getPassword(), createdUser.get().getPassword())).isTrue();
 			assertThat(createdUser.get().getIconUrl()).isNotNull();
 		}
 
@@ -179,7 +179,7 @@ public class AuthRestController_IT extends AbstractRestController_IT {
 
 		@ParameterizedTest
 		@MethodSource
-		void パスワードが有効かチェック(final String password, final BaseException exception) throws Exception {
+		void パスワードが有効かチェック(final String password, final BaseException expectedException) throws Exception {
 			/*
 			 * given
 			 */
@@ -190,10 +190,10 @@ public class AuthRestController_IT extends AbstractRestController_IT {
 			 * test & verify
 			 */
 			final var request = postRequest(SIGNUP_PATH, requestBody);
-			if (exception == null) {
+			if (expectedException == null) {
 				execute(request, HttpStatus.CREATED);
 			} else {
-				execute(request, exception);
+				execute(request, expectedException);
 			}
 		}
 

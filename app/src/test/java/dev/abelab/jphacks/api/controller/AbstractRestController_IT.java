@@ -48,7 +48,7 @@ public abstract class AbstractRestController_IT {
 	protected static final String SAMPLE_STR = "SAMPLE";
 	protected static final Boolean SAMPLE_BOOL = false;
 	protected static final String LOGIN_USER_EMAIL = RandomUtil.generateEmail();
-	protected static final String LOGIN_USER_PASSWORD = RandomUtil.generateAlphanumeric(10);
+	protected static final String LOGIN_USER_PASSWORD = "Xpz!8LC$&yB2";
 
 	private MockMvc mockMvc;
 
