@@ -22,9 +22,7 @@ public class ConvertUtil {
      * Convert json to object
      *
      * @param <T>   type
-     *
      * @param json  json
-     *
      * @param clazz clazz
      *
      * @return object

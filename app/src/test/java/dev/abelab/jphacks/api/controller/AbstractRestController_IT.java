@@ -27,6 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import dev.abelab.jphacks.annotation.IntegrationTest;
 import dev.abelab.jphacks.util.ConvertUtil;
+import dev.abelab.jphacks.helper.util.RandomUtil;
 import dev.abelab.jphacks.exception.BaseException;
 import dev.abelab.jphacks.api.response.ErrorResponse;
 
@@ -40,9 +41,9 @@ public abstract class AbstractRestController_IT {
 
 	protected static final int SAMPLE_INT = 1;
 	protected static final Date SAMPLE_DATE = new Date();
-	protected static final String SAMPLE_STR = "SAMPLE STRING";
+	protected static final String SAMPLE_STR = "SAMPLE";
 	protected static final Boolean SAMPLE_BOOL = false;
-	protected static final String LOGIN_USER_EMAIL = "login_user@abelab.dev";
+	protected static final String LOGIN_USER_EMAIL = RandomUtil.generateEmail();
 	protected static final String LOGIN_USER_PASSWORD = "f4BabxEr7xA6";
 	protected static final Integer LOGIN_USER_ADMISSION_AT = SAMPLE_INT;
 

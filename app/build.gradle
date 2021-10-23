@@ -79,6 +79,7 @@ dependencies {
     // test
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.jmockit:jmockit:1.49"
+    testImplementation "org.jeasy:easy-random-core:5.0.0"
 
     // logging
     implementation "ch.qos.logback:logback-classic:1.2.3"
