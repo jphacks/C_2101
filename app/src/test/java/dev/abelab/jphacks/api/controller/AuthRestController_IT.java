@@ -198,7 +198,7 @@ public class AuthRestController_IT extends AbstractRestController_IT {
 		}
 
 		Stream<Arguments> パスワードが有効かチェック() {
-			return Stream.of( //
+			return Stream.of( // パスワード、期待される例外
 				// 有効
 				arguments("f4BabxEr", null), //
 				arguments("f4BabxEr4gNsjdtRpH9Pfs6Atth9bqdA", null), //
