@@ -10,6 +10,7 @@ import lombok.*;
 import dev.abelab.jphacks.api.request.LoginRequest;
 import dev.abelab.jphacks.api.request.SignupRequest;
 import dev.abelab.jphacks.api.response.AccessTokenResponse;
+import dev.abelab.jphacks.service.AuthService;
 
 @Api(tags = "Auth")
 @RestController
@@ -17,6 +18,8 @@ import dev.abelab.jphacks.api.response.AccessTokenResponse;
 @Validated
 @RequiredArgsConstructor
 public class AuthRestController {
+
+    private final AuthService authService;
 
     /**
      * ログイン処理API
@@ -38,7 +41,7 @@ public class AuthRestController {
     public AccessTokenResponse login( //
         @Validated @ApiParam(name = "body", required = true, value = "ログイン情報") @RequestBody final LoginRequest requestBody //
     ) {
-        return null;
+        return this.authService.login(requestBody);
     }
 
     /**
