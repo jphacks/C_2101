@@ -50,6 +50,9 @@ public class UserRepository {
      * @param user ユーザ
      */
     public void update(final User user) {
+        if (this.existsByEmail(user.getEmail())) {
+            throw new ConflictException(ErrorCode.CONFLICT_EMAIL);
+        }
         user.setUpdatedAt(null);
         this.userMapper.updateByPrimaryKeySelective(user);
     }
