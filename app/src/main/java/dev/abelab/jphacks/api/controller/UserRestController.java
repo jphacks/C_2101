@@ -13,6 +13,7 @@ import dev.abelab.jphacks.api.request.LoginUserPasswordUpdateRequest;
 import dev.abelab.jphacks.api.response.UsersResponse;
 import dev.abelab.jphacks.api.response.UserResponse;
 import dev.abelab.jphacks.db.entity.User;
+import dev.abelab.jphacks.service.UserService;
 
 @Api(tags = "User")
 @RestController
@@ -21,6 +22,8 @@ import dev.abelab.jphacks.db.entity.User;
 @RequiredArgsConstructor
 @Authenticated
 public class UserRestController {
+
+    private final UserService userService;
 
     /**
      * ユーザ一覧取得API
@@ -95,7 +98,7 @@ public class UserRestController {
     public UserResponse getLoginUser( //
         @ModelAttribute("LoginUser") final User loginUser //
     ) {
-        return null;
+        return this.userService.getLoginUser(loginUser);
     }
 
     /**

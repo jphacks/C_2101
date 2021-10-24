@@ -12,6 +12,8 @@ import dev.abelab.jphacks.db.entity.User;
 import dev.abelab.jphacks.repository.UserRepository;
 import dev.abelab.jphacks.logic.UserLogic;
 import dev.abelab.jphacks.util.AuthUtil;
+import dev.abelab.jphacks.exception.ErrorCode;
+import dev.abelab.jphacks.exception.UnauthorizedException;
 
 @RequiredArgsConstructor
 @Service
@@ -73,6 +75,25 @@ public class AuthService {
             .accessToken(jwt) //
             .tokenType("Bearer") //
             .build();
+    }
+
+    /**
+     * ログインユーザを取得
+     *
+     * @param credentials 資格情報
+     *
+     * @return ログインユーザ
+     */
+    @Transactional
+    public User getLoginUser(final String credentials) {
+        // 資格情報の構文チェック
+        if (!credentials.startsWith("Bearer ")) {
+            throw new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN);
+        }
+        final var jwt = credentials.substring(7);
+
+        // ログインユーザを取得
+        return this.userLogic.getLoginUser(jwt);
     }
 
 }
