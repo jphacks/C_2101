@@ -2,7 +2,7 @@ import { Text } from "@chakra-ui/react";
 import React from "react";
 import Layout from "../components/layout";
 
-const Signup: React.VFC = () => {
+const MakeRoom: React.VFC = () => {
   return (
     <Layout>
       <Text>make-room</Text>
@@ -10,4 +10,4 @@ const Signup: React.VFC = () => {
   );
 };
 
-export default Signup;
+export default MakeRoom;
