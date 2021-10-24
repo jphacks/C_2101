@@ -5,7 +5,7 @@ import Layout from "../components/layout";
 const Signup: React.VFC = () => {
   return (
     <Layout>
-      <Text>Home</Text>
+      <Text>login</Text>
     </Layout>
   );
 };
