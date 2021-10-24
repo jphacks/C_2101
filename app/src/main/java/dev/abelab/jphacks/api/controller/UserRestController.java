@@ -124,6 +124,7 @@ public class UserRestController {
         @ModelAttribute("LoginUser") final User loginUser, //
         @Validated @ApiParam(name = "body", required = true, value = "ユーザ更新情報") @RequestBody final LoginUserUpdateRequest requestBody //
     ) {
+        this.userService.updateLoginUser(requestBody, loginUser);
     }
 
     /**

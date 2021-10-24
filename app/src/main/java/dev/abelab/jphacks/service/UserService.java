@@ -57,4 +57,21 @@ public class UserService {
         return new UsersResponse(userResponses);
     }
 
+    /**
+     * ログインユーザを更新
+     *
+     * @param requestBody ログインユーザ更新リクエスト
+     * @param loginUser   ログインユーザ
+     */
+    @Transactional
+    public void updateLoginUser(final LoginUserUpdateRequest requestBody, final User loginUser) {
+        // ログインユーザを更新
+        loginUser.setEmail(requestBody.getEmail());
+        loginUser.setName(requestBody.getName());
+
+        // TODO: アイコンを更新
+
+        this.userRepository.update(loginUser);
+    }
+
 }
