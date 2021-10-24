@@ -1,18 +1,25 @@
 import Head from "next/head";
 import Footer from "./footer/footer";
 import Header from "./header/header";
+import React from "react";
+import { Box } from "@chakra-ui/react";
 
-export default function Layout({ children }: { children: any }) {
+type LayoutProps = {
+  children: React.ReactNode;
+  contentTitle?: string;
+};
+
+const Layout: React.FC<LayoutProps> = ({ children, contentTitle }) => {
   return (
     <>
       <Head>
         <title>LT Space | オンライン発表に特化したビデオチャット</title>
       </Head>
-      <div>
-        <Header />
-        <div>{children}</div>
-        <Footer />
-      </div>
+      <Header contentTitle={contentTitle} />
+      <Box>{children}</Box>
+      <Footer />
     </>
   );
-}
+};
+
+export default Layout;
