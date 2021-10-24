@@ -47,7 +47,7 @@ public class UserRestController {
     public UsersResponse getUsers( //
         @ModelAttribute("LoginUser") final User loginUser //
     ) {
-        return null;
+        return this.userService.getUsers(loginUser);
     }
 
     /**

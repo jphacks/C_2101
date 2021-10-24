@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.*;
 import static org.junit.jupiter.params.provider.Arguments.*;
 
+import java.util.Arrays;
 import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,8 +22,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.modelmapper.ModelMapper;
 
 import dev.abelab.jphacks.api.response.UserResponse;
+import dev.abelab.jphacks.api.response.UsersResponse;
 import dev.abelab.jphacks.db.entity.User;
 import dev.abelab.jphacks.db.mapper.UserMapper;
+import dev.abelab.jphacks.helper.sample.UserSample;
+import dev.abelab.jphacks.helper.util.RandomUtil;
 import dev.abelab.jphacks.exception.ErrorCode;
 import dev.abelab.jphacks.exception.BaseException;
 import dev.abelab.jphacks.exception.BadRequestException;
@@ -35,6 +40,7 @@ public class UserRestController_IT extends AbstractRestController_IT {
 
 	// API PATH
 	static final String BASE_PATH = "/api/users";
+	static final String GET_USERS_PATH = BASE_PATH;
 	static final String GET_LOGIN_USER_PATH = BASE_PATH + "/me";
 
 	@Autowired
@@ -75,7 +81,6 @@ public class UserRestController_IT extends AbstractRestController_IT {
 				.extracting(UserResponse::getId, UserResponse::getEmail, UserResponse::getName) //
 				.containsExactly(loginUser.getId(), loginUser.getEmail(), loginUser.getName());
 			assertThat(response.getIconUrl()).isNotNull();
-
 		}
 
 		@Test
@@ -100,6 +105,57 @@ public class UserRestController_IT extends AbstractRestController_IT {
 			 * test & verify
 			 */
 			final var request = getRequest(GET_LOGIN_USER_PATH);
+			request.header(HttpHeaders.AUTHORIZATION, "");
+			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
+		}
+
+	}
+
+	/**
+	 * ユーザ一覧取得APIのテスト
+	 */
+	@Nested
+	@TestInstance(PER_CLASS)
+	class GetUsersTest extends AbstractRestControllerInitialization_IT {
+
+		@Test
+		void 正_ログインユーザの詳細を取得() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(false);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var users = Arrays.asList( //
+				loginUser, //
+				UserSample.builder().email(RandomUtil.generateEmail()).build(), //
+				UserSample.builder().email(RandomUtil.generateEmail()).build() //
+			);
+			users.forEach(userMapper::insert);
+
+			/*
+			 * test
+			 */
+			final var request = getRequest(GET_USERS_PATH);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			final var response = execute(request, HttpStatus.OK, UsersResponse.class);
+
+			/*
+			 * verify
+			 */
+			assertThat(response.getUsers()) //
+				.extracting(UserResponse::getId, UserResponse::getEmail, UserResponse::getName) //
+				.containsExactlyElementsOf(
+					users.stream().map(user -> tuple(user.getId(), user.getEmail(), user.getName())).collect(Collectors.toList()));
+			response.getUsers().forEach(user -> assertThat(user.getIconUrl()).isNotNull());
+		}
+
+		@Test
+		void 異_無効な認証ヘッダ() throws Exception {
+			/*
+			 * test & verify
+			 */
+			final var request = getRequest(GET_USERS_PATH);
 			request.header(HttpHeaders.AUTHORIZATION, "");
 			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
 		}

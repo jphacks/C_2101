@@ -25,9 +25,9 @@ public class UserRepository {
      * @return ユーザ一覧
      */
     public List<User> selectAll() {
-        final var userExample = new UserExample();
-        userExample.setOrderByClause("updated_at desc");
-        return this.userMapper.selectByExample(userExample);
+        final var example = new UserExample();
+        example.setOrderByClause("updated_at desc");
+        return this.userMapper.selectByExample(example);
     }
 
     /**
@@ -123,6 +123,17 @@ public class UserRepository {
         } catch (NotFoundException e) {
             return false;
         }
+    }
+
+    /**
+     * ユーザ一覧を取得
+     *
+     * @return ユーザ一覧
+     */
+    public List<User> findAll() {
+        final var example = new UserExample();
+        example.setOrderByClause("updated_at desc");
+        return this.userMapper.selectByExample(example);
     }
 
 }
