@@ -30,6 +30,7 @@ import dev.abelab.jphacks.annotation.IntegrationTest;
 import dev.abelab.jphacks.api.response.ErrorResponse;
 import dev.abelab.jphacks.db.entity.User;
 import dev.abelab.jphacks.db.mapper.UserMapper;
+import dev.abelab.jphacks.logic.UserLogic;
 import dev.abelab.jphacks.util.ConvertUtil;
 import dev.abelab.jphacks.helper.sample.UserSample;
 import dev.abelab.jphacks.helper.util.RandomUtil;
@@ -63,6 +64,9 @@ public abstract class AbstractRestController_IT {
 
 	@Autowired
 	private UserMapper userMapper;
+
+	@Autowired
+	private UserLogic userLogic;
 
 	/**
 	 * GET request
@@ -233,6 +237,17 @@ public abstract class AbstractRestController_IT {
 		}
 
 		return loginUser;
+	}
+
+	/**
+	 * ユーザの資格情報を取得
+	 *
+	 * @param user ユーザ
+	 *
+	 * @return 資格情報
+	 */
+	public String getLoginUserCredentials(User user) throws Exception {
+		return "Bearer " + this.userLogic.generateJwt(user);
 	}
 
 	@BeforeEach
