@@ -46,6 +46,7 @@ public class UserRestController_IT extends AbstractRestController_IT {
 	static final String GET_USERS_PATH = BASE_PATH;
 	static final String GET_LOGIN_USER_PATH = BASE_PATH + "/me";
 	static final String UPDATE_LOGIN_USER_PATH = BASE_PATH + "/me";
+	static final String DELETE_LOGIN_USER_PATH = BASE_PATH + "/me";
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -261,6 +262,47 @@ public class UserRestController_IT extends AbstractRestController_IT {
 			 * test & verify
 			 */
 			final var request = putRequest(UPDATE_LOGIN_USER_PATH, requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, "");
+			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
+		}
+
+	}
+
+	/**
+	 * ログインユーザ削除APIのテスト
+	 */
+	@Nested
+	@TestInstance(PER_CLASS)
+	class DeleteLoginUserTest extends AbstractRestControllerInitialization_IT {
+
+		@Test
+		void 正_ログインユーザを削除() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			/*
+			 * test
+			 */
+			final var request = deleteRequest(DELETE_LOGIN_USER_PATH);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, HttpStatus.OK);
+
+			/*
+			 * verify
+			 */
+			final var deletedUser = userMapper.selectByPrimaryKey(loginUser.getId());
+			assertThat(deletedUser).isNull();
+		}
+
+		@Test
+		void 異_無効な認証ヘッダ() throws Exception {
+			/*
+			 * test & verify
+			 */
+			final var request = deleteRequest(DELETE_LOGIN_USER_PATH);
 			request.header(HttpHeaders.AUTHORIZATION, "");
 			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
 		}

@@ -148,6 +148,7 @@ public class UserRestController {
     public void deleteUser( //
         @ModelAttribute("LoginUser") final User loginUser //
     ) {
+        this.userService.deleteLoginUser(loginUser);
     }
 
 }
