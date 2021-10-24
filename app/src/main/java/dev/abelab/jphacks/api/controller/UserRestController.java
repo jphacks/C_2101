@@ -74,6 +74,7 @@ public class UserRestController {
         @Validated @ApiParam(name = "body", required = true, value = "パスワード更新情報")
         @RequestBody final LoginUserPasswordUpdateRequest requestBody //
     ) {
+        this.userService.updateLoginPasswordUser(requestBody, loginUser);
     }
 
     /**
