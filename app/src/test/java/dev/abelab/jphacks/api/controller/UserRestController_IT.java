@@ -1,7 +1,6 @@
 package dev.abelab.jphacks.api.controller;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.*;
 import static org.junit.jupiter.params.provider.Arguments.*;
 
@@ -22,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.modelmapper.ModelMapper;
 
 import dev.abelab.jphacks.api.request.LoginUserUpdateRequest;
+import dev.abelab.jphacks.api.request.LoginUserPasswordUpdateRequest;
 import dev.abelab.jphacks.api.response.UserResponse;
 import dev.abelab.jphacks.api.response.UsersResponse;
 import dev.abelab.jphacks.db.entity.User;
@@ -47,6 +47,7 @@ public class UserRestController_IT extends AbstractRestController_IT {
 	static final String GET_LOGIN_USER_PATH = BASE_PATH + "/me";
 	static final String UPDATE_LOGIN_USER_PATH = BASE_PATH + "/me";
 	static final String DELETE_LOGIN_USER_PATH = BASE_PATH + "/me";
+	static final String UPDATE_LOGIN_USER_PASSWORD_PATH = BASE_PATH + "/me/password";
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -229,7 +230,6 @@ public class UserRestController_IT extends AbstractRestController_IT {
 			final var request = putRequest(UPDATE_LOGIN_USER_PATH, requestBody);
 			request.header(HttpHeaders.AUTHORIZATION, credentials);
 			execute(request, new ConflictException(ErrorCode.CONFLICT_EMAIL));
-
 		}
 
 		@Test
@@ -303,6 +303,127 @@ public class UserRestController_IT extends AbstractRestController_IT {
 			 * test & verify
 			 */
 			final var request = deleteRequest(DELETE_LOGIN_USER_PATH);
+			request.header(HttpHeaders.AUTHORIZATION, "");
+			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
+		}
+
+	}
+
+	/**
+	 * ログインユーザパスワード更新APIのテスト
+	 */
+	@Nested
+	@TestInstance(PER_CLASS)
+	class UpdateLoginUserPasswordTest extends AbstractRestControllerInitialization_IT {
+
+		@Test
+		void 正_ログインユーザを更新() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var requestBody = LoginUserPasswordUpdateRequest.builder() //
+				.currentPassword(LOGIN_USER_PASSWORD) //
+				.newPassword(LOGIN_USER_PASSWORD + "xxx") //
+				.build();
+
+			/*
+			 * test
+			 */
+			final var request = putRequest(UPDATE_LOGIN_USER_PASSWORD_PATH, requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, HttpStatus.OK);
+
+			/*
+			 * test & verify
+			 */
+			final var updatedUser = userMapper.selectByExample(new UserExample() {
+				{
+					createCriteria().andIdEqualTo(loginUser.getId());
+				}
+			}).stream().findFirst();
+			assertThat(updatedUser.isPresent()).isTrue();
+			assertThat(passwordEncoder.matches(requestBody.getNewPassword(), updatedUser.get().getPassword())).isTrue();
+		}
+
+		@Test
+		void 異_現在のパスワードが間違えている() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var requestBody = LoginUserPasswordUpdateRequest.builder() //
+				.currentPassword(LOGIN_USER_PASSWORD + "xxx") //
+				.newPassword(LOGIN_USER_PASSWORD + "xxx") //
+				.build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = putRequest(UPDATE_LOGIN_USER_PASSWORD_PATH, requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new UnauthorizedException(ErrorCode.WRONG_PASSWORD));
+		}
+
+		@ParameterizedTest
+		@MethodSource
+		void パスワードが有効かチェック(final String password, final BaseException expectedException) throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var requestBody = LoginUserPasswordUpdateRequest.builder() //
+				.currentPassword(LOGIN_USER_PASSWORD) //
+				.newPassword(password) //
+				.build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = putRequest(UPDATE_LOGIN_USER_PASSWORD_PATH, requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			if (expectedException == null) {
+				execute(request, HttpStatus.OK);
+			} else {
+				execute(request, expectedException);
+			}
+		}
+
+		Stream<Arguments> パスワードが有効かチェック() {
+			return Stream.of( //
+				// 有効
+				arguments("f4BabxEr", null), //
+				arguments("f4BabxEr4gNsjdtRpH9Pfs6Atth9bqdA", null), //
+				// 無効：8文字以下
+				arguments("f4BabxE", new BadRequestException(ErrorCode.INVALID_PASSWORD_SIZE)), //
+				// 無効：33文字以上
+				arguments("f4BabxEr4gNsjdtRpH9Pfs6Atth9bqdAN", new BadRequestException(ErrorCode.INVALID_PASSWORD_SIZE)), //
+				// 無効：大文字を含まない
+				arguments("f4babxer", new BadRequestException(ErrorCode.TOO_SIMPLE_PASSWORD)), //
+				// 無効：小文字を含まない
+				arguments("F4BABXER", new BadRequestException(ErrorCode.TOO_SIMPLE_PASSWORD)), //
+				// 無効：数字を含まない
+				arguments("fxbabxEr", new BadRequestException(ErrorCode.TOO_SIMPLE_PASSWORD)) //
+			);
+		}
+
+		@Test
+		void 異_無効な認証ヘッダ() throws Exception {
+			/*
+			 * given
+			 */
+			final var requestBody = LoginUserPasswordUpdateRequest.builder().build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = putRequest(UPDATE_LOGIN_USER_PASSWORD_PATH, requestBody);
 			request.header(HttpHeaders.AUTHORIZATION, "");
 			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
 		}

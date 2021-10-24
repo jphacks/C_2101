@@ -12,10 +12,12 @@ import dev.abelab.jphacks.db.entity.User;
 import dev.abelab.jphacks.api.request.LoginUserUpdateRequest;
 import dev.abelab.jphacks.api.request.LoginUserPasswordUpdateRequest;
 import dev.abelab.jphacks.api.response.UsersResponse;
+import dev.abelab.jphacks.api.response.UserResponse;
 import dev.abelab.jphacks.repository.UserRepository;
 import dev.abelab.jphacks.logic.UserLogic;
 import dev.abelab.jphacks.util.AuthUtil;
-import dev.abelab.jphacks.api.response.UserResponse;
+import dev.abelab.jphacks.exception.ErrorCode;
+import dev.abelab.jphacks.exception.ConflictException;
 
 @RequiredArgsConstructor
 @Service
@@ -65,6 +67,11 @@ public class UserService {
      */
     @Transactional
     public void updateLoginUser(final LoginUserUpdateRequest requestBody, final User loginUser) {
+        // メールアドレスが既に存在するかチェック
+        if (this.userRepository.existsByEmail(requestBody.getEmail())) {
+            throw new ConflictException(ErrorCode.CONFLICT_EMAIL);
+        }
+
         // ログインユーザを更新
         loginUser.setEmail(requestBody.getEmail());
         loginUser.setName(requestBody.getName());
@@ -83,6 +90,25 @@ public class UserService {
     public void deleteLoginUser(final User loginUser) {
         // ログインユーザを削除
         this.userRepository.deleteById(loginUser.getId());
+    }
+
+    /**
+     * ログインユーザのパスワードを更新
+     *
+     * @param requestBody ログインユーザパスワード更新リクエスト
+     * @param loginUser   ログインユーザ
+     */
+    @Transactional
+    public void updateLoginPasswordUser(final LoginUserPasswordUpdateRequest requestBody, final User loginUser) {
+        // 現在のパスワードチェック
+        this.userLogic.verifyPassword(loginUser, requestBody.getCurrentPassword());
+
+        // 有効なパスワードかチェック
+        AuthUtil.validatePassword(requestBody.getNewPassword());
+
+        // ログインユーザのパスワードを更新
+        loginUser.setPassword(this.userLogic.encodePassword(requestBody.getNewPassword()));
+        this.userRepository.update(loginUser);
     }
 
 }
