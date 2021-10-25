@@ -9,16 +9,19 @@ import org.modelmapper.ModelMapper;
 
 import lombok.*;
 import dev.abelab.jphacks.api.request.RoomCreateRequest;
+import dev.abelab.jphacks.api.request.RoomJoinRequest;
 import dev.abelab.jphacks.api.response.UserResponse;
 import dev.abelab.jphacks.api.response.SpeakerResponse;
 import dev.abelab.jphacks.api.response.RoomsResponse;
 import dev.abelab.jphacks.api.response.RoomResponse;
 import dev.abelab.jphacks.db.entity.User;
 import dev.abelab.jphacks.db.entity.Room;
+import dev.abelab.jphacks.db.entity.Participation;
 import dev.abelab.jphacks.enums.ParticipationTypeEnum;
 import dev.abelab.jphacks.repository.UserRepository;
 import dev.abelab.jphacks.repository.RoomRepository;
 import dev.abelab.jphacks.repository.ParticipationRepository;
+import dev.abelab.jphacks.util.RoomUtil;
 import dev.abelab.jphacks.exception.ErrorCode;
 import dev.abelab.jphacks.exception.BadRequestException;
 import dev.abelab.jphacks.exception.ForbiddenException;
@@ -124,6 +127,32 @@ public class RoomService {
 
         // ルームを削除
         this.roomRepository.deleteById(roomId);
+    }
+
+    /**
+     * ルームの参加登録
+     *
+     * @param roomId      ルームID
+     * @param requestBody ルーム参加登録リクエスト
+     * @param loginUser   ログインユーザ
+     */
+    @Transactional
+    public void joinRoom(final int roomId, final RoomJoinRequest requestBody, final User loginUser) {
+        // ルームを取得
+        final var room = this.roomRepository.selectById(roomId);
+
+        // 参加登録可能な日時かチェック
+        if (RoomUtil.isPastRoom(room)) {
+            throw new BadRequestException(ErrorCode.CANNOT_JOIN_PAST_ROOM);
+        }
+
+        final var participation = Participation.builder() //
+            .userId(loginUser.getId()) //
+            .roomId(room.getId()) //
+            .type(requestBody.getType()) //
+            .title(requestBody.getTitle()) //
+            .build();
+        this.participationRepository.insert(participation);
     }
 
 }

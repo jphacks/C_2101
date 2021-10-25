@@ -19,7 +19,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.modelmapper.ModelMapper;
 
 import dev.abelab.jphacks.api.request.RoomCreateRequest;
@@ -30,6 +29,8 @@ import dev.abelab.jphacks.api.response.RoomResponse;
 import dev.abelab.jphacks.api.response.RoomsResponse;
 import dev.abelab.jphacks.db.entity.Room;
 import dev.abelab.jphacks.db.entity.RoomExample;
+import dev.abelab.jphacks.db.entity.Participation;
+import dev.abelab.jphacks.db.entity.ParticipationExample;
 import dev.abelab.jphacks.db.mapper.UserMapper;
 import dev.abelab.jphacks.db.mapper.RoomMapper;
 import dev.abelab.jphacks.db.mapper.ParticipationMapper;
@@ -57,6 +58,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 	static final String GET_ROOMS_PATH = BASE_PATH;
 	static final String CREATE_ROOM_PATH = BASE_PATH;
 	static final String DELETE_ROOM_PATH = BASE_PATH + "/%d";
+	static final String JOIN_ROOM_PATH = BASE_PATH + "/%d/join";
 
 	static final Date TOMORROW = DateTimeUtil.getTomorrow();
 	static final Date YESTERDAY = DateTimeUtil.getYesterday();
@@ -236,7 +238,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 		}
 
 		Stream<Arguments> 異_無効な開催日時は作成不可() {
-			return Stream.of(
+			return Stream.of( // 開催日、開始時間、終了時間、期待される例外
 				// 過去の日時
 				arguments(YESTERDAY, 10, 11, new BadRequestException(ErrorCode.PAST_ROOM_CANNOT_BE_CREATED)), //
 				// 開始時刻よりも前に終了時刻が設定されている
@@ -347,6 +349,144 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			 * test & verify
 			 */
 			final var request = deleteRequest(String.format(DELETE_ROOM_PATH, SAMPLE_INT));
+			request.header(HttpHeaders.AUTHORIZATION, "");
+			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
+		}
+
+	}
+
+	/**
+	 * ルーム参加登録APIのテスト
+	 */
+	@Nested
+	@TestInstance(PER_CLASS)
+	class JoinRoomTest extends AbstractRestControllerInitialization_IT {
+
+		@ParameterizedTest
+		@MethodSource
+		void 正_ルームに参加登録する(final boolean isOwner, final ParticipationTypeEnum type, final String title) throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var user = UserSample.builder().build();
+			userMapper.insert(user);
+			final var owner = isOwner ? loginUser : user;
+
+			final var room = RoomSample.builder() //
+				.ownerId(owner.getId()) //
+				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			final var requestBody = RoomJoinRequest.builder() //
+				.type(type.getId()) //
+				.title(title) //
+				.build();
+
+			/*
+			 * test
+			 */
+			final var request = postRequest(String.format(JOIN_ROOM_PATH, room.getId()), requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, HttpStatus.CREATED);
+
+			/*
+			 * verify
+			 */
+			final var participation = participationMapper.selectByExample(new ParticipationExample() {
+				{
+					createCriteria().andRoomIdEqualTo(room.getId());
+				}
+			}).stream().findFirst();
+			assertThat(participation.isPresent()).isTrue();
+			assertThat(participation.get()) //
+				.extracting(Participation::getType, Participation::getTitle) //
+				.containsExactly(requestBody.getType(), requestBody.getTitle());
+		}
+
+		Stream<Arguments> 正_ルームに参加登録する() {
+			return Stream.of( // オーナーフラグ、参加タイプ、発表タイトル
+				arguments(true, ParticipationTypeEnum.SPEAKER, SAMPLE_STR), //
+				arguments(true, ParticipationTypeEnum.SPEAKER, null), //
+				arguments(true, ParticipationTypeEnum.VIEWER, null), //
+				arguments(false, ParticipationTypeEnum.SPEAKER, SAMPLE_STR), //
+				arguments(false, ParticipationTypeEnum.SPEAKER, null), //
+				arguments(false, ParticipationTypeEnum.VIEWER, null) //
+			);
+		}
+
+		@Test
+		void 異_開催済みのルームは参加登録不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.ownerId(loginUser.getId()) //
+				.startAt(DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			final var requestBody = RoomJoinRequest.builder() //
+				.type(ParticipationTypeEnum.VIEWER.getId()) //
+				.title(null) //
+				.build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(JOIN_ROOM_PATH, room.getId()), requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new BadRequestException(ErrorCode.CANNOT_JOIN_PAST_ROOM));
+		}
+
+		@Test
+		void 異_参加登録済みのルームは参加登録不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.ownerId(loginUser.getId()) //
+				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			final var requestBody = RoomJoinRequest.builder() //
+				.type(ParticipationTypeEnum.VIEWER.getId()) //
+				.title(null) //
+				.build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(JOIN_ROOM_PATH, room.getId()), requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, HttpStatus.CREATED);
+			execute(request, new ConflictException(ErrorCode.ALREADY_JOIN_ROOM));
+		}
+
+		@Test
+		void 異_無効な認証ヘッダ() throws Exception {
+			/*
+			 * given
+			 */
+			final var requestBody = RoomJoinRequest.builder().type(ParticipationTypeEnum.VIEWER.getId()).build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(JOIN_ROOM_PATH, SAMPLE_INT), requestBody);
 			request.header(HttpHeaders.AUTHORIZATION, "");
 			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
 		}

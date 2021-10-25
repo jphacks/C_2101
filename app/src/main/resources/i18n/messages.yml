@@ -8,6 +8,7 @@ exception:
     room: "Room does not exists."
   conflict:
     email: "Email already exists."
+    already_join_room: "You already join this room."
   forbidden:
     user_has_no_permission: "User has no permission."
   bad_request:
@@ -17,6 +18,7 @@ exception:
     too_simple_password: "Password is too simple."
     room_time: "Invalid room time."
     past_room_cannot_be_created: "Past room cannot be created."
+    cannot_join_past_room: "You cannot join past room."
   unauthorized:
     user_not_logged_in: "User has no logged in."
     wrong_password: "Password is wrong."

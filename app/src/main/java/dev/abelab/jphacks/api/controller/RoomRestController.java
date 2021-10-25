@@ -122,12 +122,13 @@ public class RoomRestController {
         } //
     )
     @PostMapping(value = "/{room_id}/join")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void joinRoom( //
         @ModelAttribute("LoginUser") final User loginUser, //
         @ApiParam(name = "room_id", required = true, value = "ルームID") @PathVariable("room_id") final int roomId, //
         @Validated @ApiParam(name = "body", required = true, value = "参加登録情報") @RequestBody final RoomJoinRequest requestBody //
     ) {
+        this.roomService.joinRoom(roomId, requestBody, loginUser);
     }
 
     /**
