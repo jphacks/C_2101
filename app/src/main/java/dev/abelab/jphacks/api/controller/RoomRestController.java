@@ -118,6 +118,7 @@ public class RoomRestController {
                 @ApiResponse(code = 200, message = "登録成功"), //
                 @ApiResponse(code = 400, message = "参加登録できないルーム"), //
                 @ApiResponse(code = 401, message = "ユーザがログインしていない"), //
+                @ApiResponse(code = 404, message = "ルームが存在しない"), //
                 @ApiResponse(code = 409, message = "既に参加登録済み"), //
         } //
     )
@@ -145,7 +146,7 @@ public class RoomRestController {
         value = { //
                 @ApiResponse(code = 200, message = "辞退成功"), //
                 @ApiResponse(code = 401, message = "ユーザがログインしていない"), //
-                @ApiResponse(code = 404, message = "ルームが存在しない"), //
+                @ApiResponse(code = 404, message = "ルームが存在しない/参加登録していない"), //
         } //
     )
     @PostMapping(value = "/{room_id}/unjoin")
@@ -154,6 +155,7 @@ public class RoomRestController {
         @ModelAttribute("LoginUser") final User loginUser, //
         @ApiParam(name = "room_id", required = true, value = "ルームID") @PathVariable("room_id") final int roomId //
     ) {
+        this.roomService.unjoinRoom(roomId, loginUser);
     }
 
 }

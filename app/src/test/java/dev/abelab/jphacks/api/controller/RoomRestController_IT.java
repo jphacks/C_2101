@@ -59,6 +59,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 	static final String CREATE_ROOM_PATH = BASE_PATH;
 	static final String DELETE_ROOM_PATH = BASE_PATH + "/%d";
 	static final String JOIN_ROOM_PATH = BASE_PATH + "/%d/join";
+	static final String UNJOIN_ROOM_PATH = BASE_PATH + "/%d/unjoin";
 
 	static final Date TOMORROW = DateTimeUtil.getTomorrow();
 	static final Date YESTERDAY = DateTimeUtil.getYesterday();
@@ -477,6 +478,27 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 		}
 
 		@Test
+		void 異_存在しないルームは参加登録不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var requestBody = RoomJoinRequest.builder() //
+				.type(ParticipationTypeEnum.VIEWER.getId()) //
+				.title(null) //
+				.build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(JOIN_ROOM_PATH, SAMPLE_INT), requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new NotFoundException(ErrorCode.NOT_FOUND_ROOM));
+		}
+
+		@Test
 		void 異_無効な認証ヘッダ() throws Exception {
 			/*
 			 * given
@@ -487,6 +509,122 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			 * test & verify
 			 */
 			final var request = postRequest(String.format(JOIN_ROOM_PATH, SAMPLE_INT), requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, "");
+			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
+		}
+
+	}
+
+	/**
+	 * ルーム参加辞退APIのテスト
+	 */
+	@Nested
+	@TestInstance(PER_CLASS)
+	class UnjoinRoomTest extends AbstractRestControllerInitialization_IT {
+
+		@Test
+		void 正_ルームに参加辞退する() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.ownerId(loginUser.getId()) //
+				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			final var participation = ParticipationSample.builder() //
+				.userId(loginUser.getId()) //
+				.roomId(room.getId()) //
+				.build();
+			participationMapper.insert(participation);
+
+			/*
+			 * test
+			 */
+			final var request = postRequest(String.format(UNJOIN_ROOM_PATH, room.getId()));
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, HttpStatus.OK);
+
+			/*
+			 * verify
+			 */
+			final var deletedParticipation = participationMapper.selectByPrimaryKey(loginUser.getId(), room.getId());
+			assertThat(deletedParticipation).isNull();
+		}
+
+		@Test
+		void 異_参加登録していないルームは参加辞退不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.ownerId(loginUser.getId()) //
+				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(UNJOIN_ROOM_PATH, room.getId()));
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new NotFoundException(ErrorCode.NOT_FOUND_PARTICIPATION));
+		}
+
+		@Test
+		void 異_開催済みのルームは参加辞退不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.ownerId(loginUser.getId()) //
+				.startAt(DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(UNJOIN_ROOM_PATH, room.getId()));
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new BadRequestException(ErrorCode.CANNOT_UNJOIN_PAST_ROOM));
+		}
+
+		@Test
+		void 異_存在しないルームは参加辞退不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(UNJOIN_ROOM_PATH, SAMPLE_INT));
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new NotFoundException(ErrorCode.NOT_FOUND_ROOM));
+		}
+
+		@Test
+		void 異_無効な認証ヘッダ() throws Exception {
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(UNJOIN_ROOM_PATH, SAMPLE_INT));
 			request.header(HttpHeaders.AUTHORIZATION, "");
 			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
 		}
