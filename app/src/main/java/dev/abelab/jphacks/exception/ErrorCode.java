@@ -52,6 +52,8 @@ public enum ErrorCode {
 
     PAST_ROOM_CANNOT_BE_CREATED(1405, "exception.bad_request.past_room_cannot_be_created"),
 
+    CANNOT_JOIN_PAST_ROOM(1406, "exception.bad_request.cannot_join_past_room"),
+
     /**
      * Unauthorized: 1500~1599
      */
