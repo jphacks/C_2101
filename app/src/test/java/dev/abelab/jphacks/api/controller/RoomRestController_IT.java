@@ -130,9 +130,10 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			 * verify
 			 */
 			assertThat(response.getRooms()) //
-				.extracting(RoomResponse::getId, RoomResponse::getTitle, RoomResponse::getDescription) //
-				.containsExactlyElementsOf(
-					rooms.stream().map(room -> tuple(room.getId(), room.getTitle(), room.getDescription())).collect(Collectors.toList()));
+				.extracting(RoomResponse::getId, RoomResponse::getTitle, RoomResponse::getDescription,
+					RoomResponse::getPresentationTimeLimit, RoomResponse::getQuestionTimeLimit) //
+				.containsExactlyElementsOf(rooms.stream().map(room -> tuple(room.getId(), room.getTitle(), room.getDescription(),
+					room.getPresentationTimeLimit(), room.getQuestionTimeLimit())).collect(Collectors.toList()));
 
 			// オーナー
 			response.getRooms().forEach(room -> {
@@ -188,6 +189,8 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			final var credentials = getLoginUserCredentials(loginUser);
 
 			final var room = RoomSample.builder() //
+				.presentationTimeLimit(300) //
+				.questionTimeLimit(60) //
 				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
 				.finishAt(DateTimeUtil.addDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
 				.build();
@@ -208,8 +211,11 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 					createCriteria().andOwnerIdEqualTo(loginUser.getId());
 				}
 			});
-			assertThat(createdRoom).extracting(Room::getTitle, Room::getDescription, Room::getOwnerId) //
-				.containsExactly(tuple(requestBody.getTitle(), requestBody.getDescription(), loginUser.getId()));
+			assertThat(createdRoom)
+				.extracting(Room::getTitle, Room::getDescription, Room::getOwnerId, Room::getPresentationTimeLimit,
+					Room::getQuestionTimeLimit) //
+				.containsExactly(tuple(requestBody.getTitle(), requestBody.getDescription(), loginUser.getId(),
+					requestBody.getPresentationTimeLimit(), requestBody.getQuestionTimeLimit()));
 			assertThat(createdRoom.get(0).getStartAt()).isInSameMinuteAs(room.getStartAt());
 			assertThat(createdRoom.get(0).getFinishAt()).isInSameMinuteAs(room.getFinishAt());
 		}
