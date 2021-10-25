@@ -35,6 +35,16 @@ public class RoomResponse {
     UserResponse owner;
 
     /**
+     * 発表の制限時間[s]
+     */
+    Integer presentationTimeLimit;
+
+    /**
+     * 質疑応答の制限時間[s]
+     */
+    Integer questionTimeLimit;
+
+    /**
      * 開始日時
      */
     Date startAt;
