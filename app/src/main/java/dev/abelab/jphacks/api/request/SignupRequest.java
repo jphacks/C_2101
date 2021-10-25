@@ -38,7 +38,6 @@ public class SignupRequest {
     /**
      * ユーザアイコン(Base64)
      */
-    @NotNull
     String icon;
 
 }
