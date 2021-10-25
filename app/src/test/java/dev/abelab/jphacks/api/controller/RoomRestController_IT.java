@@ -478,6 +478,27 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 		}
 
 		@Test
+		void 異_存在しないルームは参加登録不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var requestBody = RoomJoinRequest.builder() //
+				.type(ParticipationTypeEnum.VIEWER.getId()) //
+				.title(null) //
+				.build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(JOIN_ROOM_PATH, SAMPLE_INT), requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new NotFoundException(ErrorCode.NOT_FOUND_ROOM));
+		}
+
+		@Test
 		void 異_無効な認証ヘッダ() throws Exception {
 			/*
 			 * given
@@ -580,6 +601,22 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			final var request = postRequest(String.format(UNJOIN_ROOM_PATH, room.getId()));
 			request.header(HttpHeaders.AUTHORIZATION, credentials);
 			execute(request, new BadRequestException(ErrorCode.CANNOT_UNJOIN_PAST_ROOM));
+		}
+
+		@Test
+		void 異_存在しないルームは参加辞退不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(UNJOIN_ROOM_PATH, SAMPLE_INT));
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new NotFoundException(ErrorCode.NOT_FOUND_ROOM));
 		}
 
 		@Test
