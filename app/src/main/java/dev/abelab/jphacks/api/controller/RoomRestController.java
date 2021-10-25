@@ -99,6 +99,7 @@ public class RoomRestController {
         @ModelAttribute("LoginUser") final User loginUser, //
         @ApiParam(name = "room_id", required = true, value = "ルームID") @PathVariable("room_id") final int roomId //
     ) {
+        this.roomService.deleteRoom(roomId, loginUser);
     }
 
     /**

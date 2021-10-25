@@ -21,6 +21,7 @@ import dev.abelab.jphacks.repository.RoomRepository;
 import dev.abelab.jphacks.repository.ParticipationRepository;
 import dev.abelab.jphacks.exception.ErrorCode;
 import dev.abelab.jphacks.exception.BadRequestException;
+import dev.abelab.jphacks.exception.ForbiddenException;
 
 @RequiredArgsConstructor
 @Service
@@ -103,6 +104,26 @@ public class RoomService {
         final var room = this.modelMapper.map(requestBody, Room.class);
         room.setOwnerId(loginUser.getId());
         this.roomRepository.insert(room);
+    }
+
+    /**
+     * ルームを削除
+     *
+     * @param roomId    ルームID
+     * @param loginUser ログインユーザ
+     */
+    @Transactional
+    public void deleteRoom(final int roomId, final User loginUser) {
+        // ルームを取得
+        final var room = this.roomRepository.selectById(roomId);
+
+        // 削除権限をチェック
+        if (room.getOwnerId() != loginUser.getId()) {
+            throw new ForbiddenException(ErrorCode.USER_HAS_NO_PERMISSION);
+        }
+
+        // ルームを削除
+        this.roomRepository.deleteById(roomId);
     }
 
 }
