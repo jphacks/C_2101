@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.net.util.Base64;
 import org.modelmapper.ModelMapper;
 
 import lombok.*;
@@ -12,9 +13,11 @@ import dev.abelab.jphacks.api.request.LoginUserPasswordUpdateRequest;
 import dev.abelab.jphacks.api.response.UsersResponse;
 import dev.abelab.jphacks.api.response.UserResponse;
 import dev.abelab.jphacks.db.entity.User;
+import dev.abelab.jphacks.model.FileModel;
 import dev.abelab.jphacks.repository.UserRepository;
 import dev.abelab.jphacks.logic.UserLogic;
 import dev.abelab.jphacks.util.AuthUtil;
+import dev.abelab.jphacks.util.CloudStorageUtil;
 import dev.abelab.jphacks.exception.ErrorCode;
 import dev.abelab.jphacks.exception.ConflictException;
 
@@ -27,6 +30,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final UserLogic userLogic;
+
+    private final CloudStorageUtil cloudStorageUtil;
 
     /**
      * プロフィールを取得
@@ -71,11 +76,15 @@ public class UserService {
             throw new ConflictException(ErrorCode.CONFLICT_EMAIL);
         }
 
+        // アイコンをアップロード
+        final var file = FileModel.builder().content(Base64.decodeBase64(requestBody.getIcon())).build();
+        file.setName(file.getName() + ".jpg");
+        final var iconUrl = requestBody.getIcon() != null ? this.cloudStorageUtil.uploadFile(file) : null;
+
         // ログインユーザを更新
         loginUser.setEmail(requestBody.getEmail());
         loginUser.setName(requestBody.getName());
-
-        // TODO: アイコンを更新
+        loginUser.setIconUrl(iconUrl);
 
         this.userRepository.update(loginUser);
     }
