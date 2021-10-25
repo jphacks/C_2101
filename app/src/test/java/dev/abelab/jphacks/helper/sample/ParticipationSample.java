@@ -16,6 +16,7 @@ public class ParticipationSample extends AbstractSample {
 		private Integer userId = SAMPLE_INT;
 		private Integer roomId = SAMPLE_INT;
 		private Integer type = SAMPLE_INT;
+		private String title = SAMPLE_STR;
 
 		public ParticipationSampleBuilder userId(Integer userId) {
 			this.userId = userId;
@@ -32,11 +33,17 @@ public class ParticipationSample extends AbstractSample {
 			return this;
 		}
 
+		public ParticipationSampleBuilder title(String title) {
+			this.title = title;
+			return this;
+		}
+
 		public Participation build() {
 			return Participation.builder() //
 				.userId(this.userId) //
 				.roomId(this.roomId) //
 				.type(this.type) //
+				.title(this.title) //
 				.build();
 		}
 

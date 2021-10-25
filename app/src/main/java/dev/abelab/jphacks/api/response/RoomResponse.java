@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Date;
 
 import lombok.*;
+import dev.abelab.jphacks.model.SpeakerModel;
 
 /**
  * ルーム情報レスポンス
@@ -47,7 +48,7 @@ public class RoomResponse {
     /**
      * 登壇者リスト
      */
-    List<UserResponse> speakers;
+    List<SpeakerModel> speakers;
 
     /**
      * 閲覧者リスト
