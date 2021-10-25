@@ -1,5 +1,6 @@
 package dev.abelab.jphacks.service;
 
+import java.util.Date;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ import dev.abelab.jphacks.enums.ParticipationTypeEnum;
 import dev.abelab.jphacks.repository.UserRepository;
 import dev.abelab.jphacks.repository.RoomRepository;
 import dev.abelab.jphacks.repository.ParticipationRepository;
+import dev.abelab.jphacks.exception.ErrorCode;
+import dev.abelab.jphacks.exception.BadRequestException;
 
 @RequiredArgsConstructor
 @Service
@@ -81,6 +84,22 @@ public class RoomService {
      */
     @Transactional
     public void createRoom(final RoomCreateRequest requestBody, final User loginUser) {
+        // 開催日時のバリデーション
+        // 過去の開催日時
+        final var now = new Date();
+        if (now.after(requestBody.getStartAt()) || now.after(requestBody.getFinishAt())) {
+            throw new BadRequestException(ErrorCode.PAST_ROOM_CANNOT_BE_CREATED);
+        }
+        // 開始時刻よりも前に終了時刻が設定されている
+        if (requestBody.getStartAt().after(requestBody.getFinishAt())) {
+            throw new BadRequestException(ErrorCode.INVALID_ROOM_TIME);
+        }
+        // 開始時刻と終了時刻が同じ
+        if (requestBody.getStartAt().equals(requestBody.getFinishAt())) {
+            throw new BadRequestException(ErrorCode.INVALID_ROOM_TIME);
+        }
+
+        // ルームを作成
         final var room = this.modelMapper.map(requestBody, Room.class);
         room.setOwnerId(loginUser.getId());
         this.roomRepository.insert(room);
