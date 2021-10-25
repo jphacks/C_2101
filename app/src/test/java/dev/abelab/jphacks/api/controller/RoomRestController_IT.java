@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.*;
 import static org.junit.jupiter.params.provider.Arguments.*;
 
+import java.util.Date;
+import java.util.Calendar;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
@@ -20,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.modelmapper.ModelMapper;
 
+import dev.abelab.jphacks.api.request.RoomCreateRequest;
+import dev.abelab.jphacks.api.request.RoomJoinRequest;
 import dev.abelab.jphacks.api.response.UserResponse;
 import dev.abelab.jphacks.api.response.SpeakerResponse;
 import dev.abelab.jphacks.api.response.RoomResponse;
@@ -34,6 +38,7 @@ import dev.abelab.jphacks.helper.sample.UserSample;
 import dev.abelab.jphacks.helper.sample.RoomSample;
 import dev.abelab.jphacks.helper.sample.ParticipationSample;
 import dev.abelab.jphacks.helper.util.RandomUtil;
+import dev.abelab.jphacks.util.DateTimeUtil;
 import dev.abelab.jphacks.exception.ErrorCode;
 import dev.abelab.jphacks.exception.BaseException;
 import dev.abelab.jphacks.exception.BadRequestException;
@@ -49,6 +54,9 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 	// API PATH
 	static final String BASE_PATH = "/api/rooms";
 	static final String GET_ROOMS_PATH = BASE_PATH;
+	static final String CREATE_ROOM_PATH = BASE_PATH;
+
+	static final Date TOMORROW = DateTimeUtil.getTomorrow();
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -152,6 +160,66 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			 * test & verify
 			 */
 			final var request = getRequest(GET_ROOMS_PATH);
+			request.header(HttpHeaders.AUTHORIZATION, "");
+			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
+		}
+
+	}
+
+	/**
+	 * ルーム作成APIのテスト
+	 */
+	@Nested
+	@TestInstance(PER_CLASS)
+	class CreateRoomTest extends AbstractRestControllerInitialization_IT {
+
+		@Test
+		void 正_ルームを作成() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.addDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			final var requestBody = modelMapper.map(room, RoomCreateRequest.class);
+
+			/*
+			 * test
+			 */
+			final var request = postRequest(CREATE_ROOM_PATH, requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, HttpStatus.CREATED);
+
+			/*
+			 * verify
+			 */
+			final var createdRoom = roomMapper.selectByExampleWithBLOBs(new RoomExample() {
+				{
+					createCriteria().andOwnerIdEqualTo(loginUser.getId());
+				}
+			});
+			assertThat(createdRoom).extracting(Room::getTitle, Room::getDescription, Room::getOwnerId) //
+				.containsExactly(tuple(room.getTitle(), room.getDescription(), room.getOwnerId()));
+			assertThat(createdRoom.get(0).getStartAt()).isInSameMinuteAs(room.getStartAt());
+			assertThat(createdRoom.get(0).getFinishAt()).isInSameMinuteAs(room.getFinishAt());
+		}
+
+		@Test
+		void 異_無効な認証ヘッダ() throws Exception {
+			/*
+			 * given
+			 */
+			final var room = RoomSample.builder().build();
+			final var requestBody = modelMapper.map(room, RoomCreateRequest.class);
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(CREATE_ROOM_PATH, requestBody);
 			request.header(HttpHeaders.AUTHORIZATION, "");
 			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
 		}
