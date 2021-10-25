@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `room` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(255) NOT NULL,
-  `description` VARCHAR(45) NOT NULL,
+  `description` TEXT NOT NULL,
   `owner_id` INT UNSIGNED NOT NULL,
   `start_at` DATETIME NOT NULL,
   `finish_at` DATETIME NOT NULL,
