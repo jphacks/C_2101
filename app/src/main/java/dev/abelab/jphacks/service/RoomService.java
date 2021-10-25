@@ -146,6 +146,7 @@ public class RoomService {
             throw new BadRequestException(ErrorCode.CANNOT_JOIN_PAST_ROOM);
         }
 
+        // 参加情報を作成
         final var participation = Participation.builder() //
             .userId(loginUser.getId()) //
             .roomId(room.getId()) //
@@ -153,6 +154,26 @@ public class RoomService {
             .title(requestBody.getTitle()) //
             .build();
         this.participationRepository.insert(participation);
+    }
+
+    /**
+     * ルームの参加辞退
+     *
+     * @param roomId    ルームID
+     * @param loginUser ログインユーザ
+     */
+    @Transactional
+    public void unjoinRoom(final int roomId, final User loginUser) {
+        // ルームを取得
+        final var room = this.roomRepository.selectById(roomId);
+
+        // 参加辞退可能な日時かチェック
+        if (RoomUtil.isPastRoom(room)) {
+            throw new BadRequestException(ErrorCode.CANNOT_UNJOIN_PAST_ROOM);
+        }
+
+        // 参加情報を削除
+        this.participationRepository.deleteByRoomIdAndUserId(room.getId(), loginUser.getId());
     }
 
 }
