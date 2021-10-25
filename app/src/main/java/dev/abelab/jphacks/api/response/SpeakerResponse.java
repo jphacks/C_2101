@@ -36,4 +36,9 @@ public class SpeakerResponse {
      */
     String title;
 
+    /**
+     * 発表順
+     */
+    Integer speakerOrder;
+
 }

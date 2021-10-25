@@ -58,9 +58,11 @@ public class RoomService {
                 final var participations = this.participationRepository.selectWithUserByRoomId(room.getId());
                 final var speakers = participations.stream() //
                     .filter(participation -> participation.getType() == ParticipationTypeEnum.SPEAKER.getId()) //
+                    .sorted((p1, p2) -> p1.getSpeakerOrder().compareTo(p2.getSpeakerOrder())) //
                     .map(participation -> {
                         final var result = this.modelMapper.map(participation.getUser(), SpeakerResponse.class);
                         result.setTitle(participation.getTitle());
+                        result.setSpeakerOrder(participation.getSpeakerOrder());
                         return result;
                     }) //
                     .collect(Collectors.toList());
@@ -146,12 +148,18 @@ public class RoomService {
             throw new BadRequestException(ErrorCode.CANNOT_JOIN_PAST_ROOM);
         }
 
+        // 発表順を求める
+        final var speakerOrder = this.participationRepository.selectByRoomId(room.getId()).stream() //
+            .filter(participation -> participation.getType() == ParticipationTypeEnum.SPEAKER.getId()) //
+            .mapToInt(Participation::getSpeakerOrder).max().orElse(0) + 1;
+
         // 参加情報を作成
         final var participation = Participation.builder() //
             .userId(loginUser.getId()) //
             .roomId(room.getId()) //
             .type(requestBody.getType()) //
             .title(requestBody.getTitle()) //
+            .speakerOrder(speakerOrder) //
             .build();
         this.participationRepository.insert(participation);
     }
