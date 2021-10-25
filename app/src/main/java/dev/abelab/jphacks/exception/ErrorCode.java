@@ -25,6 +25,8 @@ public enum ErrorCode {
 
     NOT_FOUND_PARTICIPATION_TYPE(1103, "exception.not_found.participation_type"),
 
+    NOT_FOUND_ROOM(1104, "exception.not_found.room"),
+
     /**
      * Conflict: 1200~1299
      */

@@ -5,6 +5,7 @@ exception:
     api: "API does not exists."
     user: "User does not exists."
     participation_type: "Participation type does not exists."
+    room: "Room does not exists."
   conflict:
     email: "Email already exists."
   forbidden:

@@ -1,15 +1,15 @@
-package dev.abelab.jphacks.model;
+package dev.abelab.jphacks.api.response;
 
 import lombok.*;
 
 /**
- * 登壇者モデル
+ * 登壇者レスポンス
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpeakerModel {
+public class SpeakerResponse {
 
     /**
      * ユーザID
