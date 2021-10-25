@@ -47,7 +47,7 @@ public class RoomResponse {
     /**
      * 登壇者リスト
      */
-    List<UserResponse> speakers;
+    List<SpeakerResponse> speakers;
 
     /**
      * 閲覧者リスト

@@ -1,4 +1,3 @@
-
 package dev.abelab.jphacks.service;
 
 import java.util.stream.Collectors;
@@ -8,11 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.ModelMapper;
 
 import lombok.*;
-import dev.abelab.jphacks.db.entity.User;
 import dev.abelab.jphacks.api.request.LoginUserUpdateRequest;
 import dev.abelab.jphacks.api.request.LoginUserPasswordUpdateRequest;
 import dev.abelab.jphacks.api.response.UsersResponse;
 import dev.abelab.jphacks.api.response.UserResponse;
+import dev.abelab.jphacks.db.entity.User;
 import dev.abelab.jphacks.repository.UserRepository;
 import dev.abelab.jphacks.logic.UserLogic;
 import dev.abelab.jphacks.util.AuthUtil;

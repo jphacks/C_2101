@@ -12,6 +12,7 @@ import dev.abelab.jphacks.api.request.RoomCreateRequest;
 import dev.abelab.jphacks.api.request.RoomJoinRequest;
 import dev.abelab.jphacks.api.response.RoomsResponse;
 import dev.abelab.jphacks.db.entity.User;
+import dev.abelab.jphacks.service.RoomService;
 
 @Api(tags = "Room")
 @RestController
@@ -20,6 +21,8 @@ import dev.abelab.jphacks.db.entity.User;
 @RequiredArgsConstructor
 @Authenticated
 public class RoomRestController {
+
+    private final RoomService roomService;
 
     /**
      * ルーム一覧取得API
@@ -43,7 +46,7 @@ public class RoomRestController {
     public RoomsResponse getRooms( //
         @ModelAttribute("LoginUser") final User loginUser //
     ) {
-        return null;
+        return this.roomService.getRooms(loginUser);
     }
 
     /**
