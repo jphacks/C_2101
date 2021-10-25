@@ -110,12 +110,12 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 				ParticipationSample.builder().userId(users.get(0).getId()).roomId(rooms.get(0).getId())
 					.type(ParticipationTypeEnum.VIEWER.getId()).build(), //
 				ParticipationSample.builder().userId(users.get(1).getId()).roomId(rooms.get(0).getId())
-					.type(ParticipationTypeEnum.SPEAKER.getId()).title(SAMPLE_STR).build(), //
+					.type(ParticipationTypeEnum.SPEAKER.getId()).speakerOrder(1).title(SAMPLE_STR).build(), //
 				// ルーム2
 				ParticipationSample.builder().userId(users.get(0).getId()).roomId(rooms.get(1).getId())
-					.type(ParticipationTypeEnum.SPEAKER.getId()).title(SAMPLE_STR).build(), //
+					.type(ParticipationTypeEnum.SPEAKER.getId()).speakerOrder(1).title(SAMPLE_STR).build(), //
 				ParticipationSample.builder().userId(users.get(1).getId()).roomId(rooms.get(1).getId())
-					.type(ParticipationTypeEnum.SPEAKER.getId()).title(null).build() //
+					.type(ParticipationTypeEnum.SPEAKER.getId()).speakerOrder(2).title(null).build() //
 			);
 			participations.forEach(participationMapper::insert);
 
