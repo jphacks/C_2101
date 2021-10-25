@@ -57,6 +57,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 	static final String CREATE_ROOM_PATH = BASE_PATH;
 
 	static final Date TOMORROW = DateTimeUtil.getTomorrow();
+	static final Date YESTERDAY = DateTimeUtil.getYesterday();
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -203,9 +204,44 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 				}
 			});
 			assertThat(createdRoom).extracting(Room::getTitle, Room::getDescription, Room::getOwnerId) //
-				.containsExactly(tuple(room.getTitle(), room.getDescription(), room.getOwnerId()));
+				.containsExactly(tuple(requestBody.getTitle(), requestBody.getDescription(), loginUser.getId()));
 			assertThat(createdRoom.get(0).getStartAt()).isInSameMinuteAs(room.getStartAt());
 			assertThat(createdRoom.get(0).getFinishAt()).isInSameMinuteAs(room.getFinishAt());
+		}
+
+		@ParameterizedTest
+		@MethodSource
+		void 異_無効な開催日時は作成不可(final Date date, final int startHour, final int finishHour, final BaseException expectedException)
+			throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.startAt(DateTimeUtil.editDateTime(date, Calendar.HOUR_OF_DAY, startHour)) //
+				.finishAt(DateTimeUtil.editDateTime(date, Calendar.HOUR_OF_DAY, finishHour)) //
+				.build();
+			final var requestBody = modelMapper.map(room, RoomCreateRequest.class);
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(CREATE_ROOM_PATH, requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, expectedException);
+		}
+
+		Stream<Arguments> 異_無効な開催日時は作成不可() {
+			return Stream.of(
+				// 過去の日時
+				arguments(YESTERDAY, 10, 11, new BadRequestException(ErrorCode.PAST_ROOM_CANNOT_BE_CREATED)), //
+				// 開始時刻よりも前に終了時刻が設定されている
+				arguments(TOMORROW, 11, 10, new BadRequestException(ErrorCode.INVALID_ROOM_TIME)), //
+				// 開始時刻と終了時刻が同じ
+				arguments(TOMORROW, 10, 10, new BadRequestException(ErrorCode.INVALID_ROOM_TIME)) //
+			);
 		}
 
 		@Test
