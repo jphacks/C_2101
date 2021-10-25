@@ -8,6 +8,7 @@ exception:
     room: "Room does not exists."
   conflict:
     email: "Email already exists."
+    already_join_room: "You already join this room."
   forbidden:
     user_has_no_permission: "User has no permission."
   bad_request:

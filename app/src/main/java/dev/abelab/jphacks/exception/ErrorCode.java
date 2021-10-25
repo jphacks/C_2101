@@ -32,6 +32,8 @@ public enum ErrorCode {
      */
     CONFLICT_EMAIL(1200, "exception.conflict.email"),
 
+    ALREADY_JOIN_ROOM(1201, "exception.conflict.already_join_room"),
+
     /**
      * Forbidden: 1300~1399
      */

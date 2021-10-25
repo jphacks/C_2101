@@ -392,7 +392,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			 */
 			final var request = postRequest(String.format(JOIN_ROOM_PATH, room.getId()), requestBody);
 			request.header(HttpHeaders.AUTHORIZATION, credentials);
-			execute(request, HttpStatus.OK);
+			execute(request, HttpStatus.CREATED);
 
 			/*
 			 * verify
@@ -445,6 +445,35 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			final var request = postRequest(String.format(JOIN_ROOM_PATH, room.getId()), requestBody);
 			request.header(HttpHeaders.AUTHORIZATION, credentials);
 			execute(request, new BadRequestException(ErrorCode.CANNOT_JOIN_PAST_ROOM));
+		}
+
+		@Test
+		void 異_参加登録済みのルームは参加登録不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.ownerId(loginUser.getId()) //
+				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			final var requestBody = RoomJoinRequest.builder() //
+				.type(ParticipationTypeEnum.VIEWER.getId()) //
+				.title(null) //
+				.build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(JOIN_ROOM_PATH, room.getId()), requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, HttpStatus.CREATED);
+			execute(request, new ConflictException(ErrorCode.ALREADY_JOIN_ROOM));
 		}
 
 		@Test
