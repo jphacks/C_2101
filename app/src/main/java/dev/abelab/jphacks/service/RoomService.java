@@ -7,11 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.ModelMapper;
 
 import lombok.*;
+import dev.abelab.jphacks.api.request.RoomCreateRequest;
 import dev.abelab.jphacks.api.response.UserResponse;
 import dev.abelab.jphacks.api.response.SpeakerResponse;
 import dev.abelab.jphacks.api.response.RoomsResponse;
 import dev.abelab.jphacks.api.response.RoomResponse;
 import dev.abelab.jphacks.db.entity.User;
+import dev.abelab.jphacks.db.entity.Room;
 import dev.abelab.jphacks.enums.ParticipationTypeEnum;
 import dev.abelab.jphacks.repository.UserRepository;
 import dev.abelab.jphacks.repository.RoomRepository;
@@ -69,6 +71,19 @@ public class RoomService {
             }).collect(Collectors.toList());
 
         return new RoomsResponse(roomResponses);
+    }
+
+    /**
+     * ルームを作成
+     *
+     * @param requestBody ルーム作成リクエスト
+     * @param loginUser   ログインユーザ
+     */
+    @Transactional
+    public void createRoom(final RoomCreateRequest requestBody, final User loginUser) {
+        final var room = this.modelMapper.map(requestBody, Room.class);
+        room.setOwnerId(loginUser.getId());
+        this.roomRepository.insert(room);
     }
 
 }

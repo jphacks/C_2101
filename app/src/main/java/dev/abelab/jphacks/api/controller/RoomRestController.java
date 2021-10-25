@@ -66,11 +66,12 @@ public class RoomRestController {
         } //
     )
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void createRoom( //
         @ModelAttribute("LoginUser") final User loginUser, //
         @Validated @ApiParam(name = "body", required = true, value = "ルーム作成情報") @RequestBody final RoomCreateRequest requestBody //
     ) {
+        this.roomService.createRoom(requestBody, loginUser);
     }
 
     /**
