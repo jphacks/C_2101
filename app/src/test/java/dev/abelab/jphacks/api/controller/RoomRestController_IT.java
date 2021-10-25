@@ -44,6 +44,7 @@ import dev.abelab.jphacks.exception.BaseException;
 import dev.abelab.jphacks.exception.BadRequestException;
 import dev.abelab.jphacks.exception.NotFoundException;
 import dev.abelab.jphacks.exception.ConflictException;
+import dev.abelab.jphacks.exception.ForbiddenException;
 import dev.abelab.jphacks.exception.UnauthorizedException;
 
 /**
@@ -55,6 +56,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 	static final String BASE_PATH = "/api/rooms";
 	static final String GET_ROOMS_PATH = BASE_PATH;
 	static final String CREATE_ROOM_PATH = BASE_PATH;
+	static final String DELETE_ROOM_PATH = BASE_PATH + "/%d";
 
 	static final Date TOMORROW = DateTimeUtil.getTomorrow();
 	static final Date YESTERDAY = DateTimeUtil.getYesterday();
@@ -256,6 +258,95 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			 * test & verify
 			 */
 			final var request = postRequest(CREATE_ROOM_PATH, requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, "");
+			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
+		}
+
+	}
+
+	/**
+	 * ルーム削除APIのテスト
+	 */
+	@Nested
+	@TestInstance(PER_CLASS)
+	class DeleteRoomTest extends AbstractRestControllerInitialization_IT {
+
+		@Test
+		void 正_ルームを削除() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.ownerId(loginUser.getId()) //
+				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			/*
+			 * test
+			 */
+			final var request = deleteRequest(String.format(DELETE_ROOM_PATH, room.getId()));
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, HttpStatus.OK);
+
+			/*
+			 * verify
+			 */
+			final var deletedRoom = roomMapper.selectByPrimaryKey(room.getId());
+			assertThat(deletedRoom).isNull();
+		}
+
+		@Test
+		void 異_作成者以外はルームを削除不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var owner = UserSample.builder().build();
+			userMapper.insert(owner);
+			final var room = RoomSample.builder() //
+				.ownerId(owner.getId()) //
+				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			/*
+			 * test & verify
+			 */
+			final var request = deleteRequest(String.format(DELETE_ROOM_PATH, room.getId()));
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new ForbiddenException(ErrorCode.USER_HAS_NO_PERMISSION));
+		}
+
+		@Test
+		void 異_削除対象ルームが存在しない() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			/*
+			 * test & verify
+			 */
+			final var request = deleteRequest(String.format(DELETE_ROOM_PATH, SAMPLE_INT));
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new NotFoundException(ErrorCode.NOT_FOUND_ROOM));
+		}
+
+		@Test
+		void 異_無効な認証ヘッダ() throws Exception {
+			/*
+			 * test & verify
+			 */
+			final var request = deleteRequest(String.format(DELETE_ROOM_PATH, SAMPLE_INT));
 			request.header(HttpHeaders.AUTHORIZATION, "");
 			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
 		}
