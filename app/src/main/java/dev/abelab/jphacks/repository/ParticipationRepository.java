@@ -17,11 +17,11 @@ public class ParticipationRepository {
     private final ParticipationMapper participationMapper;
 
     /**
-     * ルームIDから参加リストを取得
+     * ルームIDから参加情報リストを取得
      *
      * @param roomId ルームID
      *
-     * @return 参加リスト
+     * @return 参加情報リスト
      */
     public List<Participation> selectByRoomId(final int roomId) {
         final var example = new ParticipationExample();
@@ -30,14 +30,25 @@ public class ParticipationRepository {
     }
 
     /**
-     * ルームIDから参加(+ユーザ)リストを取得
+     * ルームIDから参加情報(+ユーザ)リストを取得
      *
      * @param roomId ルームID
      *
-     * @return 参加(+ユーザ)リスト
+     * @return 参加情報(+ユーザ)リスト
      */
     public List<ParticipationWithUser> selectWithUserByRoomId(final int roomId) {
         return this.participationMapper.selectWithUserByRoomId(roomId);
+    }
+
+    /**
+     * 参加情報を作成
+     *
+     * @param participation 参加情報
+     *
+     * @return 参加情報ID
+     */
+    public int insert(final Participation participation) {
+        return this.participationMapper.insert(participation);
     }
 
 }

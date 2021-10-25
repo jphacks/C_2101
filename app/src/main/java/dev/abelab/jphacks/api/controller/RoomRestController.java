@@ -128,6 +128,7 @@ public class RoomRestController {
         @ApiParam(name = "room_id", required = true, value = "ルームID") @PathVariable("room_id") final int roomId, //
         @Validated @ApiParam(name = "body", required = true, value = "参加登録情報") @RequestBody final RoomJoinRequest requestBody //
     ) {
+        this.roomService.joinRoom(roomId, requestBody, loginUser);
     }
 
     /**

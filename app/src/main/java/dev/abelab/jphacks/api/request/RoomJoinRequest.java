@@ -17,7 +17,6 @@ public class RoomJoinRequest {
     /**
      * タイトル
      */
-    @NotNull
     @Size(max = 255)
     String title;
 

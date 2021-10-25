@@ -19,7 +19,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.modelmapper.ModelMapper;
 
 import dev.abelab.jphacks.api.request.RoomCreateRequest;
@@ -406,7 +405,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			assertThat(participation.isPresent()).isTrue();
 			assertThat(participation.get()) //
 				.extracting(Participation::getType, Participation::getTitle) //
-				.containsExactly(tuple(requestBody.getType(), requestBody.getTitle()));
+				.containsExactly(requestBody.getType(), requestBody.getTitle());
 		}
 
 		Stream<Arguments> 正_ルームに参加登録する() {
