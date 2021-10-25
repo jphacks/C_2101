@@ -1,6 +1,7 @@
 exception:
   internal_server_error:
     unexpected_error: "Unexpected error has occurred."
+    failed_to_upload_file_to_gcs: "Failed to upload the file to GCS."
   not_found:
     api: "API does not exists."
     user: "User does not exists."

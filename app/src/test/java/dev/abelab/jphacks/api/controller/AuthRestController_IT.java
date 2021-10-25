@@ -157,7 +157,7 @@ public class AuthRestController_IT extends AbstractRestController_IT {
 				.extracting(User::getEmail, User::getName) //
 				.containsExactly(user.getEmail(), user.getName());
 			assertThat(passwordEncoder.matches(requestBody.getPassword(), createdUser.get().getPassword())).isTrue();
-			assertThat(createdUser.get().getIconUrl()).isNotNull();
+			assertThat(createdUser.get().getIconUrl()).isNull();
 		}
 
 		@Test
