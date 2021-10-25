@@ -9,6 +9,8 @@ import dev.abelab.jphacks.db.entity.Participation;
 import dev.abelab.jphacks.db.entity.ParticipationExample;
 import dev.abelab.jphacks.db.entity.join.ParticipationWithUser;
 import dev.abelab.jphacks.db.mapper.ParticipationMapper;
+import dev.abelab.jphacks.exception.ErrorCode;
+import dev.abelab.jphacks.exception.ConflictException;
 
 @RequiredArgsConstructor
 @Repository
@@ -48,7 +50,23 @@ public class ParticipationRepository {
      * @return 参加情報ID
      */
     public int insert(final Participation participation) {
+        if (this.existsByRoomIdAndUserID(participation.getRoomId(), participation.getUserId())) {
+            throw new ConflictException(ErrorCode.ALREADY_JOIN_ROOM);
+        }
         return this.participationMapper.insert(participation);
+    }
+
+    /**
+     * ルームID・ユーザIDの存在確認
+     *
+     * @param roomId ルームID
+     * @param userID ユーザID
+     *
+     * @return ルームID・ユーザIDが存在するか
+     */
+    public boolean existsByRoomIdAndUserID(final int roomId, final int userId) {
+        final var participation = this.participationMapper.selectByPrimaryKey(userId, roomId);
+        return participation != null;
     }
 
 }

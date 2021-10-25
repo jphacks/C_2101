@@ -122,7 +122,7 @@ public class RoomRestController {
         } //
     )
     @PostMapping(value = "/{room_id}/join")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void joinRoom( //
         @ModelAttribute("LoginUser") final User loginUser, //
         @ApiParam(name = "room_id", required = true, value = "ルームID") @PathVariable("room_id") final int roomId, //
