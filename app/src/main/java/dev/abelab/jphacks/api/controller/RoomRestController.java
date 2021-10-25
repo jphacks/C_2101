@@ -62,15 +62,17 @@ public class RoomRestController {
     @ApiResponses( //
         value = { //
                 @ApiResponse(code = 201, message = "作成成功"), //
+                @ApiResponse(code = 400, message = "無効な開催日時"), //
                 @ApiResponse(code = 401, message = "ユーザがログインしていない"), //
         } //
     )
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void createRoom( //
         @ModelAttribute("LoginUser") final User loginUser, //
         @Validated @ApiParam(name = "body", required = true, value = "ルーム作成情報") @RequestBody final RoomCreateRequest requestBody //
     ) {
+        this.roomService.createRoom(requestBody, loginUser);
     }
 
     /**

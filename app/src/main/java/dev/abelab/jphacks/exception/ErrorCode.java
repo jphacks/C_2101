@@ -48,6 +48,10 @@ public enum ErrorCode {
 
     TOO_SIMPLE_PASSWORD(1403, "exception.bad_request.too_simple_password"),
 
+    INVALID_ROOM_TIME(1404, "exception.bad_request.room_time"),
+
+    PAST_ROOM_CANNOT_BE_CREATED(1405, "exception.bad_request.past_room_cannot_be_created"),
+
     /**
      * Unauthorized: 1500~1599
      */
