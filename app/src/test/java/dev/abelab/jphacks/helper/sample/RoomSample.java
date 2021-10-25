@@ -19,6 +19,8 @@ public class RoomSample extends AbstractSample {
 		private String title = SAMPLE_STR;
 		private String description = SAMPLE_STR;
 		private Integer ownerId = SAMPLE_INT;
+		private Integer presentationTimeLimit = SAMPLE_INT;
+		private Integer questionTimeLimit = SAMPLE_INT;
 		private Date startAt = SAMPLE_DATE;
 		private Date finishAt = SAMPLE_DATE;
 
@@ -42,6 +44,16 @@ public class RoomSample extends AbstractSample {
 			return this;
 		}
 
+		public RoomSampleBuilder presentationTimeLimit(Integer presentationTimeLimit) {
+			this.presentationTimeLimit = presentationTimeLimit;
+			return this;
+		}
+
+		public RoomSampleBuilder questionTimeLimit(Integer questionTimeLimit) {
+			this.questionTimeLimit = questionTimeLimit;
+			return this;
+		}
+
 		public RoomSampleBuilder startAt(Date startAt) {
 			this.startAt = startAt;
 			return this;
@@ -58,6 +70,8 @@ public class RoomSample extends AbstractSample {
 				.title(this.title) //
 				.description(this.description) //
 				.ownerId(this.ownerId) //
+				.presentationTimeLimit(this.presentationTimeLimit) //
+				.questionTimeLimit(this.questionTimeLimit) //
 				.startAt(this.startAt) //
 				.finishAt(this.finishAt) //
 				.build();

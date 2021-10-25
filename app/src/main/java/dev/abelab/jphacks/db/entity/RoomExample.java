@@ -504,6 +504,126 @@ public class RoomExample {
             addCriterion("finish_at not between", value1, value2, "finishAt");
             return (Criteria) this;
         }
+
+        public Criteria andPresentationTimeLimitIsNull() {
+            addCriterion("presentation_time_limit is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPresentationTimeLimitIsNotNull() {
+            addCriterion("presentation_time_limit is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPresentationTimeLimitEqualTo(Integer value) {
+            addCriterion("presentation_time_limit =", value, "presentationTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andPresentationTimeLimitNotEqualTo(Integer value) {
+            addCriterion("presentation_time_limit <>", value, "presentationTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andPresentationTimeLimitGreaterThan(Integer value) {
+            addCriterion("presentation_time_limit >", value, "presentationTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andPresentationTimeLimitGreaterThanOrEqualTo(Integer value) {
+            addCriterion("presentation_time_limit >=", value, "presentationTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andPresentationTimeLimitLessThan(Integer value) {
+            addCriterion("presentation_time_limit <", value, "presentationTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andPresentationTimeLimitLessThanOrEqualTo(Integer value) {
+            addCriterion("presentation_time_limit <=", value, "presentationTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andPresentationTimeLimitIn(List<Integer> values) {
+            addCriterion("presentation_time_limit in", values, "presentationTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andPresentationTimeLimitNotIn(List<Integer> values) {
+            addCriterion("presentation_time_limit not in", values, "presentationTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andPresentationTimeLimitBetween(Integer value1, Integer value2) {
+            addCriterion("presentation_time_limit between", value1, value2, "presentationTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andPresentationTimeLimitNotBetween(Integer value1, Integer value2) {
+            addCriterion("presentation_time_limit not between", value1, value2, "presentationTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andQuestionTimeLimitIsNull() {
+            addCriterion("question_time_limit is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andQuestionTimeLimitIsNotNull() {
+            addCriterion("question_time_limit is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andQuestionTimeLimitEqualTo(Integer value) {
+            addCriterion("question_time_limit =", value, "questionTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andQuestionTimeLimitNotEqualTo(Integer value) {
+            addCriterion("question_time_limit <>", value, "questionTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andQuestionTimeLimitGreaterThan(Integer value) {
+            addCriterion("question_time_limit >", value, "questionTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andQuestionTimeLimitGreaterThanOrEqualTo(Integer value) {
+            addCriterion("question_time_limit >=", value, "questionTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andQuestionTimeLimitLessThan(Integer value) {
+            addCriterion("question_time_limit <", value, "questionTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andQuestionTimeLimitLessThanOrEqualTo(Integer value) {
+            addCriterion("question_time_limit <=", value, "questionTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andQuestionTimeLimitIn(List<Integer> values) {
+            addCriterion("question_time_limit in", values, "questionTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andQuestionTimeLimitNotIn(List<Integer> values) {
+            addCriterion("question_time_limit not in", values, "questionTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andQuestionTimeLimitBetween(Integer value1, Integer value2) {
+            addCriterion("question_time_limit between", value1, value2, "questionTimeLimit");
+            return (Criteria) this;
+        }
+
+        public Criteria andQuestionTimeLimitNotBetween(Integer value1, Integer value2) {
+            addCriterion("question_time_limit not between", value1, value2, "questionTimeLimit");
+            return (Criteria) this;
+        }
     }
 
     /**
