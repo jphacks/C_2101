@@ -23,9 +23,11 @@ public enum ErrorCode {
 
     NOT_FOUND_ATTACHMENT(1102, "exception.not_found.attachment"),
 
-    NOT_FOUND_PARTICIPATION_TYPE(1103, "exception.not_found.participation_type"),
+    NOT_FOUND_ROOM(1103, "exception.not_found.room"),
 
-    NOT_FOUND_ROOM(1104, "exception.not_found.room"),
+    NOT_FOUND_PARTICIPATION(1104, "exception.not_found.participation"),
+
+    NOT_FOUND_PARTICIPATION_TYPE(1105, "exception.not_found.participation_type"),
 
     /**
      * Conflict: 1200~1299
@@ -55,6 +57,8 @@ public enum ErrorCode {
     PAST_ROOM_CANNOT_BE_CREATED(1405, "exception.bad_request.past_room_cannot_be_created"),
 
     CANNOT_JOIN_PAST_ROOM(1406, "exception.bad_request.cannot_join_past_room"),
+
+    CANNOT_UNJOIN_PAST_ROOM(1407, "exception.bad_request.cannot_unjoin_past_room"),
 
     /**
      * Unauthorized: 1500~1599
