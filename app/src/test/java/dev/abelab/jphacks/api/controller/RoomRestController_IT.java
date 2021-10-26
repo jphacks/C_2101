@@ -23,10 +23,12 @@ import org.modelmapper.ModelMapper;
 
 import dev.abelab.jphacks.api.request.RoomCreateRequest;
 import dev.abelab.jphacks.api.request.RoomJoinRequest;
+import dev.abelab.jphacks.api.request.RoomAuthenticateRequest;
 import dev.abelab.jphacks.api.response.UserResponse;
 import dev.abelab.jphacks.api.response.SpeakerResponse;
 import dev.abelab.jphacks.api.response.RoomResponse;
 import dev.abelab.jphacks.api.response.RoomsResponse;
+import dev.abelab.jphacks.api.response.RoomCredentialsResponse;
 import dev.abelab.jphacks.db.entity.Room;
 import dev.abelab.jphacks.db.entity.RoomExample;
 import dev.abelab.jphacks.db.entity.Participation;
@@ -40,6 +42,7 @@ import dev.abelab.jphacks.helper.sample.RoomSample;
 import dev.abelab.jphacks.helper.sample.ParticipationSample;
 import dev.abelab.jphacks.helper.util.RandomUtil;
 import dev.abelab.jphacks.util.DateTimeUtil;
+import dev.abelab.jphacks.property.SkywayProperty;
 import dev.abelab.jphacks.exception.ErrorCode;
 import dev.abelab.jphacks.exception.BaseException;
 import dev.abelab.jphacks.exception.BadRequestException;
@@ -60,6 +63,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 	static final String DELETE_ROOM_PATH = BASE_PATH + "/%d";
 	static final String JOIN_ROOM_PATH = BASE_PATH + "/%d/join";
 	static final String UNJOIN_ROOM_PATH = BASE_PATH + "/%d/unjoin";
+	static final String AUTHENTICATE_ROOM_PATH = BASE_PATH + "/%d/authenticate";
 
 	static final Date TOMORROW = DateTimeUtil.getTomorrow();
 	static final Date YESTERDAY = DateTimeUtil.getYesterday();
@@ -75,6 +79,9 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 
 	@Autowired
 	ParticipationMapper participationMapper;
+
+	@Autowired
+	SkywayProperty skywayProperty;
 
 	/**
 	 * ルーム一覧取得APIのテスト
@@ -631,6 +638,153 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			 * test & verify
 			 */
 			final var request = postRequest(String.format(UNJOIN_ROOM_PATH, SAMPLE_INT));
+			request.header(HttpHeaders.AUTHORIZATION, "");
+			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
+		}
+
+	}
+
+	/**
+	 * ルーム認証APIのテスト
+	 */
+	@Nested
+	@TestInstance(PER_CLASS)
+	class AuthenticateRoomTest extends AbstractRestControllerInitialization_IT {
+
+		@ParameterizedTest
+		@MethodSource
+		void 正_ルームを認証する(final ParticipationTypeEnum type) throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.ownerId(loginUser.getId()) //
+				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			final var participation = ParticipationSample.builder() //
+				.userId(loginUser.getId()) //
+				.roomId(room.getId()) //
+				.type(type.getId()) //
+				.build();
+			participationMapper.insert(participation);
+
+			final var requestBody = RoomAuthenticateRequest.builder().peerId(SAMPLE_STR).build();
+
+			/*
+			 * test
+			 */
+			final var request = postRequest(String.format(AUTHENTICATE_ROOM_PATH, room.getId()), requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			final var response = execute(request, HttpStatus.OK, RoomCredentialsResponse.class);
+
+			/*
+			 * verify
+			 */
+			assertThat(response.getType()).isEqualTo(type.getId());
+			assertThat(response.getSkyway().getAuthToken()).isNotNull();
+			assertThat(response.getSkyway().getTtl()).isEqualTo(skywayProperty.getTtl());
+			assertThat(response.getSkyway().getTimestamp()).isNotNull();
+		}
+
+		Stream<Arguments> 正_ルームを認証する() {
+			return Stream.of( // 参加タイプ
+				arguments(ParticipationTypeEnum.SPEAKER), //
+				arguments(ParticipationTypeEnum.VIEWER) //
+			);
+		}
+
+		@Test
+		void 異_開催済みのルームは認証不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.ownerId(loginUser.getId()) //
+				.startAt(DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			final var participation = ParticipationSample.builder() //
+				.userId(loginUser.getId()) //
+				.roomId(room.getId()) //
+				.type(ParticipationTypeEnum.VIEWER.getId()) //
+				.build();
+			participationMapper.insert(participation);
+
+			final var requestBody = RoomAuthenticateRequest.builder().peerId(SAMPLE_STR).build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(AUTHENTICATE_ROOM_PATH, room.getId()), requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new BadRequestException(ErrorCode.CANNOT_AUTHENTICATE_PAST_ROOM));
+		}
+
+		@Test
+		void 異_参加登録していないルームは認証不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.ownerId(loginUser.getId()) //
+				.startAt(DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			final var requestBody = RoomAuthenticateRequest.builder().peerId(SAMPLE_STR).build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(AUTHENTICATE_ROOM_PATH, room.getId()), requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new ForbiddenException(ErrorCode.CANNOT_AUTHENTICATE_NOT_JOINED_ROOM));
+		}
+
+		@Test
+		void 異_存在しないルームは認証不可() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var requestBody = RoomAuthenticateRequest.builder().peerId(SAMPLE_STR).build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(AUTHENTICATE_ROOM_PATH, SAMPLE_INT), requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new NotFoundException(ErrorCode.NOT_FOUND_ROOM));
+		}
+
+		@Test
+		void 異_無効な認証ヘッダ() throws Exception {
+			/*
+			 * given
+			 */
+			final var requestBody = RoomAuthenticateRequest.builder().peerId(SAMPLE_STR).build();
+
+			/*
+			 * test & verify
+			 */
+			final var request = postRequest(String.format(AUTHENTICATE_ROOM_PATH, SAMPLE_INT), requestBody);
 			request.header(HttpHeaders.AUTHORIZATION, "");
 			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
 		}
