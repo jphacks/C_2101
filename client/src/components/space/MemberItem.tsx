@@ -1,8 +1,9 @@
 import React from "react";
-import { Avatar, SystemStyleObject, Text, VStack } from "@chakra-ui/react";
+import { Avatar, Text, VStack } from "@chakra-ui/react";
 import { UserResponse } from "../../api/@types";
 import { AvatarReactionBadge } from "../common/AvatarReactionBadge";
 
+//別のとこに書いたほうがよさそう
 export type UserTypeListener = 1;
 export type UserTypePresenter = 2;
 
@@ -19,15 +20,6 @@ export const MemberItem: React.VFC<UserWithStatus> = ({
   isOnline,
   reaction,
 }) => {
-  const badgeStyles: SystemStyleObject = {
-    position: "absolute",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    insetEnd: "0",
-    bottom: "0",
-  };
-
   return (
     <VStack>
       <Avatar
