@@ -8,7 +8,7 @@ export type UserTypePresenter = 2;
 
 export type UserWithStatus = Omit<UserResponse, "email"> & {
   isOnline: boolean;
-  reaction: string | undefined;
+  reaction?: string;
   type: UserTypeListener | UserTypePresenter;
   isOwner: boolean;
 };
