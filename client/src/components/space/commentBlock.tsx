@@ -26,10 +26,11 @@ export const CommentBlock: React.VFC<CommentBlockProps> = ({ comments }) => {
       <Spacer />
       <Box width={"100%"}>
         {/*後で分離*/}
-        <InputGroup size={"md"} bg={"white"}>
-          <Input placeholder={"Comment"} />
+        <InputGroup size={"md"}>
+          <Input placeholder={"Comment"} bg={"white"} />
           <InputRightElement>
             <IconButton
+              size={"sm"}
               aria-label={"Send comment"}
               colorScheme={"teal"}
               icon={<ChevronRightIcon />}
