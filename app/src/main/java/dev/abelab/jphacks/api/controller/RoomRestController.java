@@ -183,7 +183,7 @@ public class RoomRestController {
                 @ApiResponse(code = 404, message = "ルームが存在しない"), //
         } //
     )
-    @GetMapping(value = "/{room_id}/authenticate")
+    @PostMapping(value = "/{room_id}/authenticate")
     @ResponseStatus(HttpStatus.OK)
     public RoomCredentialsResponse authenticateRoom( //
         @ModelAttribute("LoginUser") final User loginUser, //
