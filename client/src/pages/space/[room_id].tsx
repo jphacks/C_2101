@@ -2,8 +2,10 @@ import React from "react";
 import { useRouter } from "next/router";
 import Layout from "../../components/layout";
 import { Box, chakra, Stack, VStack } from "@chakra-ui/react";
-import { CommentBlock } from "../../components/space/commentBlock";
-import { CommentProps } from "../../components/space/commentItem";
+import { CommentBlock } from "../../components/space/CommentBlock";
+import { CommentProps } from "../../components/space/CommentItem";
+import { MemberBlock } from "../../components/space/MemberBlock";
+import { UserWithStatus } from "../../components/space/MemberItem";
 
 const Video = chakra("video");
 
@@ -60,12 +62,42 @@ const Room: React.VFC = () => {
     },
   ];
 
+  const membersMock: UserWithStatus[] = [
+    {
+      name: "name desuyo",
+      iconUrl: "https://bit.ly/dan-abramov",
+      id: 334,
+      isOnline: true,
+      reaction: undefined,
+      isOwner: false,
+      type: 1,
+    },
+    {
+      name: "name desuyo",
+      iconUrl: "https://bit.ly/dan-abramov",
+      id: 334,
+      isOnline: true,
+      reaction: "👍",
+      isOwner: false,
+      type: 1,
+    },
+    {
+      name: "name desuyo",
+      iconUrl: "https://bit.ly/dan-abramov",
+      id: 334,
+      isOnline: false,
+      reaction: "👍",
+      isOwner: false,
+      type: 1,
+    },
+  ];
+
   return (
     <Layout contentTitle={spaceId}>
       <Stack direction={"row"} p={4} bg={"gray.50"}>
         <VStack flex={3}>
           <Video src={"/testMovie.mp4"} />
-          <Box bg={"gray.200"} w={"100%"} h={20} />
+          <MemberBlock members={membersMock} />
           <Box bg={"gray.200"} w={"100%"} h={48} />
         </VStack>
         <VStack flex={1} maxW={"384px"}>

@@ -8,7 +8,7 @@ import {
   Spacer,
   VStack,
 } from "@chakra-ui/react";
-import { CommentItem, CommentProps } from "./commentItem";
+import { CommentItem, CommentProps } from "./CommentItem";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 
 type CommentBlockProps = {
