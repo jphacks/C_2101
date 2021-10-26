@@ -1,15 +1,15 @@
-package dev.abelab.jphacks.api.response;
+package dev.abelab.jphacks.model;
 
 import lombok.*;
 
 /**
- * SkyWayクレデンシャルレスポンス
+ * SkyWayのクレデンシャルモデル
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SkywayCredentialsResponse {
+public class SkywayCredentialsModel {
 
     /**
      * 認証トークン

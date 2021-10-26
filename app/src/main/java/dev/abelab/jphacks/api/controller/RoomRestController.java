@@ -147,6 +147,7 @@ public class RoomRestController {
     @ApiResponses( //
         value = { //
                 @ApiResponse(code = 200, message = "辞退成功"), //
+                @ApiResponse(code = 400, message = "参加辞退できないルーム"), //
                 @ApiResponse(code = 401, message = "ユーザがログインしていない"), //
                 @ApiResponse(code = 404, message = "ルームが存在しない/参加登録していない"), //
         } //
@@ -176,6 +177,7 @@ public class RoomRestController {
     @ApiResponses( //
         value = { //
                 @ApiResponse(code = 200, message = "認証成功", response = RoomCredentialsResponse.class), //
+                @ApiResponse(code = 400, message = "入室できないルーム"), //
                 @ApiResponse(code = 401, message = "ユーザがログインしていない"), //
                 @ApiResponse(code = 403, message = "ルームに参加登録していない"), //
                 @ApiResponse(code = 404, message = "ルームが存在しない"), //
@@ -188,7 +190,7 @@ public class RoomRestController {
         @ApiParam(name = "room_id", required = true, value = "ルームID") @PathVariable("room_id") final int roomId, //
         @Validated @ApiParam(name = "body", required = true, value = "ルーム認証情報") @RequestBody final RoomAuthenticateRequest requestBody //
     ) {
-        return null;
+        return this.roomService.authenticateRoom(roomId, requestBody, loginUser);
     }
 
 }

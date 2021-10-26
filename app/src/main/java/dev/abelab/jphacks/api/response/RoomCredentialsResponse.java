@@ -1,6 +1,7 @@
 package dev.abelab.jphacks.api.response;
 
 import lombok.*;
+import dev.abelab.jphacks.model.SkywayCredentialsModel;
 
 /**
  * ルームのクレデンシャルレスポンス
@@ -19,6 +20,6 @@ public class RoomCredentialsResponse {
     /**
      * SkyWay credentials
      */
-    SkywayCredentialsResponse skyway;
+    SkywayCredentialsModel skyway;
 
 }
