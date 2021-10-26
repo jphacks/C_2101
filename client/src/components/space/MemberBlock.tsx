@@ -11,7 +11,7 @@ export const MemberBlock: React.VFC<MemberBlockProps> = ({ members }) => {
   const offlineMembers = members.filter((member) => !member.isOnline);
 
   return (
-    <Box bg={"gray.200"} w={"100%"} h={40} p={2}>
+    <Box bg={"gray.200"} w={"100%"} h={40} p={2} rounded={8}>
       <HStack
         divider={<StackDivider borderColor="gray.400" />}
         overflowX={"scroll"}
@@ -27,7 +27,9 @@ const MemberGroup: React.FC<{ groupName: string; members: UserWithStatus[] }> =
   ({ groupName, members }) => {
     return (
       <VStack>
-        <Text alignSelf={"flex-start"}>{groupName}</Text>
+        <Text alignSelf={"flex-start"} fontWeight={"bold"}>
+          {groupName}
+        </Text>
         <HStack>
           {members.map((item) => (
             <MemberItem {...item} key={item.id} />
