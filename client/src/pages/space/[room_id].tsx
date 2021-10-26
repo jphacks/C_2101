@@ -7,6 +7,7 @@ import { CommentProps } from "../../components/space/CommentItem";
 import { MemberBlock } from "../../components/space/MemberBlock";
 import { UserWithStatus } from "../../components/space/MemberItem";
 import { TimerBlock } from "../../components/space/TimerBlock";
+import { ConfigBlock } from "../../components/space/ConfigBlock";
 
 const Video = chakra("video");
 
@@ -95,11 +96,16 @@ const Room: React.VFC = () => {
     <Layout contentTitle={spaceId}>
       <Stack direction={"row"} p={4} bg={"gray.50"}>
         <VStack flex={3}>
-          <Video src={"/testMovie.mp4"} />
+          <Box rounded={8} p={4} bg={"gray.200"}>
+            <Video src={"/testMovie.mp4"} />
+          </Box>
+
           <MemberBlock members={membersMock} />
           <Box bg={"gray.200"} w={"100%"} h={48} />
         </VStack>
         <VStack flex={1} maxW={"384px"}>
+          <Box bg={"gray.200"} w={"100%"} h={64} rounded={8} />
+          <ConfigBlock />
           <TimerBlock remainSec={200} fullSec={300} sectionTitle={"発表"} />
           <CommentBlock comments={commentMock} />
         </VStack>

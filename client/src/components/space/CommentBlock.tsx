@@ -17,7 +17,7 @@ type CommentBlockProps = {
 
 export const CommentBlock: React.VFC<CommentBlockProps> = ({ comments }) => {
   return (
-    <VStack w={"full"} h={"full"} bg={"gray.200"} rounded={8} p={2}>
+    <VStack w={"full"} bg={"gray.200"} rounded={8} p={2}>
       <VStack h={"full"} overflowY={"scroll"}>
         {comments.map((item, index) => (
           <CommentItem {...item} key={`comment-${index}`} />
