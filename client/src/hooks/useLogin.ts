@@ -59,11 +59,14 @@ export const useLogin = () => {
     await mutateUser(undefined);
   };
 
+  const isAuthed = !!authHeader;
+
   return {
     fetchLogin,
     logout,
     user,
     userError,
     authHeader,
+    isAuthed,
   };
 };
