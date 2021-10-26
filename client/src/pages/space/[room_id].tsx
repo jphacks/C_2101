@@ -100,7 +100,7 @@ const Room: React.VFC = () => {
           <Box bg={"gray.200"} w={"100%"} h={48} />
         </VStack>
         <VStack flex={1} maxW={"384px"}>
-          <TimerBlock remainSec={150} fullSec={300} sectionTitle={"発表"} />
+          <TimerBlock remainSec={200} fullSec={300} sectionTitle={"発表"} />
           <CommentBlock comments={commentMock} />
         </VStack>
       </Stack>
