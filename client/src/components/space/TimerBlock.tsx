@@ -33,7 +33,7 @@ export const TimerBlock: React.VFC<TimerBlockProps> = ({
     fullSec < 60 * 60 ? secToMMSS(remainSec) : secToHHMMSS(remainSec);
 
   return (
-    <Box bg={"gray.200"} w={"full"} h={56} rounded={8}>
+    <Box bg={"gray.200"} w={"full"} h={48} rounded={8}>
       <VStack>
         <Text
           fontSize={"6xl"}

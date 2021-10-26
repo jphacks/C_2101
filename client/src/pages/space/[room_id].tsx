@@ -8,6 +8,8 @@ import { MemberBlock } from "../../components/space/MemberBlock";
 import { UserWithStatus } from "../../components/space/MemberItem";
 import { TimerBlock } from "../../components/space/TimerBlock";
 import { ConfigBlock } from "../../components/space/ConfigBlock";
+import { TimetableCardProps } from "../../components/space/TimetableCard";
+import { TimetableBlock } from "../../components/space/TimetableBlock";
 
 const Video = chakra("video");
 
@@ -92,6 +94,27 @@ const Room: React.VFC = () => {
     },
   ];
 
+  const timetableDataMock: TimetableCardProps[] = [
+    {
+      user: {
+        name: "name desuyo",
+        iconUrl: "https://bit.ly/dan-abramov",
+        id: 334,
+      },
+      title: `This is the "title"`,
+      tags: ["You"],
+    },
+    {
+      user: {
+        name: "name desuyo",
+        iconUrl: "https://bit.ly/dan-abramov",
+        id: 334,
+      },
+      title: `This is the "super super super super long title"`,
+      tags: ["Next"],
+    },
+  ];
+
   return (
     <Layout contentTitle={spaceId}>
       <Stack direction={"row"} p={4} bg={"gray.50"}>
@@ -101,7 +124,7 @@ const Room: React.VFC = () => {
           </Box>
 
           <MemberBlock members={membersMock} />
-          <Box bg={"gray.200"} w={"100%"} h={48} />
+          <TimetableBlock cards={timetableDataMock} />
         </VStack>
         <VStack flex={1} maxW={"384px"}>
           <Box bg={"gray.200"} w={"100%"} h={64} rounded={8} />
