@@ -52,6 +52,10 @@ gcp:
     enabled: false
     bucket-name:
 
+skyway:
+  secret: SKYWAY_API_KEY
+  ttl: 3600
+
 jwt:
   secret: 8WRnDG5cUpi0qD5Kpd3Bx/n+1X6DG7mhQwsCQAVjJLo=
   issuer: jphacks.abelab.dev

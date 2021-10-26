@@ -13,6 +13,7 @@ exception:
     already_join_room: "このルームには参加登録済みです。"
   forbidden:
     user_has_no_permission: "その動作は許可されていません。"
+    cannot_authenticate_not_joined_room: "参加登録していないルームには入室できません。"
   bad_request:
     validation_error: "不正なリクエストです。問題が解決しない場合は、管理者までご連絡ください。"
     invalid_request_parameter: "不正なリクエストです。問題が解決しない場合は、管理者までご連絡ください。"
@@ -22,6 +23,7 @@ exception:
     past_room_cannot_be_created: "開催日時に過去の日時を設定することはできません。"
     cannot_join_past_room: "開催済みのルームには参加登録できません。"
     cannot_unjoin_past_room: "開催済みのルームには参加辞退できません。"
+    cannot_authenticate_past_room: "開催済みのルームには入室できません。"
   unauthorized:
     user_not_logged_in: "ユーザはログインしていません。問題が解決しない場合は、管理者までご連絡ください。"
     wrong_password: "パスワードが間違っています"

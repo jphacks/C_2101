@@ -1,5 +1,6 @@
 package dev.abelab.jphacks.service;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -10,18 +11,23 @@ import org.modelmapper.ModelMapper;
 import lombok.*;
 import dev.abelab.jphacks.api.request.RoomCreateRequest;
 import dev.abelab.jphacks.api.request.RoomJoinRequest;
+import dev.abelab.jphacks.api.request.RoomAuthenticateRequest;
 import dev.abelab.jphacks.api.response.UserResponse;
 import dev.abelab.jphacks.api.response.SpeakerResponse;
 import dev.abelab.jphacks.api.response.RoomsResponse;
 import dev.abelab.jphacks.api.response.RoomResponse;
+import dev.abelab.jphacks.api.response.RoomCredentialsResponse;
 import dev.abelab.jphacks.db.entity.User;
 import dev.abelab.jphacks.db.entity.Room;
 import dev.abelab.jphacks.db.entity.Participation;
+import dev.abelab.jphacks.model.SkywayCredentialsModel;
 import dev.abelab.jphacks.enums.ParticipationTypeEnum;
 import dev.abelab.jphacks.repository.UserRepository;
 import dev.abelab.jphacks.repository.RoomRepository;
 import dev.abelab.jphacks.repository.ParticipationRepository;
 import dev.abelab.jphacks.util.RoomUtil;
+import dev.abelab.jphacks.util.AuthUtil;
+import dev.abelab.jphacks.property.SkywayProperty;
 import dev.abelab.jphacks.exception.ErrorCode;
 import dev.abelab.jphacks.exception.BadRequestException;
 import dev.abelab.jphacks.exception.ForbiddenException;
@@ -37,6 +43,8 @@ public class RoomService {
     private final RoomRepository roomRepository;
 
     private final ParticipationRepository participationRepository;
+
+    private final SkywayProperty skywayProperty;
 
     /**
      * ルーム一覧を取得
@@ -182,6 +190,50 @@ public class RoomService {
 
         // 参加情報を削除
         this.participationRepository.deleteByRoomIdAndUserId(room.getId(), loginUser.getId());
+    }
+
+    /**
+     * ルームの認証
+     *
+     * @param roomId      ルームID
+     * @param requestBody ルーム認証リクエスト
+     * @param loginUser   ログインユーザ
+     *
+     * @return ルームのクレデンシャルレスポンス
+     */
+    @Transactional
+    public RoomCredentialsResponse authenticateRoom(final int roomId, final RoomAuthenticateRequest requestBody, final User loginUser) {
+        // ルームを取得
+        final var room = this.roomRepository.selectById(roomId);
+
+        // 参加登録済みか
+        if (!this.participationRepository.existsByRoomIdAndUserId(roomId, loginUser.getId())) {
+            throw new ForbiddenException(ErrorCode.CANNOT_AUTHENTICATE_NOT_JOINED_ROOM);
+        }
+
+        // 終了済みのルーム
+        if (RoomUtil.isPastRoom(room)) {
+            throw new BadRequestException(ErrorCode.CANNOT_AUTHENTICATE_PAST_ROOM);
+        }
+
+        // SkyWayクレデンシャルを取得
+        final var participation = this.participationRepository.selectByRoomIdAndUserId(roomId, loginUser.getId());
+        final var ttl = this.skywayProperty.getTtl();
+        final var timestamp = (int) Instant.now().getEpochSecond();
+        final var authToken = AuthUtil.hmacSHA256( //
+            String.format("%d:%d:%s", timestamp, ttl, requestBody.getPeerId()), //
+            this.skywayProperty.getSecret());
+
+        final var skywayCredentials = SkywayCredentialsModel.builder() //
+            .authToken(authToken) //
+            .ttl(ttl) //
+            .timestamp(timestamp) //
+            .build();
+
+        return RoomCredentialsResponse.builder() //
+            .type(participation.getType()) //
+            .skyway(skywayCredentials) //
+            .build();
     }
 
 }
