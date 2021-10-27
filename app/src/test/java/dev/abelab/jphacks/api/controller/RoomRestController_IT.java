@@ -37,6 +37,7 @@ import dev.abelab.jphacks.db.mapper.UserMapper;
 import dev.abelab.jphacks.db.mapper.RoomMapper;
 import dev.abelab.jphacks.db.mapper.ParticipationMapper;
 import dev.abelab.jphacks.enums.ParticipationTypeEnum;
+import dev.abelab.jphacks.model.SkywayCredentialsModel;
 import dev.abelab.jphacks.helper.sample.UserSample;
 import dev.abelab.jphacks.helper.sample.RoomSample;
 import dev.abelab.jphacks.helper.sample.ParticipationSample;
@@ -734,6 +735,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			assertThat(response.getSkyway().getAuthToken()).isNotNull();
 			assertThat(response.getSkyway().getTtl()).isEqualTo(skywayProperty.getTtl());
 			assertThat(response.getSkyway().getTimestamp()).isNotNull();
+			assertThat(response.getSkyway().getPeerId()).isEqualTo(requestBody.getPeerId());
 		}
 
 		Stream<Arguments> 正_ルームを認証する() {

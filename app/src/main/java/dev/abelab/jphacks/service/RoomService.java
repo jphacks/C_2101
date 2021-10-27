@@ -223,6 +223,7 @@ public class RoomService {
             this.skywayProperty.getSecret());
 
         final var skywayCredentials = SkywayCredentialsModel.builder() //
+            .peerId(requestBody.getPeerId()) //
             .authToken(authToken) //
             .ttl(ttl) //
             .timestamp(timestamp) //
