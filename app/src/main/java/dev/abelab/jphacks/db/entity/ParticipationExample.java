@@ -443,6 +443,66 @@ public class ParticipationExample {
             addCriterion("title not between", value1, value2, "title");
             return (Criteria) this;
         }
+
+        public Criteria andSpeakerOrderIsNull() {
+            addCriterion("speaker_order is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpeakerOrderIsNotNull() {
+            addCriterion("speaker_order is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpeakerOrderEqualTo(Integer value) {
+            addCriterion("speaker_order =", value, "speakerOrder");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpeakerOrderNotEqualTo(Integer value) {
+            addCriterion("speaker_order <>", value, "speakerOrder");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpeakerOrderGreaterThan(Integer value) {
+            addCriterion("speaker_order >", value, "speakerOrder");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpeakerOrderGreaterThanOrEqualTo(Integer value) {
+            addCriterion("speaker_order >=", value, "speakerOrder");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpeakerOrderLessThan(Integer value) {
+            addCriterion("speaker_order <", value, "speakerOrder");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpeakerOrderLessThanOrEqualTo(Integer value) {
+            addCriterion("speaker_order <=", value, "speakerOrder");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpeakerOrderIn(List<Integer> values) {
+            addCriterion("speaker_order in", values, "speakerOrder");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpeakerOrderNotIn(List<Integer> values) {
+            addCriterion("speaker_order not in", values, "speakerOrder");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpeakerOrderBetween(Integer value1, Integer value2) {
+            addCriterion("speaker_order between", value1, value2, "speakerOrder");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpeakerOrderNotBetween(Integer value1, Integer value2) {
+            addCriterion("speaker_order not between", value1, value2, "speakerOrder");
+            return (Criteria) this;
+        }
     }
 
     /**

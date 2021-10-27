@@ -10,8 +10,11 @@ import lombok.*;
 import dev.abelab.jphacks.annotation.Authenticated;
 import dev.abelab.jphacks.api.request.RoomCreateRequest;
 import dev.abelab.jphacks.api.request.RoomJoinRequest;
+import dev.abelab.jphacks.api.request.RoomAuthenticateRequest;
 import dev.abelab.jphacks.api.response.RoomsResponse;
+import dev.abelab.jphacks.api.response.RoomCredentialsResponse;
 import dev.abelab.jphacks.db.entity.User;
+import dev.abelab.jphacks.service.RoomService;
 
 @Api(tags = "Room")
 @RestController
@@ -20,6 +23,8 @@ import dev.abelab.jphacks.db.entity.User;
 @RequiredArgsConstructor
 @Authenticated
 public class RoomRestController {
+
+    private final RoomService roomService;
 
     /**
      * ルーム一覧取得API
@@ -43,7 +48,7 @@ public class RoomRestController {
     public RoomsResponse getRooms( //
         @ModelAttribute("LoginUser") final User loginUser //
     ) {
-        return null;
+        return this.roomService.getRooms(loginUser);
     }
 
     /**
@@ -59,15 +64,17 @@ public class RoomRestController {
     @ApiResponses( //
         value = { //
                 @ApiResponse(code = 201, message = "作成成功"), //
+                @ApiResponse(code = 400, message = "無効な開催日時"), //
                 @ApiResponse(code = 401, message = "ユーザがログインしていない"), //
         } //
     )
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void createRoom( //
         @ModelAttribute("LoginUser") final User loginUser, //
         @Validated @ApiParam(name = "body", required = true, value = "ルーム作成情報") @RequestBody final RoomCreateRequest requestBody //
     ) {
+        this.roomService.createRoom(requestBody, loginUser);
     }
 
     /**
@@ -94,6 +101,7 @@ public class RoomRestController {
         @ModelAttribute("LoginUser") final User loginUser, //
         @ApiParam(name = "room_id", required = true, value = "ルームID") @PathVariable("room_id") final int roomId //
     ) {
+        this.roomService.deleteRoom(roomId, loginUser);
     }
 
     /**
@@ -112,16 +120,18 @@ public class RoomRestController {
                 @ApiResponse(code = 200, message = "登録成功"), //
                 @ApiResponse(code = 400, message = "参加登録できないルーム"), //
                 @ApiResponse(code = 401, message = "ユーザがログインしていない"), //
+                @ApiResponse(code = 404, message = "ルームが存在しない"), //
                 @ApiResponse(code = 409, message = "既に参加登録済み"), //
         } //
     )
     @PostMapping(value = "/{room_id}/join")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void joinRoom( //
         @ModelAttribute("LoginUser") final User loginUser, //
         @ApiParam(name = "room_id", required = true, value = "ルームID") @PathVariable("room_id") final int roomId, //
         @Validated @ApiParam(name = "body", required = true, value = "参加登録情報") @RequestBody final RoomJoinRequest requestBody //
     ) {
+        this.roomService.joinRoom(roomId, requestBody, loginUser);
     }
 
     /**
@@ -137,8 +147,9 @@ public class RoomRestController {
     @ApiResponses( //
         value = { //
                 @ApiResponse(code = 200, message = "辞退成功"), //
+                @ApiResponse(code = 400, message = "参加辞退できないルーム"), //
                 @ApiResponse(code = 401, message = "ユーザがログインしていない"), //
-                @ApiResponse(code = 404, message = "ルームが存在しない"), //
+                @ApiResponse(code = 404, message = "ルームが存在しない/参加登録していない"), //
         } //
     )
     @PostMapping(value = "/{room_id}/unjoin")
@@ -147,6 +158,39 @@ public class RoomRestController {
         @ModelAttribute("LoginUser") final User loginUser, //
         @ApiParam(name = "room_id", required = true, value = "ルームID") @PathVariable("room_id") final int roomId //
     ) {
+        this.roomService.unjoinRoom(roomId, loginUser);
+    }
+
+    /**
+     * ルームの認証API
+     *
+     * @param loginUser   ログインユーザ
+     * @param roomId      ルームID
+     * @param requestBody ルーム認証リクエスト
+     *
+     * @return ルームのクレデンシャル
+     */
+    @ApiOperation( //
+        value = "ルームの認証", //
+        notes = "ルームを認証する。" //
+    )
+    @ApiResponses( //
+        value = { //
+                @ApiResponse(code = 200, message = "認証成功", response = RoomCredentialsResponse.class), //
+                @ApiResponse(code = 400, message = "入室できないルーム"), //
+                @ApiResponse(code = 401, message = "ユーザがログインしていない"), //
+                @ApiResponse(code = 403, message = "ルームに参加登録していない"), //
+                @ApiResponse(code = 404, message = "ルームが存在しない"), //
+        } //
+    )
+    @PostMapping(value = "/{room_id}/authenticate")
+    @ResponseStatus(HttpStatus.OK)
+    public RoomCredentialsResponse authenticateRoom( //
+        @ModelAttribute("LoginUser") final User loginUser, //
+        @ApiParam(name = "room_id", required = true, value = "ルームID") @PathVariable("room_id") final int roomId, //
+        @Validated @ApiParam(name = "body", required = true, value = "ルーム認証情報") @RequestBody final RoomAuthenticateRequest requestBody //
+    ) {
+        return this.roomService.authenticateRoom(roomId, requestBody, loginUser);
     }
 
 }

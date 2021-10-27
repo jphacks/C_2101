@@ -2,6 +2,7 @@ package dev.abelab.jphacks.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.net.util.Base64;
 import org.modelmapper.ModelMapper;
 
 import lombok.*;
@@ -9,9 +10,11 @@ import dev.abelab.jphacks.api.request.LoginRequest;
 import dev.abelab.jphacks.api.request.SignupRequest;
 import dev.abelab.jphacks.api.response.AccessTokenResponse;
 import dev.abelab.jphacks.db.entity.User;
+import dev.abelab.jphacks.model.FileModel;
 import dev.abelab.jphacks.repository.UserRepository;
 import dev.abelab.jphacks.logic.UserLogic;
 import dev.abelab.jphacks.util.AuthUtil;
+import dev.abelab.jphacks.util.CloudStorageUtil;
 import dev.abelab.jphacks.exception.ErrorCode;
 import dev.abelab.jphacks.exception.UnauthorizedException;
 
@@ -24,6 +27,8 @@ public class AuthService {
     private final UserLogic userLogic;
 
     private final UserRepository userRepository;
+
+    private final CloudStorageUtil cloudStorageUtil;
 
     /**
      * ログイン処理
@@ -60,8 +65,13 @@ public class AuthService {
         // 有効なパスワードかチェック
         AuthUtil.validatePassword(requestBody.getPassword());
 
-        // TODO: アイコンをアップロード
-        final var iconUrl = "http://example.com";
+        // アイコンをアップロード
+        String iconUrl = null;
+        if (requestBody.getIcon() != null) {
+            final var file = FileModel.builder().content(Base64.decodeBase64(requestBody.getIcon())).build();
+            file.setName(file.getName() + ".jpg");
+            iconUrl = this.cloudStorageUtil.uploadFile(file);
+        }
 
         // ユーザを作成
         final var user = this.modelMapper.map(requestBody, User.class);

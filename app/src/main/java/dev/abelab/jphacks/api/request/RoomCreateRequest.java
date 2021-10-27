@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import javax.validation.constraints.Min;
 
 import lombok.*;
 
@@ -29,6 +30,20 @@ public class RoomCreateRequest {
     @NotBlank
     @Size(max = 1000)
     String description;
+
+    /**
+     * 発表の制限時間[s]
+     */
+    @NotNull
+    @Min(0)
+    Integer presentationTimeLimit;
+
+    /**
+     * 質疑応答の制限時間[s]
+     */
+    @NotNull
+    @Min(0)
+    Integer questionTimeLimit;
 
     /**
      * 開始日時

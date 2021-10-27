@@ -14,6 +14,8 @@ public enum ErrorCode {
      */
     UNEXPECTED_ERROR(1000, "exception.internal_server_error.unexpected_error"),
 
+    FAILED_TO_UPLOAD_FILE_TO_GCS(1001, "exception.internal_server_error.failed_to_upload_file_to_gcs"),
+
     /**
      * Not Found: 1100~1199
      */
@@ -23,17 +25,25 @@ public enum ErrorCode {
 
     NOT_FOUND_ATTACHMENT(1102, "exception.not_found.attachment"),
 
-    NOT_FOUND_PARTICIPATION_TYPE(1103, "exception.not_found.participation_type"),
+    NOT_FOUND_ROOM(1103, "exception.not_found.room"),
+
+    NOT_FOUND_PARTICIPATION(1104, "exception.not_found.participation"),
+
+    NOT_FOUND_PARTICIPATION_TYPE(1105, "exception.not_found.participation_type"),
 
     /**
      * Conflict: 1200~1299
      */
     CONFLICT_EMAIL(1200, "exception.conflict.email"),
 
+    ALREADY_JOIN_ROOM(1201, "exception.conflict.already_join_room"),
+
     /**
      * Forbidden: 1300~1399
      */
     USER_HAS_NO_PERMISSION(1300, "exception.forbidden.user_has_no_permission"),
+
+    CANNOT_AUTHENTICATE_NOT_JOINED_ROOM(1301, "exception.forbidden.cannot_authenticate_not_joined_room"),
 
     /**
      * Bad Request: 1400~1499
@@ -45,6 +55,16 @@ public enum ErrorCode {
     INVALID_PASSWORD_SIZE(1402, "exception.bad_request.invalid_password_size"),
 
     TOO_SIMPLE_PASSWORD(1403, "exception.bad_request.too_simple_password"),
+
+    INVALID_ROOM_TIME(1404, "exception.bad_request.room_time"),
+
+    PAST_ROOM_CANNOT_BE_CREATED(1405, "exception.bad_request.past_room_cannot_be_created"),
+
+    CANNOT_JOIN_PAST_ROOM(1406, "exception.bad_request.cannot_join_past_room"),
+
+    CANNOT_UNJOIN_PAST_ROOM(1407, "exception.bad_request.cannot_unjoin_past_room"),
+
+    CANNOT_AUTHENTICATE_PAST_ROOM(1408, "exception.bad_request.cannot_authenticate_past_room"),
 
     /**
      * Unauthorized: 1500~1599

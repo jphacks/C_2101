@@ -122,7 +122,7 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
     }
 
     /**
-     * Handle metod argument type mismatch exception
+     * Handle method argument type mismatch exception
      *
      * @param exception exception
      *
