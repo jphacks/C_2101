@@ -511,6 +511,50 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			execute(request, new NotFoundException(ErrorCode.NOT_FOUND_ROOM));
 		}
 
+		@ParameterizedTest
+		@MethodSource
+		void 有効な参加タイプかチェック(final int typeId, final BaseException expectedException) throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.ownerId(loginUser.getId()) //
+				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			roomMapper.insert(room);
+
+			final var requestBody = RoomJoinRequest.builder() //
+				.type(typeId) //
+				.title(SAMPLE_STR) //
+				.build();
+
+			/*
+			 * test
+			 */
+			final var request = postRequest(String.format(JOIN_ROOM_PATH, room.getId()), requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			if (expectedException == null) {
+				execute(request, HttpStatus.CREATED);
+			} else {
+				execute(request, expectedException);
+			}
+		}
+
+		Stream<Arguments> 有効な参加タイプかチェック() {
+			return Stream.of( // 参加タイプID、期待される例外
+				// 有効
+				arguments(1, null), //
+				arguments(2, null), //
+				// 存在しない参加タイプ
+				arguments(0, new NotFoundException(ErrorCode.NOT_FOUND_PARTICIPATION_TYPE)), //
+				arguments(3, new NotFoundException(ErrorCode.NOT_FOUND_PARTICIPATION_TYPE)) //
+			);
+		}
+
 		@Test
 		void 異_無効な認証ヘッダ() throws Exception {
 			/*
