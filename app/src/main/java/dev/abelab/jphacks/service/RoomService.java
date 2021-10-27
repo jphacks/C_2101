@@ -204,16 +204,11 @@ public class RoomService {
     @Transactional
     public RoomCredentialsResponse authenticateRoom(final int roomId, final RoomAuthenticateRequest requestBody, final User loginUser) {
         // ルームを取得
-        final var room = this.roomRepository.selectById(roomId);
+        this.roomRepository.selectById(roomId);
 
         // 参加登録済みか
         if (!this.participationRepository.existsByRoomIdAndUserId(roomId, loginUser.getId())) {
             throw new ForbiddenException(ErrorCode.CANNOT_AUTHENTICATE_NOT_JOINED_ROOM);
-        }
-
-        // 終了済みのルーム
-        if (RoomUtil.isPastRoom(room)) {
-            throw new BadRequestException(ErrorCode.CANNOT_AUTHENTICATE_PAST_ROOM);
         }
 
         // SkyWayクレデンシャルを取得
