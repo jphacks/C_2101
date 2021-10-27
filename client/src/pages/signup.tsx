@@ -14,21 +14,30 @@ import {
   FormErrorMessage,
   Text,
 } from "@chakra-ui/react";
+import { useSignup } from "../hooks/useSignup";
 const Signup: React.VFC = () => {
+  const { fetchSignup } = useSignup();
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
   } = useForm();
 
-  function onSubmit(values: any) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        alert(JSON.stringify(values, null, 2));
-        resolve();
-      }, 3000);
-    });
+  async function onSubmit(values: any) {
+    try {
+      await fetchSignup({
+        email: "takex5g@gmail.com",
+        icon: null,
+        name: "yumoya",
+        password: "Sikashikashika71",
+      });
+
+      console.log("signin success!");
+    } catch (e) {
+      console.log("signin failed...");
+    }
   }
+
   return (
     <Layout>
       <Text fontSize="4xl" textAlign="center" marginBottom="12" marginTop="24">
