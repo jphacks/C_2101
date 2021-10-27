@@ -1,10 +1,6 @@
-import api from "../api/$api";
-import aspida from "@aspida/axios";
 import { useLocalStorage } from "react-use";
-import axios from "axios";
+import client from "../utils/api-client.factory";
 import useSWR from "swr";
-
-const client = api(aspida(axios, {}));
 
 const userFetcher = async (
   key: string,
