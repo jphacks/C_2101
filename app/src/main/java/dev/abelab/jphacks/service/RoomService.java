@@ -12,8 +12,6 @@ import lombok.*;
 import dev.abelab.jphacks.api.request.RoomCreateRequest;
 import dev.abelab.jphacks.api.request.RoomJoinRequest;
 import dev.abelab.jphacks.api.request.RoomAuthenticateRequest;
-import dev.abelab.jphacks.api.response.UserResponse;
-import dev.abelab.jphacks.api.response.SpeakerResponse;
 import dev.abelab.jphacks.api.response.RoomsResponse;
 import dev.abelab.jphacks.api.response.RoomResponse;
 import dev.abelab.jphacks.api.response.RoomCredentialsResponse;
@@ -22,9 +20,9 @@ import dev.abelab.jphacks.db.entity.Room;
 import dev.abelab.jphacks.db.entity.Participation;
 import dev.abelab.jphacks.model.SkywayCredentialsModel;
 import dev.abelab.jphacks.enums.ParticipationTypeEnum;
-import dev.abelab.jphacks.repository.UserRepository;
 import dev.abelab.jphacks.repository.RoomRepository;
 import dev.abelab.jphacks.repository.ParticipationRepository;
+import dev.abelab.jphacks.logic.RoomLogic;
 import dev.abelab.jphacks.util.RoomUtil;
 import dev.abelab.jphacks.util.AuthUtil;
 import dev.abelab.jphacks.property.SkywayProperty;
@@ -38,11 +36,11 @@ public class RoomService {
 
     private final ModelMapper modelMapper;
 
-    private final UserRepository userRepository;
-
     private final RoomRepository roomRepository;
 
     private final ParticipationRepository participationRepository;
+
+    private final RoomLogic roomLogic;
 
     private final SkywayProperty skywayProperty;
 
@@ -59,32 +57,7 @@ public class RoomService {
         // ルームを取得
         final var room = this.roomRepository.selectById(roomId);
 
-        // オーナーを取得
-        final var owner = this.userRepository.selectById(room.getOwnerId());
-
-        // 参加者リストを取得
-        final var participations = this.participationRepository.selectWithUserByRoomId(room.getId());
-        final var speakers = participations.stream() //
-            .filter(participation -> participation.getType() == ParticipationTypeEnum.SPEAKER.getId()) //
-            .sorted((p1, p2) -> p1.getSpeakerOrder().compareTo(p2.getSpeakerOrder())) //
-            .map(participation -> {
-                final var result = this.modelMapper.map(participation.getUser(), SpeakerResponse.class);
-                result.setTitle(participation.getTitle());
-                result.setSpeakerOrder(participation.getSpeakerOrder());
-                return result;
-            }) //
-            .collect(Collectors.toList());
-        final var viewers = participations.stream() //
-            .filter(participation -> participation.getType() == ParticipationTypeEnum.VIEWER.getId()) //
-            .map(participation -> this.modelMapper.map(participation.getUser(), UserResponse.class)) //
-            .collect(Collectors.toList());
-
-        final var roomResponse = this.modelMapper.map(room, RoomResponse.class);
-        roomResponse.setOwner(this.modelMapper.map(owner, UserResponse.class));
-        roomResponse.setSpeakers(speakers);
-        roomResponse.setViewers(viewers);
-
-        return roomResponse;
+        return this.roomLogic.getRoomResponse(room);
     }
 
     /**
@@ -98,35 +71,7 @@ public class RoomService {
     public RoomsResponse getRooms(final User loginUser) {
         // ルーム一覧の取得
         final var rooms = this.roomRepository.selectAll();
-        final var roomResponses = rooms.stream() //
-            .map(room -> {
-                // オーナーを取得
-                final var owner = this.userRepository.selectById(room.getOwnerId());
-
-                // 参加者リストを取得
-                final var participations = this.participationRepository.selectWithUserByRoomId(room.getId());
-                final var speakers = participations.stream() //
-                    .filter(participation -> participation.getType() == ParticipationTypeEnum.SPEAKER.getId()) //
-                    .sorted((p1, p2) -> p1.getSpeakerOrder().compareTo(p2.getSpeakerOrder())) //
-                    .map(participation -> {
-                        final var result = this.modelMapper.map(participation.getUser(), SpeakerResponse.class);
-                        result.setTitle(participation.getTitle());
-                        result.setSpeakerOrder(participation.getSpeakerOrder());
-                        return result;
-                    }) //
-                    .collect(Collectors.toList());
-                final var viewers = participations.stream() //
-                    .filter(participation -> participation.getType() == ParticipationTypeEnum.VIEWER.getId()) //
-                    .map(participation -> this.modelMapper.map(participation.getUser(), UserResponse.class)) //
-                    .collect(Collectors.toList());
-
-                final var result = this.modelMapper.map(room, RoomResponse.class);
-                result.setOwner(this.modelMapper.map(owner, UserResponse.class));
-                result.setSpeakers(speakers);
-                result.setViewers(viewers);
-
-                return result;
-            }).collect(Collectors.toList());
+        final var roomResponses = rooms.stream().map(this.roomLogic::getRoomResponse).collect(Collectors.toList());
 
         return new RoomsResponse(roomResponses);
     }
