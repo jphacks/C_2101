@@ -1,5 +1,6 @@
 import React from "react";
 import Layout from "../components/layout";
+import { useForm } from "react-hook-form";
 import {
   Flex,
   Box,
@@ -10,43 +11,91 @@ import {
   Stack,
   Link,
   Button,
+  FormErrorMessage,
   Text,
 } from "@chakra-ui/react";
 const Signup: React.VFC = () => {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  function onSubmit(values: any) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        alert(JSON.stringify(values, null, 2));
+        resolve();
+      }, 3000);
+    });
+  }
   return (
     <Layout>
       <Text fontSize="4xl" textAlign="center" marginBottom="12" marginTop="24">
         LT Spaceへようこそ！
       </Text>
       <Stack spacing={4} maxWidth={500} margin="auto">
-        <FormControl id="email">
-          {/* <FormLabel>Email address</FormLabel> */}
-          <Input type="email" placeholder="メールアドレス" />
-        </FormControl>
-        <FormControl id="password">
-          {/* <FormLabel>Password</FormLabel> */}
-          <Input type="password" placeholder="パスワード" />
-        </FormControl>
-        <Stack spacing={10}>
-          <Stack
-            direction={{ base: "column", sm: "row" }}
-            align={"start"}
-            justify={"space-between"}
-          >
-            {/* <Checkbox>Remember me</Checkbox> */}
-            {/* <Link color={"blue.400"}>Forgot password?</Link> */}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormControl isInvalid={errors.email}>
+            {/* <FormLabel>Email address</FormLabel> */}
+            <Input
+              type="email"
+              placeholder="メールアドレス"
+              id="email"
+              {...register("email", {
+                required: "メールアドレスは必須です。",
+                pattern: {
+                  value:
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                  message: "メールアドレス形式で入力してください。",
+                },
+              })}
+            />
+            <FormErrorMessage>
+              {errors.email && errors.email.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={errors.password}>
+            {/* <FormLabel>Password</FormLabel> */}
+            <Input
+              type="password"
+              placeholder="パスワード"
+              id="password"
+              {...register("password", {
+                required: "パスワードは必須です。",
+                minLength: {
+                  value: 8,
+                  message: "8文字以上入力してください。",
+                },
+              })}
+            />
+            <FormErrorMessage>
+              {errors.password && errors.password.message}
+            </FormErrorMessage>
+          </FormControl>
+          <Stack spacing={10}>
+            <Stack
+              direction={{ base: "column", sm: "row" }}
+              align={"start"}
+              justify={"space-between"}
+            >
+              {/* <Checkbox>Remember me</Checkbox> */}
+              {/* <Link color={"blue.400"}>Forgot password?</Link> */}
+            </Stack>
+            <Button
+              bg={"teal.400"}
+              color={"white"}
+              _hover={{
+                bg: "teal.500",
+              }}
+              isLoading={isSubmitting}
+              type="submit"
+            >
+              続行する
+            </Button>
+            {/* アカウントをお持ちの場合 : ログインする */}
           </Stack>
-          <Button
-            bg={"teal.400"}
-            color={"white"}
-            _hover={{
-              bg: "teal.500",
-            }}
-          >
-            続行する
-          </Button>
-          {/* アカウントをお持ちの場合 : ログインする */}
-        </Stack>
+        </form>
       </Stack>
     </Layout>
   );
