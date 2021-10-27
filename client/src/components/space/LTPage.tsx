@@ -10,13 +10,18 @@ import { TimerBlock } from "./TimerBlock";
 import { CommentBlock } from "./CommentBlock";
 import React, { useRef } from "react";
 import { AuthHeader } from "../../hooks/useLogin";
-import { SkywayCredentialsModel, UserResponse } from "../../api/@types";
+import {
+  RoomResponse,
+  SkywayCredentialsModel,
+  UserResponse,
+} from "../../api/@types";
 import { useEffectOnce } from "react-use";
-import Peer from "skyway-js";
+import Peer, { SfuRoom } from "skyway-js";
 
 const Video = chakra("video");
 
 type LTPageProps = {
+  room: RoomResponse;
   authHeader: AuthHeader;
   user: UserResponse;
   credential: SkywayCredentialsModel;
@@ -25,20 +30,30 @@ type LTPageProps = {
 const skywayApiKey = "401e1886-919c-4988-ba47-ac85cae091a5";
 
 export const LTPage: React.VFC<LTPageProps> = ({
+  room,
   authHeader,
   user,
   credential,
 }) => {
   console.log("LTPage");
   const peerRef = useRef<Peer>();
+  const roomRef = useRef<SfuRoom>();
 
   useEffectOnce(() => {
-    peerRef.current = new Peer(String(user.id), {
+    const peer = new Peer(String(user.id), {
       key: skywayApiKey,
       credential: credential,
       debug: 3,
     });
+
+    peerRef.current = peer;
     console.log(peerRef.current);
+
+    peer.once("open", () => {
+      roomRef.current = peer.joinRoom<SfuRoom>(room.id.toString(), {
+        mode: "sfu",
+      });
+    });
   });
 
   const commentMock: CommentProps[] = [

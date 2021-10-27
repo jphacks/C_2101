@@ -9,9 +9,8 @@ import { LTPage } from "../../components/space/LTPage";
 const Room: React.VFC = () => {
   const router = useRouter();
 
-  const spaceId = router.query.room_id
-    ? Number(router.query.room_id)
-    : undefined;
+  const roomIdStr = router.query.room_id;
+  const roomId = roomIdStr ? Number(roomIdStr) : undefined;
 
   //ログインしていなかったら/loginに飛ばす
   const { isAuthed, user, authHeader } = useLogin();
@@ -23,13 +22,13 @@ const Room: React.VFC = () => {
   });
 
   const { credential, error } = useSkywayCredential({
-    roomId: spaceId,
+    roomId: roomId,
     userId: user?.id,
     authHeader: authHeader,
   });
 
   console.log({
-    roomId: spaceId,
+    roomId: roomId,
     userId: user?.id,
     authHeader: authHeader,
   });
@@ -50,7 +49,14 @@ const Room: React.VFC = () => {
     );
   }
 
-  return <LTPage user={user} authHeader={authHeader} credential={credential} />;
+  return (
+    <LTPage
+      room={}
+      user={user}
+      authHeader={authHeader}
+      credential={credential}
+    />
+  );
 };
 
 export default Room;
