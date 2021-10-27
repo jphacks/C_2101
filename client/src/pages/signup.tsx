@@ -50,10 +50,8 @@ const Signup: React.VFC = () => {
   const [errMsg, setErrMsg] = useState("");
   function processImage(event: any) {
     let file = event.target.files[0];
-    // 選択されたファイルが画像かどうか判定する
-    // ここでは、jpeg形式とpng形式のみを画像をみなす
-    if (file.type != "image/jpeg" && file.type != "image/png") {
-      // 画像でない場合は何もせず終了する
+    if (!file || (file.type != "image/jpeg" && file.type != "image/png")) {
+      setFileUrl("");
       return;
     }
     const imageUrl = URL.createObjectURL(file);
