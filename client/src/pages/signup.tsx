@@ -27,20 +27,16 @@ const Signup: React.VFC = () => {
 
   async function onSubmit(values: any) {
     try {
-      console.log(values);
       await fetchSignup({
         email: values.email,
         icon: fileBase64,
         name: values.name,
         password: values.password,
       });
-
-      console.log("signin success!");
       router.push("/");
     } catch (e: any) {
       console.log("signin failed...");
       if (!e.response.data.message) return;
-      console.log(e.response.data.message);
       setErrMsg(e.response.data.message);
     }
   }
