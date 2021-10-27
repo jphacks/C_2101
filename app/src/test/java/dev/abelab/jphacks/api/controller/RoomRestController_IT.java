@@ -36,6 +36,7 @@ import dev.abelab.jphacks.db.entity.ParticipationExample;
 import dev.abelab.jphacks.db.mapper.UserMapper;
 import dev.abelab.jphacks.db.mapper.RoomMapper;
 import dev.abelab.jphacks.db.mapper.ParticipationMapper;
+import dev.abelab.jphacks.model.SkywayCredentialsModel;
 import dev.abelab.jphacks.enums.ParticipationTypeEnum;
 import dev.abelab.jphacks.model.SkywayCredentialsModel;
 import dev.abelab.jphacks.helper.sample.UserSample;
@@ -59,6 +60,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 
 	// API PATH
 	static final String BASE_PATH = "/api/rooms";
+	static final String GET_ROOM_PATH = BASE_PATH + "/%d";
 	static final String GET_ROOMS_PATH = BASE_PATH;
 	static final String CREATE_ROOM_PATH = BASE_PATH;
 	static final String DELETE_ROOM_PATH = BASE_PATH + "/%d";
@@ -83,6 +85,98 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 
 	@Autowired
 	SkywayProperty skywayProperty;
+
+	/**
+	 * ルーム詳細取得APIのテスト
+	 */
+	@Nested
+	@TestInstance(PER_CLASS)
+	class GetRoomTest extends AbstractRestControllerInitialization_IT {
+
+		@Test
+		void 正_ルーム詳細を取得() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder().ownerId(loginUser.getId()).build();
+			roomMapper.insert(room);
+
+			// ルーム参加者
+			final var users = Arrays.asList( //
+				UserSample.builder().email(RandomUtil.generateEmail()).build(), //
+				UserSample.builder().email(RandomUtil.generateEmail()).build() //
+			);
+			users.forEach(userMapper::insert);
+
+			final var participations = Arrays.asList( //
+				ParticipationSample.builder().userId(users.get(0).getId()).roomId(room.getId()).type(ParticipationTypeEnum.VIEWER.getId())
+					.build(), //
+				ParticipationSample.builder().userId(users.get(1).getId()).roomId(room.getId()).type(ParticipationTypeEnum.SPEAKER.getId())
+					.speakerOrder(1).title(SAMPLE_STR).build());
+			participations.forEach(participationMapper::insert);
+
+			/*
+			 * test
+			 */
+			final var request = getRequest(String.format(GET_ROOM_PATH, room.getId()));
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			final var response = execute(request, HttpStatus.OK, RoomResponse.class);
+
+			/*
+			 * verify
+			 */
+			assertThat(response) //
+				.extracting(RoomResponse::getId, RoomResponse::getTitle, RoomResponse::getDescription,
+					RoomResponse::getPresentationTimeLimit, RoomResponse::getQuestionTimeLimit) //
+				.containsExactly(room.getId(), room.getTitle(), room.getDescription(), room.getPresentationTimeLimit(),
+					room.getQuestionTimeLimit());
+
+			// オーナー
+			assertThat(response.getOwner()) //
+				.extracting(UserResponse::getId, UserResponse::getEmail, UserResponse::getName) //
+				.containsExactly(loginUser.getId(), loginUser.getEmail(), loginUser.getName());
+
+			// 登壇者
+			assertThat(response.getSpeakers()) //
+				.extracting(SpeakerResponse::getId, SpeakerResponse::getEmail, SpeakerResponse::getName, SpeakerResponse::getTitle) //
+				.containsExactlyInAnyOrder(tuple(users.get(1).getId(), users.get(1).getEmail(), users.get(1).getName(), SAMPLE_STR));
+
+			// 閲覧者
+			assertThat(response.getViewers()) //
+				.extracting(UserResponse::getId, UserResponse::getEmail, UserResponse::getName) //
+				.containsExactlyInAnyOrder(tuple(users.get(0).getId(), users.get(0).getEmail(), users.get(0).getName()));
+		}
+
+		@Test
+		void 異_取得対象ルームが存在しない() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			/*
+			 * test & verify
+			 */
+			final var request = getRequest(String.format(GET_ROOM_PATH, SAMPLE_INT));
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, new NotFoundException(ErrorCode.NOT_FOUND_ROOM));
+		}
+
+		@Test
+		void 異_無効な認証ヘッダ() throws Exception {
+			/*
+			 * test & verify
+			 */
+			final var request = getRequest(String.format(GET_ROOM_PATH, SAMPLE_INT));
+			request.header(HttpHeaders.AUTHORIZATION, "");
+			execute(request, new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN));
+		}
+
+	}
 
 	/**
 	 * ルーム一覧取得APIのテスト
@@ -732,8 +826,10 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			 * verify
 			 */
 			assertThat(response.getType()).isEqualTo(type.getId());
+			assertThat(response.getSkyway()) //
+				.extracting(SkywayCredentialsModel::getTtl, SkywayCredentialsModel::getPeerId) //
+				.containsExactly(skywayProperty.getTtl(), requestBody.getPeerId());
 			assertThat(response.getSkyway().getAuthToken()).isNotNull();
-			assertThat(response.getSkyway().getTtl()).isEqualTo(skywayProperty.getTtl());
 			assertThat(response.getSkyway().getTimestamp()).isNotNull();
 			assertThat(response.getSkyway().getPeerId()).isEqualTo(requestBody.getPeerId());
 		}
