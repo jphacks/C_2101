@@ -32,7 +32,7 @@ const MemberGroup: React.FC<{ groupName: string; members: UserWithStatus[] }> =
         </Text>
         <HStack>
           {members.map((item) => (
-            <MemberItem {...item} key={item.id} />
+            <MemberItem {...item} key={`member-group-${item.id}`} />
           ))}
         </HStack>
       </VStack>

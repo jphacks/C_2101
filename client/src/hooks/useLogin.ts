@@ -2,12 +2,11 @@ import { useLocalStorage } from "react-use";
 import client from "../utils/api-client.factory";
 import useSWR from "swr";
 
-const userFetcher = async (
-  key: string,
-  authHeader: {
-    Authorization: string;
-  }
-) => {
+export type AuthHeader = {
+  Authorization: string;
+};
+
+const userFetcher = async (key: string, authHeader: AuthHeader) => {
   const res = await client.api.users.me.get({
     config: {
       headers: authHeader,
@@ -18,10 +17,7 @@ const userFetcher = async (
 
 export const useLogin = () => {
   const [authHeader, setAuthHeader, destroyAuthHeader] = useLocalStorage<
-    | {
-        Authorization: string;
-      }
-    | undefined
+    AuthHeader | undefined
   >("lt-space-auth-token");
 
   const fetchLogin = async (loginParam: {

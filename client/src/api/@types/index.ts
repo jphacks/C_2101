@@ -20,15 +20,26 @@ export type LoginUserUpdateRequest = {
   name: string
 }
 
+export type RoomAuthenticateRequest = {
+  peerId: string
+}
+
 export type RoomCreateRequest = {
   description: string
   finishAt: string
+  presentationTimeLimit: number
+  questionTimeLimit: number
   startAt: string
   title?: string
 }
 
+export type RoomCredentialsResponse = {
+  skyway: SkywayCredentialsModel
+  type: number
+}
+
 export type RoomJoinRequest = {
-  title: string
+  title?: string
   type: number
 }
 
@@ -37,7 +48,9 @@ export type RoomResponse = {
   finishAt: string
   id: number
   owner: UserResponse
-  speakers: UserResponse[]
+  presentationTimeLimit: number
+  questionTimeLimit: number
+  speakers: SpeakerResponse[]
   startAt: string
   title: string
   viewers: UserResponse[]
@@ -49,9 +62,24 @@ export type RoomsResponse = {
 
 export type SignupRequest = {
   email: string
-  icon: string
+  icon?: string
   name: string
   password: string
+}
+
+export type SkywayCredentialsModel = {
+  authToken: string
+  timestamp: number
+  ttl: number
+}
+
+export type SpeakerResponse = {
+  email: string
+  iconUrl: string
+  id: number
+  name: string
+  speakerOrder: number
+  title: string
 }
 
 export type UserResponse = {
