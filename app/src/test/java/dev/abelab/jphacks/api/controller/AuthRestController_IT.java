@@ -161,6 +161,33 @@ public class AuthRestController_IT extends AbstractRestController_IT {
 		}
 
 		@Test
+		void 正_アイコンがNULLのアイコンURLもNULLになる() throws Exception {
+			/*
+			 * given
+			 */
+			final var user = UserSample.builder().password(LOGIN_USER_PASSWORD).build();
+			final var requestBody = modelMapper.map(user, SignupRequest.class);
+			requestBody.setIcon(null);
+
+			/*
+			 * test
+			 */
+			final var request = postRequest(SIGNUP_PATH, requestBody);
+			execute(request, HttpStatus.CREATED, AccessTokenResponse.class);
+
+			/*
+			 * verify
+			 */
+			final var createdUser = userMapper.selectByExample(new UserExample() {
+				{
+					createCriteria().andEmailEqualTo(user.getEmail());
+				}
+			}).stream().findFirst();
+			assertThat(createdUser.isPresent()).isTrue();
+			assertThat(createdUser.get().getIconUrl()).isNull();
+		}
+
+		@Test
 		void 異_メールアドレスが既に存在する() throws Exception {
 			/*
 			 * given
