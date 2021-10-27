@@ -17,7 +17,7 @@ export const useSignup = () => {
     email: string;
     password: string;
     name: string;
-    icon: string;
+    icon: string|null;
   }) => {
     const res = await client.api.signup.$post({
       body: loginParam,
