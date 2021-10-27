@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.modelmapper.ModelMapper;
+import mockit.Expectations;
+import mockit.Mocked;
 
 import dev.abelab.jphacks.api.request.LoginRequest;
 import dev.abelab.jphacks.api.request.SignupRequest;
@@ -23,6 +25,8 @@ import dev.abelab.jphacks.api.response.AccessTokenResponse;
 import dev.abelab.jphacks.db.entity.User;
 import dev.abelab.jphacks.db.entity.UserExample;
 import dev.abelab.jphacks.db.mapper.UserMapper;
+import dev.abelab.jphacks.model.FileModel;
+import dev.abelab.jphacks.util.CloudStorageUtil;
 import dev.abelab.jphacks.helper.sample.UserSample;
 import dev.abelab.jphacks.exception.ErrorCode;
 import dev.abelab.jphacks.exception.BaseException;
@@ -49,6 +53,9 @@ public class AuthRestController_IT extends AbstractRestController_IT {
 
 	@Autowired
 	UserMapper userMapper;
+
+	@Mocked
+	CloudStorageUtil cloudStorageUtil;
 
 	/**
 	 * ログインAPIのテスト
@@ -135,6 +142,14 @@ public class AuthRestController_IT extends AbstractRestController_IT {
 			final var user = UserSample.builder().password(LOGIN_USER_PASSWORD).build();
 			final var requestBody = modelMapper.map(user, SignupRequest.class);
 
+			final var iconUrl = "http://example.com/test_file.jpg";
+			new Expectations() {
+				{
+					cloudStorageUtil.uploadFile((FileModel) any);
+					result = iconUrl;
+				}
+			};
+
 			/*
 			 * test
 			 */
@@ -157,6 +172,33 @@ public class AuthRestController_IT extends AbstractRestController_IT {
 				.extracting(User::getEmail, User::getName) //
 				.containsExactly(user.getEmail(), user.getName());
 			assertThat(passwordEncoder.matches(requestBody.getPassword(), createdUser.get().getPassword())).isTrue();
+			assertThat(createdUser.get().getIconUrl()).isEqualTo(iconUrl);
+		}
+
+		@Test
+		void 正_アイコンがNULLのアイコンURLもNULLになる() throws Exception {
+			/*
+			 * given
+			 */
+			final var user = UserSample.builder().password(LOGIN_USER_PASSWORD).build();
+			final var requestBody = modelMapper.map(user, SignupRequest.class);
+			requestBody.setIcon(null);
+
+			/*
+			 * test
+			 */
+			final var request = postRequest(SIGNUP_PATH, requestBody);
+			execute(request, HttpStatus.CREATED, AccessTokenResponse.class);
+
+			/*
+			 * verify
+			 */
+			final var createdUser = userMapper.selectByExample(new UserExample() {
+				{
+					createCriteria().andEmailEqualTo(user.getEmail());
+				}
+			}).stream().findFirst();
+			assertThat(createdUser.isPresent()).isTrue();
 			assertThat(createdUser.get().getIconUrl()).isNull();
 		}
 

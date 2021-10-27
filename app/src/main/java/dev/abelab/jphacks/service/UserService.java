@@ -77,9 +77,12 @@ public class UserService {
         }
 
         // アイコンをアップロード
-        final var file = FileModel.builder().content(Base64.decodeBase64(requestBody.getIcon())).build();
-        file.setName(file.getName() + ".jpg");
-        final var iconUrl = requestBody.getIcon() != null ? this.cloudStorageUtil.uploadFile(file) : null;
+        String iconUrl = null;
+        if (requestBody.getIcon() != null) {
+            final var file = FileModel.builder().content(Base64.decodeBase64(requestBody.getIcon())).build();
+            file.setName(file.getName() + ".jpg");
+            iconUrl = this.cloudStorageUtil.uploadFile(file);
+        }
 
         // ログインユーザを更新
         loginUser.setEmail(requestBody.getEmail());

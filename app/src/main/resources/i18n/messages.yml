@@ -9,7 +9,7 @@ exception:
     participation: "参加情報が見つかりません。"
     participation_type: "指定された参加タイプは存在しません。"
   conflict:
-    email: "メールアドレスが見つかりません。"
+    email: "このメールアドレスは既に登録済みです。"
     already_join_room: "このルームには参加登録済みです。"
   forbidden:
     user_has_no_permission: "その動作は許可されていません。"
