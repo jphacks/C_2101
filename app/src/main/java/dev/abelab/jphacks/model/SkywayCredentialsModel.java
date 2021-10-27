@@ -12,6 +12,11 @@ import lombok.*;
 public class SkywayCredentialsModel {
 
     /**
+     * Peer ID
+     */
+    String peerId;
+
+    /**
      * 認証トークン
      */
     String authToken;
