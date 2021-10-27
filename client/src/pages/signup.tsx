@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../components/layout";
 import { useForm } from "react-hook-form";
 import {
@@ -9,7 +9,7 @@ import {
   Input,
   Checkbox,
   Stack,
-  Link,
+  Image,
   Button,
   FormErrorMessage,
   Text,
@@ -36,6 +36,19 @@ const Signup: React.VFC = () => {
     } catch (e) {
       console.log("signin failed...");
     }
+  }
+
+  const [fileUrl, setFileUrl] = useState(String);
+  function processImage(event: any) {
+    let file = event.target.files[0];
+    // 選択されたファイルが画像かどうか判定する
+    // ここでは、jpeg形式とpng形式のみを画像をみなす
+    if (file.type != "image/jpeg" && file.type != "image/png") {
+      // 画像でない場合は何もせず終了する
+      return;
+    }
+    const imageUrl = URL.createObjectURL(file);
+    setFileUrl(imageUrl);
   }
 
   return (
@@ -91,6 +104,25 @@ const Signup: React.VFC = () => {
               {/* <Checkbox>Remember me</Checkbox> */}
               {/* <Link color={"blue.400"}>Forgot password?</Link> */}
             </Stack>
+
+            <Stack spacing={10}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={processImage}
+              ></input>
+              {fileUrl ? (
+                <Image
+                  src={fileUrl}
+                  alt="preview"
+                  width={100}
+                  height={100}
+                ></Image>
+              ) : (
+                <></>
+              )}
+            </Stack>
+
             <Button
               bg={"teal.400"}
               color={"white"}
