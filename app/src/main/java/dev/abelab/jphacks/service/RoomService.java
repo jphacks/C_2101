@@ -161,11 +161,14 @@ public class RoomService {
             .filter(participation -> participation.getType() == ParticipationTypeEnum.SPEAKER.getId()) //
             .mapToInt(Participation::getSpeakerOrder).max().orElse(0) + 1;
 
+        // 発表タイプ
+        final var type = ParticipationTypeEnum.findById(requestBody.getType());
+
         // 参加情報を作成
         final var participation = Participation.builder() //
             .userId(loginUser.getId()) //
             .roomId(room.getId()) //
-            .type(requestBody.getType()) //
+            .type(type.getId()) //
             .title(requestBody.getTitle()) //
             .speakerOrder(speakerOrder) //
             .build();
