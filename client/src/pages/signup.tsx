@@ -25,11 +25,12 @@ const Signup: React.VFC = () => {
 
   async function onSubmit(values: any) {
     try {
+      console.log(values);
       await fetchSignup({
-        email: "takex5g@gmail.com",
-        icon: null,
-        name: "yumoya",
-        password: "Sikashikashika71",
+        email: values.email,
+        icon: fileBase64 === "" ? null : fileBase64,
+        name: values.name,
+        password: values.password,
       });
 
       console.log("signin success!");
@@ -39,6 +40,7 @@ const Signup: React.VFC = () => {
   }
 
   const [fileUrl, setFileUrl] = useState(String);
+  const [fileBase64, setFileBase64] = useState(String);
   function processImage(event: any) {
     let file = event.target.files[0];
     // 選択されたファイルが画像かどうか判定する
@@ -49,6 +51,13 @@ const Signup: React.VFC = () => {
     }
     const imageUrl = URL.createObjectURL(file);
     setFileUrl(imageUrl);
+
+    var fr = new FileReader();
+    fr.onload = function (evt) {
+      if (evt.target == null || evt.target.result == null) return;
+      setFileBase64(evt.target.result as string);
+    };
+    fr.readAsDataURL(file);
   }
 
   return (
@@ -56,6 +65,7 @@ const Signup: React.VFC = () => {
       <Text fontSize="4xl" textAlign="center" marginBottom="12" marginTop="24">
         LT Spaceへようこそ！
       </Text>
+
       <Stack spacing={4} maxWidth={500} margin="auto">
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl isInvalid={errors.email}>
@@ -95,34 +105,31 @@ const Signup: React.VFC = () => {
               {errors.password && errors.password.message}
             </FormErrorMessage>
           </FormControl>
+          <FormControl isInvalid={errors.name}>
+            {/* <FormLabel>Email address</FormLabel> */}
+            <Input
+              type="name"
+              placeholder="ユーザーネーム"
+              id="name"
+              {...register("name", {
+                required: "ユーザーネームは必須です。",
+                minLength: {
+                  value: 2,
+                  message: "2文字以上入力してください。",
+                },
+              })}
+            />
+            <FormErrorMessage>
+              {errors.name && errors.name.message}
+            </FormErrorMessage>
+          </FormControl>
+          <input type="file" accept="image/*" onChange={processImage}></input>
+          {fileUrl ? (
+            <Image src={fileUrl} alt="preview" width={100} height={100}></Image>
+          ) : (
+            <></>
+          )}
           <Stack spacing={10}>
-            <Stack
-              direction={{ base: "column", sm: "row" }}
-              align={"start"}
-              justify={"space-between"}
-            >
-              {/* <Checkbox>Remember me</Checkbox> */}
-              {/* <Link color={"blue.400"}>Forgot password?</Link> */}
-            </Stack>
-
-            <Stack spacing={10}>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={processImage}
-              ></input>
-              {fileUrl ? (
-                <Image
-                  src={fileUrl}
-                  alt="preview"
-                  width={100}
-                  height={100}
-                ></Image>
-              ) : (
-                <></>
-              )}
-            </Stack>
-
             <Button
               bg={"teal.400"}
               color={"white"}
