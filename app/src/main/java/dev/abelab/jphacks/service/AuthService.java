@@ -66,9 +66,12 @@ public class AuthService {
         AuthUtil.validatePassword(requestBody.getPassword());
 
         // アイコンをアップロード
-        final var file = FileModel.builder().content(Base64.decodeBase64(requestBody.getIcon())).build();
-        file.setName(file.getName() + ".jpg");
-        final var iconUrl = requestBody.getIcon() != null ? this.cloudStorageUtil.uploadFile(file) : null;
+        String iconUrl = null;
+        if (requestBody.getIcon() != null) {
+            final var file = FileModel.builder().content(Base64.decodeBase64(requestBody.getIcon())).build();
+            file.setName(file.getName() + ".jpg");
+            iconUrl = this.cloudStorageUtil.uploadFile(file);
+        }
 
         // ユーザを作成
         final var user = this.modelMapper.map(requestBody, User.class);
