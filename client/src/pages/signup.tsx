@@ -30,7 +30,7 @@ const Signup: React.VFC = () => {
       console.log(values);
       await fetchSignup({
         email: values.email,
-        icon: fileBase64 === "" ? null : fileBase64,
+        icon: fileBase64,
         name: values.name,
         password: values.password,
       });
