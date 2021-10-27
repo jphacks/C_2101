@@ -653,7 +653,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 
 		@ParameterizedTest
 		@MethodSource
-		void 正_ルームを認証する(final ParticipationTypeEnum type) throws Exception {
+		void 正_ルームを認証する(final ParticipationTypeEnum type, final Date startAt, final Date finishAt) throws Exception {
 			/*
 			 * given
 			 */
@@ -662,8 +662,8 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 
 			final var room = RoomSample.builder() //
 				.ownerId(loginUser.getId()) //
-				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
-				.finishAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
+				.startAt(startAt) //
+				.finishAt(finishAt) //
 				.build();
 			roomMapper.insert(room);
 
@@ -693,42 +693,16 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 		}
 
 		Stream<Arguments> 正_ルームを認証する() {
-			return Stream.of( // 参加タイプ
-				arguments(ParticipationTypeEnum.SPEAKER), //
-				arguments(ParticipationTypeEnum.VIEWER) //
+			return Stream.of( // 参加タイプ、開始日時、終了日時
+				arguments(ParticipationTypeEnum.SPEAKER, DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10),
+					DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)), //
+				arguments(ParticipationTypeEnum.VIEWER, DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10),
+					DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)), //
+				arguments(ParticipationTypeEnum.VIEWER, DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 10),
+					DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 10)), //
+				arguments(ParticipationTypeEnum.VIEWER, DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 10),
+					DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
 			);
-		}
-
-		@Test
-		void 異_開催済みのルームは認証不可() throws Exception {
-			/*
-			 * given
-			 */
-			final var loginUser = createLoginUser(true);
-			final var credentials = getLoginUserCredentials(loginUser);
-
-			final var room = RoomSample.builder() //
-				.ownerId(loginUser.getId()) //
-				.startAt(DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 10)) //
-				.finishAt(DateTimeUtil.editDateTime(YESTERDAY, Calendar.HOUR_OF_DAY, 11)) //
-				.build();
-			roomMapper.insert(room);
-
-			final var participation = ParticipationSample.builder() //
-				.userId(loginUser.getId()) //
-				.roomId(room.getId()) //
-				.type(ParticipationTypeEnum.VIEWER.getId()) //
-				.build();
-			participationMapper.insert(participation);
-
-			final var requestBody = RoomAuthenticateRequest.builder().peerId(SAMPLE_STR).build();
-
-			/*
-			 * test & verify
-			 */
-			final var request = postRequest(String.format(AUTHENTICATE_ROOM_PATH, room.getId()), requestBody);
-			request.header(HttpHeaders.AUTHORIZATION, credentials);
-			execute(request, new BadRequestException(ErrorCode.CANNOT_AUTHENTICATE_PAST_ROOM));
 		}
 
 		@Test
