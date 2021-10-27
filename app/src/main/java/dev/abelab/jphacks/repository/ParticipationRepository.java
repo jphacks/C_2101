@@ -58,6 +58,21 @@ public class ParticipationRepository {
     }
 
     /**
+     * ルームID・ユーザIDから参加情報を取得
+     *
+     * @param roomId ルームID
+     * @param userId ユーザID
+     *
+     * @return 参加情報
+     */
+    public Participation selectByRoomIdAndUserId(final int roomId, final int userId) {
+        if (!this.existsByRoomIdAndUserId(roomId, userId)) {
+            throw new NotFoundException(ErrorCode.NOT_FOUND_PARTICIPATION);
+        }
+        return this.participationMapper.selectByPrimaryKey(userId, roomId);
+    }
+
+    /**
      * ルームID・ユーザIDの存在確認
      *
      * @param roomId ルームID

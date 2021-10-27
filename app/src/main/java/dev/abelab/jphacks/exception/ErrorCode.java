@@ -43,6 +43,8 @@ public enum ErrorCode {
      */
     USER_HAS_NO_PERMISSION(1300, "exception.forbidden.user_has_no_permission"),
 
+    CANNOT_AUTHENTICATE_NOT_JOINED_ROOM(1301, "exception.forbidden.cannot_authenticate_not_joined_room"),
+
     /**
      * Bad Request: 1400~1499
      */
@@ -61,6 +63,8 @@ public enum ErrorCode {
     CANNOT_JOIN_PAST_ROOM(1406, "exception.bad_request.cannot_join_past_room"),
 
     CANNOT_UNJOIN_PAST_ROOM(1407, "exception.bad_request.cannot_unjoin_past_room"),
+
+    CANNOT_AUTHENTICATE_PAST_ROOM(1408, "exception.bad_request.cannot_authenticate_past_room"),
 
     /**
      * Unauthorized: 1500~1599
