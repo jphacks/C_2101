@@ -47,6 +47,47 @@ public class RoomService {
     private final SkywayProperty skywayProperty;
 
     /**
+     * ルームを取得
+     *
+     * @param roomId    ルームID
+     * @param loginUser ログインユーザ
+     *
+     * @return ルームレスポンス
+     */
+    @Transactional
+    public RoomResponse getRoom(final int roomId, final User loginUser) {
+        // ルームを取得
+        final var room = this.roomRepository.selectById(roomId);
+
+        // オーナーを取得
+        final var owner = this.userRepository.selectById(room.getOwnerId());
+
+        // 参加者リストを取得
+        final var participations = this.participationRepository.selectWithUserByRoomId(room.getId());
+        final var speakers = participations.stream() //
+            .filter(participation -> participation.getType() == ParticipationTypeEnum.SPEAKER.getId()) //
+            .sorted((p1, p2) -> p1.getSpeakerOrder().compareTo(p2.getSpeakerOrder())) //
+            .map(participation -> {
+                final var result = this.modelMapper.map(participation.getUser(), SpeakerResponse.class);
+                result.setTitle(participation.getTitle());
+                result.setSpeakerOrder(participation.getSpeakerOrder());
+                return result;
+            }) //
+            .collect(Collectors.toList());
+        final var viewers = participations.stream() //
+            .filter(participation -> participation.getType() == ParticipationTypeEnum.VIEWER.getId()) //
+            .map(participation -> this.modelMapper.map(participation.getUser(), UserResponse.class)) //
+            .collect(Collectors.toList());
+
+        final var roomResponse = this.modelMapper.map(room, RoomResponse.class);
+        roomResponse.setOwner(this.modelMapper.map(owner, UserResponse.class));
+        roomResponse.setSpeakers(speakers);
+        roomResponse.setViewers(viewers);
+
+        return roomResponse;
+    }
+
+    /**
      * ルーム一覧を取得
      *
      * @param loginUser ログインユーザ
