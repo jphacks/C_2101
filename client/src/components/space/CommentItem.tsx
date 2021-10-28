@@ -9,17 +9,21 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { Token } from "@chakra-ui/styled-system/dist/types/utils";
+import * as CSS from "csstype";
 
 export type CommentProps = {
   user: Omit<UserResponse, "email">;
   text: string;
   timestamp: Date;
+  textColor?: Token<CSS.Property.Color, "colors">;
 };
 
 export const CommentItem: React.VFC<CommentProps> = ({
   user,
   text,
   timestamp,
+  textColor,
 }) => {
   return (
     <HStack width={"full"} p={1}>
@@ -39,7 +43,7 @@ export const CommentItem: React.VFC<CommentProps> = ({
             {timestamp.toLocaleTimeString()}
           </Heading>
         </Flex>
-        <Text textColor={"gray.800"}>{text}</Text>
+        <Text textColor={textColor ?? "gray.800"}>{text}</Text>
       </Stack>
     </HStack>
   );

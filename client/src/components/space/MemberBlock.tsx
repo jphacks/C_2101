@@ -30,7 +30,7 @@ const MemberGroup: React.FC<{ groupName: string; members: UserWithStatus[] }> =
         <Text alignSelf={"flex-start"} fontWeight={"bold"}>
           {groupName}
         </Text>
-        <HStack>
+        <HStack h={24}>
           {members.map((item) => (
             <MemberItem {...item} key={`member-group-${item.id}`} />
           ))}

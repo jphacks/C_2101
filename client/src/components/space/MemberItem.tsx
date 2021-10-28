@@ -4,13 +4,17 @@ import { UserResponse } from "../../api/@types";
 import { AvatarReactionBadge } from "../common/AvatarReactionBadge";
 
 //別のとこに書いたほうがよさそう
-export type UserTypeListener = 1;
-export type UserTypePresenter = 2;
+
+export const UserType = {
+  Speaker: 1,
+  Viewer: 2,
+} as const;
+export type UserType = typeof UserType[keyof typeof UserType];
 
 export type UserWithStatus = Omit<UserResponse, "email"> & {
   isOnline: boolean;
   reaction?: string;
-  type: UserTypeListener | UserTypePresenter;
+  type: UserType;
   isOwner: boolean;
 };
 
@@ -21,7 +25,7 @@ export const MemberItem: React.VFC<UserWithStatus> = ({
   reaction,
 }) => {
   return (
-    <VStack>
+    <VStack w={20}>
       <Avatar
         name={name}
         src={iconUrl}
