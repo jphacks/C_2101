@@ -13,6 +13,7 @@ export type SkywayData = SkywayDataCommon &
     | UpdateAllowList
     | UpdateTimer
     | UpdateTimetable
+    | RequestTimetable
   );
 
 export type ReactionText = {
@@ -58,4 +59,8 @@ export type UpdateTimer = {
 export type UpdateTimetable = {
   type: "updateTimetable";
   timetable: Timetable;
+};
+
+export type RequestTimetable = {
+  type: "requestTimetable";
 };

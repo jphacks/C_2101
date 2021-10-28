@@ -1,6 +1,6 @@
 import { TimetableCardProps } from "./TimetableCard";
 import Layout from "../layout";
-import { Box, chakra, Stack, Text, VStack } from "@chakra-ui/react";
+import { Box, chakra, Stack, VStack } from "@chakra-ui/react";
 import { MemberBlock } from "./MemberBlock";
 import { TimetableBlock } from "./TimetableBlock";
 import { ConfigBlock } from "./ConfigBlock";
@@ -32,6 +32,9 @@ export const LTPage: React.VFC<LTPageProps> = ({
 }) => {
   console.log("LTPage", room);
 
+  const screenVideoRef = useRef<HTMLVideoElement>(null);
+  const cameraVideoRef = useRef<HTMLVideoElement>(null);
+
   const {
     roomRef,
     peerRef,
@@ -44,12 +47,11 @@ export const LTPage: React.VFC<LTPageProps> = ({
     roomInfo: room,
     clientUser: user,
     credential: credential,
+    screenVideoRef: screenVideoRef,
+    cameraVideoRef: cameraVideoRef,
   });
   // const peerRef = useRef<Peer>();
   // const roomRef = useRef<SfuRoom>();
-
-  const screenVideoRef = useRef<HTMLVideoElement>(null);
-  const cameraVideoRef = useRef<HTMLVideoElement>(null);
 
   const handleSubmit = (text: string) => {
     sendComment(text);
@@ -78,30 +80,8 @@ export const LTPage: React.VFC<LTPageProps> = ({
     }
   );
 
-  const timetableDataMock: TimetableCardProps[] = [
-    {
-      user: {
-        name: "name desuyo",
-        iconUrl: "https://bit.ly/dan-abramov",
-        id: 334,
-      },
-      title: `This is the "title"`,
-      tags: ["You"],
-    },
-    {
-      user: {
-        name: "name desuyo",
-        iconUrl: "https://bit.ly/dan-abramov",
-        id: 334,
-      },
-      title: `This is the "super super super super long title"`,
-      tags: ["Next"],
-    },
-  ];
-
   return (
     <Layout contentTitle={room.title}>
-      <Text>{String(credential)}</Text>
       <Stack direction={"row"} p={4} bg={"gray.50"}>
         <VStack flex={3}>
           <Box rounded={8} p={4} bg={"gray.200"} w={"full"} h={"full"}>
@@ -112,8 +92,14 @@ export const LTPage: React.VFC<LTPageProps> = ({
           <TimetableBlock cards={timetableProp} />
         </VStack>
         <VStack flex={1} maxW={"384px"}>
-          <Box bg={"gray.200"} w={"100%"} h={64} rounded={8}>
-            <Video ref={cameraVideoRef} />
+          <Box bg={"gray.200"} w={"100%"} h={64} rounded={8} p={2}>
+            <Video
+              w={"full"}
+              h={"full"}
+              ref={cameraVideoRef}
+              muted
+              rounded={8}
+            />
           </Box>
           <ConfigBlock />
           <TimerBlock remainSec={200} fullSec={300} sectionTitle={"発表"} />

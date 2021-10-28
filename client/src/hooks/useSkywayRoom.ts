@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import Peer, { SfuRoom } from "skyway-js";
-import { useEffectOnce, useList } from "react-use";
+import { useAsync, useList } from "react-use";
 import {
   RoomResponse,
   SkywayCredentialsModel,
@@ -15,6 +15,8 @@ type UseLTPageParam = {
   roomInfo: RoomResponse;
   clientUser: UserResponse;
   credential: SkywayCredentialsModel;
+  screenVideoRef: RefObject<HTMLVideoElement>;
+  cameraVideoRef: RefObject<HTMLVideoElement>;
 };
 
 type Member = Omit<UserResponse, "email"> & {
@@ -31,9 +33,15 @@ export const useSkywayRoom = ({
   roomInfo,
   clientUser,
   credential,
+  screenVideoRef,
+  cameraVideoRef,
 }: UseLTPageParam) => {
   const peerRef = useRef<Peer>();
   const roomRef = useRef<SfuRoom>();
+
+  const streamMapRef = useRef<Record<number, MediaStream>>({});
+
+  const localStreamRef = useRef<MediaStream>();
 
   const [commentList, { push: pushComment }] = useList<CommentProps>();
   const [timetable, setTimetable] = useState<Timetable>({
@@ -61,19 +69,40 @@ export const useSkywayRoom = ({
   };
 
   //初期化
-  useEffectOnce(() => {
+  useAsync(async () => {
+    const isOwner = roomInfo.owner.id === clientUser.id;
+    const isSpeaker = roomInfo.speakers.some(
+      (item) => item.id === clientUser.id
+    );
+
+    //とりあえずオーナーとspeakerにはマイクとカメラ許可を求める
+    const localStream =
+      isOwner || isSpeaker
+        ? await navigator.mediaDevices
+            .getUserMedia({
+              audio: true,
+              video: true,
+            })
+            .catch((err) => {
+              console.log(err);
+              return undefined;
+            })
+        : undefined;
+
+    localStreamRef.current = localStream;
+
     const peer = new Peer(String(clientUser.id), {
       key: skywayApiKey,
       credential: credential,
-      debug: 3,
+      debug: 2,
     });
 
     peerRef.current = peer;
 
     peer.once("open", () => {
-      const isOwner = roomInfo.owner.id === clientUser.id;
       const sfuRoom = peer.joinRoom<SfuRoom>(roomInfo.id.toString(), {
         mode: "sfu",
+        stream: localStream,
       });
 
       roomRef.current = sfuRoom;
@@ -112,8 +141,21 @@ export const useSkywayRoom = ({
             sessions: entries,
             pointer: {
               inSession: false,
+              // inSession: true,
+              // current: 0,
             },
           });
+
+          //テスト用
+          setTimeout(() => {
+            setWithSendTimetable({
+              sessions: entries,
+              pointer: {
+                inSession: true,
+                current: 0,
+              },
+            });
+          }, 5000);
         }
       });
       sfuRoom.on("peerJoin", (peerId) => {
@@ -153,15 +195,52 @@ export const useSkywayRoom = ({
         }
 
         if (data.type === "updateTimetable") {
+          console.log("timetableUpdated");
           setTimetable(data.timetable);
         }
+      });
+
+      sfuRoom.on("stream", (stream) => {
+        console.log("receive stream", stream.peerId, timetable);
+        streamMapRef.current = {
+          ...streamMapRef.current,
+          [Number(stream.peerId)]: stream,
+        };
       });
     });
 
     return () => {
       peerRef.current?.destroy();
+      console.log("peer destroy");
     };
-  });
+  }, []);
+
+  //見ているstreamの更新
+  useEffect(() => {
+    if (!timetable.pointer.inSession) return;
+    const session = timetable.sessions[timetable.pointer.current];
+    if (!session) return;
+
+    if (session.user.id === clientUser.id) {
+      //自分
+      if (!localStreamRef.current) return;
+      cameraVideoRef.current!.srcObject = localStreamRef.current;
+      cameraVideoRef.current!.playsInline = true;
+      void cameraVideoRef.current!.play();
+    } else {
+      //他の人
+      const stream = streamMapRef.current[session.user.id];
+      if (!stream) {
+        console.log("stream is not received");
+        return;
+      }
+
+      console.log(`display stream from ${session.user.id}`);
+      cameraVideoRef.current!.srcObject = stream;
+      cameraVideoRef.current!.playsInline = true;
+      void cameraVideoRef.current!.play();
+    }
+  }, [cameraVideoRef, clientUser.id, timetable]);
 
   const sendComment = (text: string) => {
     const timestamp = new Date();
