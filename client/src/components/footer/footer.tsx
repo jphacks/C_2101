@@ -14,6 +14,7 @@ export default function Footer() {
       borderStyle={"solid"}
       borderColor={useColorModeValue("gray.200", "gray.700")}
       width="100%"
+			height="50px"
       position="absolute"
       bottom="0"
     >
