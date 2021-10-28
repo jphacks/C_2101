@@ -44,9 +44,10 @@ const Signup: React.VFC = () => {
   const [fileUrl, setFileUrl] = useState("");
   const [fileBase64, setFileBase64] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  function processImage(event: any) {
-    let file = event.target.files[0];
-    if (!file || (file.type != "image/jpeg" && file.type != "image/png")) {
+  function processImage(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.item(0);
+    const allowFileTypes = ["image/jpeg", "image/png"];
+    if (!file || !allowFileTypes.includes(file.type)) {
       setFileUrl("");
       return;
     }
