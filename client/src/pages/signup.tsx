@@ -10,9 +10,7 @@ import {
   Button,
   FormErrorMessage,
   Text,
-  Alert,
-  AlertIcon,
-  AlertDescription,
+  Link,
 } from "@chakra-ui/react";
 import { useSignup } from "../hooks/useSignup";
 import { useRouter } from "next/router";
@@ -34,7 +32,7 @@ const Signup: React.VFC = () => {
       name: values.name,
       password: values.password,
     })
-      .then((_) => {
+      .then(() => {
         toast({
           title: "アカウント生成に成功しました。",
           status: "success",
@@ -55,7 +53,6 @@ const Signup: React.VFC = () => {
 
   const [fileUrl, setFileUrl] = useState("");
   const [fileBase64, setFileBase64] = useState("");
-  const [errMsg, setErrMsg] = useState("");
   const processImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.item(0);
     const allowFileTypes = ["image/jpeg", "image/png"];
@@ -166,15 +163,7 @@ const Signup: React.VFC = () => {
             >
               続行する
             </Button>
-            {errMsg ? (
-              <Alert status="error">
-                <AlertIcon />
-                <AlertDescription>{errMsg}</AlertDescription>
-              </Alert>
-            ) : (
-              <></>
-            )}
-            {/* アカウントをお持ちの場合 : ログインする */}
+            アカウントをお持ちの場合 : <Link>ログインする</Link>
           </Stack>
         </form>
       </Stack>
