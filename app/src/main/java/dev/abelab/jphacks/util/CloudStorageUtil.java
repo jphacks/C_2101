@@ -46,7 +46,7 @@ public class CloudStorageUtil {
             final var blobInfo = BlobInfo.newBuilder(blobId).build();
             storage.create(blobInfo, file.getContent());
 
-            return String.format("https://storage.cloud.google.com/%s/icons/%s", this.gcpProperty.getCloudStorage().getBucketName(),
+            return String.format("https://storage.googleapis.com/%s/icons/%s", this.gcpProperty.getCloudStorage().getBucketName(),
                 file.getName());
         } catch (final Exception e) {
             System.out.println(e);
