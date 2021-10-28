@@ -27,9 +27,7 @@ export const useSignup = () => {
     };
     setAuthHeader(header);
     return header;
-
   };
-
 
   return {
     fetchSignup,
