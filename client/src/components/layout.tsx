@@ -11,16 +11,14 @@ type LayoutProps = {
 
 const Layout: React.FC<LayoutProps> = ({ children, contentTitle }) => {
   return (
-    <>
-      <Container minHeight="100vh" minWidth="100vw" padding="0">
-        <Head>
-          <title>LT Space | オンライン発表に特化したビデオチャット</title>
-        </Head>
-        <Header contentTitle={contentTitle} />
-        <Box>{children}</Box>
-        <Footer />
-      </Container>
-    </>
+    <Container minHeight="100vh" minWidth="100vw" padding="0">
+      <Head>
+        <title>LT Space | オンライン発表に特化したビデオチャット</title>
+      </Head>
+      <Header contentTitle={contentTitle} />
+      <Box>{children}</Box>
+      <Footer />
+    </Container>
   );
 };
 
