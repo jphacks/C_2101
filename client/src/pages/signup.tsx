@@ -16,8 +16,10 @@ import {
 } from "@chakra-ui/react";
 import { useSignup } from "../hooks/useSignup";
 import { useRouter } from "next/router";
+import { useToast } from "@chakra-ui/react";
 const Signup: React.VFC = () => {
   const router = useRouter();
+  const toast = useToast();
   const { fetchSignup } = useSignup();
   const {
     handleSubmit,
@@ -25,26 +27,36 @@ const Signup: React.VFC = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  async function onSubmit(values: any) {
-    try {
-      await fetchSignup({
-        email: values.email,
-        icon: fileBase64,
-        name: values.name,
-        password: values.password,
+  const onSubmit = async (values: any) => {
+    fetchSignup({
+      email: values.email,
+      icon: fileBase64,
+      name: values.name,
+      password: values.password,
+    })
+      .then((_) => {
+        toast({
+          title: "アカウント生成に成功しました。",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        router.push("/");
+      })
+      .catch((error: any) => {
+        toast({
+          title: error.response.data.message as string,
+          status: "error",
+          duration: 10000,
+          isClosable: true,
+        });
       });
-      router.push("/");
-    } catch (e: any) {
-      console.log("signin failed...");
-      if (!e.response.data.message) return;
-      setErrMsg(e.response.data.message);
-    }
-  }
+  };
 
   const [fileUrl, setFileUrl] = useState("");
   const [fileBase64, setFileBase64] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  function processImage(event: React.ChangeEvent<HTMLInputElement>) {
+  const processImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.item(0);
     const allowFileTypes = ["image/jpeg", "image/png"];
     if (!file || !allowFileTypes.includes(file.type)) {
@@ -60,7 +72,7 @@ const Signup: React.VFC = () => {
       setFileBase64(evt.target.result as string);
     };
     fr.readAsDataURL(file);
-  }
+  };
 
   return (
     <Layout>
