@@ -74,6 +74,18 @@ const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
           $path: () => `${prefix}${prefix0}${PATH3}`
         },
         /**
+         * ルームを取得する。
+         * @returns 取得成功
+         */
+        get: (option?: { config?: T }) =>
+          fetch<Methods1['get']['resBody'], BasicHeaders, Methods1['get']['status']>(prefix, prefix0, GET, option).json(),
+        /**
+         * ルームを取得する。
+         * @returns 取得成功
+         */
+        $get: (option?: { config?: T }) =>
+          fetch<Methods1['get']['resBody'], BasicHeaders, Methods1['get']['status']>(prefix, prefix0, GET, option).json().then(r => r.body),
+        /**
          * ルームを削除する。
          */
         delete: (option?: { config?: T }) =>

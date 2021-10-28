@@ -35,6 +35,8 @@ export const useSkywayCredential = (param: Partial<FetchCredentialParam>) => {
   //   `enable: ${userId != undefined && roomId != undefined && authHeader}`
   // );
 
+  // const peerId = ``
+
   const { data, error, mutate } = useSWR<RoomCredentialsResponse>(
     userId != undefined && roomId != undefined && authHeader
       ? [

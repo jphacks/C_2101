@@ -69,6 +69,7 @@ export type SignupRequest = {
 
 export type SkywayCredentialsModel = {
   authToken: string
+  peerId: string
   timestamp: number
   ttl: number
 }

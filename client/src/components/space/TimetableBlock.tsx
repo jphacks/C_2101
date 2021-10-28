@@ -11,7 +11,7 @@ export const TimetableBlock: React.VFC<TimetableBlockProps> = ({ cards }) => {
     <HStack
       bg={"gray.200"}
       w={"100%"}
-      h={56}
+      h={96}
       p={4}
       spacing={4}
       rounded={8}

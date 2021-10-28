@@ -5,6 +5,7 @@ import { Text } from "@chakra-ui/react";
 import { useLogin } from "../../hooks/useLogin";
 import { useSkywayCredential } from "../../hooks/useSkywayCredential";
 import { LTPage } from "../../components/space/LTPage";
+import { useRoom } from "../../hooks/useRoom";
 
 const Room: React.VFC = () => {
   const router = useRouter();
@@ -25,6 +26,11 @@ const Room: React.VFC = () => {
     roomId: roomId,
     userId: user?.id,
     authHeader: authHeader,
+  });
+
+  const { data: room, error: roomError } = useRoom({
+    roomId,
+    authHeader,
   });
 
   console.log({
@@ -49,9 +55,17 @@ const Room: React.VFC = () => {
     );
   }
 
+  if (!room || roomError) {
+    return (
+      <Layout>
+        <Text>Room Not Found</Text>
+      </Layout>
+    );
+  }
+
   return (
     <LTPage
-      room={}
+      room={room}
       user={user}
       authHeader={authHeader}
       credential={credential}
