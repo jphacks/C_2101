@@ -72,7 +72,8 @@ const Signup: React.VFC = () => {
     let fr = new FileReader();
     fr.onload = function (evt) {
       if (evt.target == null || evt.target.result == null) return;
-      setFileBase64(evt.target.result as string);
+      const content = evt.target.result as string;
+      setFileBase64(content.slice(content.indexOf(",") + 1));
     };
     fr.readAsDataURL(file);
   };
