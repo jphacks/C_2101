@@ -16,6 +16,10 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
 
+type FormData = {
+  email: string;
+  password: string;
+};
 const Login: React.VFC = () => {
   const { fetchLogin } = useLogin();
   const router = useRouter();
@@ -25,9 +29,9 @@ const Login: React.VFC = () => {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm<FormData>();
 
-  const handleClickLogin = async (values: any) => {
+  const handleClickLogin = async (values: FormData) => {
     //ここの値はフォームからとる
     fetchLogin({
       email: values.email,
@@ -40,7 +44,6 @@ const Login: React.VFC = () => {
           duration: 5000,
           isClosable: true,
         });
-        console.log(spaceId);
         if (!!spaceId) router.push(`/${spaceId}`);
         else router.push("/");
       })
@@ -61,7 +64,7 @@ const Login: React.VFC = () => {
 
       <Stack spacing={4} maxWidth={500} margin="auto">
         <form onSubmit={handleSubmit(handleClickLogin)}>
-          <FormControl isInvalid={errors.email} mt={4}>
+          <FormControl isInvalid={!!errors.email} mt={4}>
             <FormLabel>メールアドレス</FormLabel>
             <Input
               type="email"
@@ -80,7 +83,7 @@ const Login: React.VFC = () => {
               {errors.email && errors.email.message}
             </FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={errors.password} mt={4}>
+          <FormControl isInvalid={!!errors.password} mt={4}>
             <FormLabel>パスワード</FormLabel>
             <Input
               type="password"
