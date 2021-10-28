@@ -16,6 +16,12 @@ import { useSignup } from "../hooks/useSignup";
 import { useRouter } from "next/router";
 import { useToast } from "@chakra-ui/react";
 import NextLink from "next/link";
+
+type FormData = {
+  email: string;
+  password: string;
+  name: string;
+};
 const Signup: React.VFC = () => {
   const router = useRouter();
   const toast = useToast();
@@ -24,9 +30,9 @@ const Signup: React.VFC = () => {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm<FormData>();
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: FormData) => {
     fetchSignup({
       email: values.email,
       icon: fileBase64,
@@ -79,7 +85,7 @@ const Signup: React.VFC = () => {
 
       <Stack spacing={4} maxWidth={500} margin="auto">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl isInvalid={errors.email} mt={4}>
+          <FormControl isInvalid={!!errors.email} mt={4}>
             <FormLabel>メールアドレス</FormLabel>
             <Input
               type="email"
@@ -98,7 +104,7 @@ const Signup: React.VFC = () => {
               {errors.email && errors.email.message}
             </FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={errors.password} mt={4}>
+          <FormControl isInvalid={!!errors.password} mt={4}>
             <FormLabel>パスワード</FormLabel>
             <Input
               type="password"
@@ -125,7 +131,7 @@ const Signup: React.VFC = () => {
               {errors.password && errors.password.message}
             </FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={errors.name} mt={4}>
+          <FormControl isInvalid={!!errors.name} mt={4}>
             <FormLabel>ユーザーネーム</FormLabel>
             <Input
               type="name"
