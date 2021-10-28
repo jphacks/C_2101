@@ -65,8 +65,7 @@ const Signup: React.VFC = () => {
     }
     const imageUrl = URL.createObjectURL(file);
     setFileUrl(imageUrl);
-
-    var fr = new FileReader();
+    let fr = new FileReader();
     fr.onload = function (evt) {
       if (evt.target == null || evt.target.result == null) return;
       setFileBase64(evt.target.result as string);
