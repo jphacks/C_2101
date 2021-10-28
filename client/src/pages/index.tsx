@@ -1,28 +1,13 @@
 import { Text, Button } from "@chakra-ui/react";
 import React from "react";
-import {
-  Box,
-  Heading,
-  Container,
-  Stack,
-  Icon,
-  useColorModeValue,
-  createIcon,
-} from "@chakra-ui/react";
+import { Box, Heading, Container, Stack, Link } from "@chakra-ui/react";
 import Layout from "../components/layout";
-import { useLogin } from "../hooks/useLogin";
 import NextLink from "next/link";
 
 const Home: React.VFC = () => {
-  const { logout, authHeader, user } = useLogin();
-  const handleClickLogout = async () => {
-    //ここの値はフォームからとる
-    await logout();
-  };
-
   return (
     <Layout>
-      <Container maxW={"3xl"}>
+      <Container maxW={"100vw"}>
         <Stack
           as={Box}
           textAlign={"center"}
@@ -53,19 +38,21 @@ const Home: React.VFC = () => {
             alignSelf={"center"}
             position={"relative"}
           >
-            <Button
-              colorScheme={"green"}
-              bg={"green.400"}
-              rounded={"full"}
-              px={6}
-              _hover={{
-                bg: "green.500",
-              }}
-            >
-              Get Started
-            </Button>
+            <NextLink href={"/explore"} passHref>
+              <Button
+                colorScheme={"green"}
+                bg={"green.400"}
+                rounded={"full"}
+                px={6}
+                _hover={{
+                  bg: "green.500",
+                }}
+              >
+                Get Started
+              </Button>
+            </NextLink>
             <Button variant={"link"} colorScheme={"blue"} size={"sm"}>
-              Learn more
+              <a href={"https://github.com/jphacks/C_2101"}>Learn more</a>
             </Button>
           </Stack>
         </Stack>
