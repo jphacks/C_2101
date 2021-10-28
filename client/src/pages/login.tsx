@@ -45,7 +45,7 @@ const Login: React.VFC = () => {
           isClosable: true,
         });
         if (!!spaceId) router.push(`/${spaceId}`);
-        else router.push("/");
+        else router.push("/explore");
       })
       .catch((error: string) => {
         toast({

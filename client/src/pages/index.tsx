@@ -38,7 +38,7 @@ const Home: React.VFC = () => {
             alignSelf={"center"}
             position={"relative"}
           >
-            <NextLink href={"/explore"} passHref>
+            <NextLink href={"/login"} passHref>
               <Button
                 colorScheme={"green"}
                 bg={"green.400"}
