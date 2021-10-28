@@ -27,7 +27,7 @@ export default function Footer() {
         justify={{ base: "center", md: "center" }}
         align={{ base: "center", md: "center" }}
       >
-        <Text>© 2021 LT Space. All rights reserved</Text>
+        <Text color={"gray.500"}>© 2021 LT Space. All rights reserved</Text>
       </Container>
     </Box>
   );
