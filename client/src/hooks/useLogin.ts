@@ -8,11 +8,7 @@ const userFetcher = async (
     Authorization: string;
   }
 ) => {
-  const res = await client.api.users.me.get({
-    config: {
-      headers: authHeader,
-    },
-  });
+  const res = await client.api.users.me.get();
   return res.body;
 };
 
