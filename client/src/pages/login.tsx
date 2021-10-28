@@ -112,7 +112,7 @@ const Login: React.VFC = () => {
               続行する
             </Button>
             <Text>
-              LT Spaceを初めて利用する場合 :
+              LT Spaceを初めて利用する場合 :{" "}
               <NextLink href={"/signup"} passHref>
                 <Link color="teal.400">無料登録する</Link>
               </NextLink>
