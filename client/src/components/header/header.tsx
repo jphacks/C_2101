@@ -1,6 +1,7 @@
-import { Avatar, Box, Flex, Heading, HStack, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React from "react";
+import UserMenu from "./user-menu";
 
 type Props = {
   contentTitle?: string;
@@ -31,7 +32,7 @@ const Header: React.FC<Props> = ({ contentTitle }) => {
         <Text fontSize={"2xl"}>{contentTitle}</Text>
       </HStack>
       <Box display={"block"} mt={{ base: 4, md: 0 }}>
-        <Avatar name={"user name"} size={"sm"} />
+        <UserMenu />
       </Box>
     </Flex>
   );
