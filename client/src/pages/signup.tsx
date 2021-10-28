@@ -15,6 +15,7 @@ import {
 import { useSignup } from "../hooks/useSignup";
 import { useRouter } from "next/router";
 import { useToast } from "@chakra-ui/react";
+import NextLink from "next/link";
 const Signup: React.VFC = () => {
   const router = useRouter();
   const toast = useToast();
@@ -163,7 +164,14 @@ const Signup: React.VFC = () => {
             >
               続行する
             </Button>
-            アカウントをお持ちの場合 : <Link>ログインする</Link>
+            <Text>
+              アカウントをお持ちの場合 :{" "}
+              <NextLink href={"/login"} passHref>
+                <Link to="/login" color="teal.400">
+                  ログインする
+                </Link>
+              </NextLink>
+            </Text>
           </Stack>
         </form>
       </Stack>
