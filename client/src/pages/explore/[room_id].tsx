@@ -65,11 +65,13 @@ const Room: React.VFC = () => {
               </Heading>
             </Box>
             <Text width="750px" textAlign={"start"}>
-              {room.description}
+              {room.description.split("\n").map((str, index) => (
+                <p key={index}>{str}</p>
+              ))}
             </Text>
 
             <Flex width="100%">
-              <Flex align={"center"}/>
+              <Flex align={"center"} />
               <Spacer />
               <Text fontSize={"0.7rem"} color={"#999999"} fontWeight="bold">
                 開催日: {transform(new Date(room.startAt), "YYYY/MM/DD")}
