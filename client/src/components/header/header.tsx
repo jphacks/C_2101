@@ -11,7 +11,7 @@ const Header: React.FC<Props> = ({ contentTitle }) => {
   return (
     <Flex
       as={"nav"}
-      bg={"gray.800"}
+      bg="#012D45"
       align="center"
       justify="space-between"
       wrap="wrap"
