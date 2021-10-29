@@ -4,6 +4,8 @@ import Layout from "../components/layout";
 import client from "../utils/api-client.factory";
 
 const MakeRoom: React.VFC = () => {
+  //以下テスト用の書きちらし
+  //momentjs使ったほうが良い
   const fetchMakeRoom = async () => {
     const users = [
       {
@@ -80,6 +82,7 @@ const MakeRoom: React.VFC = () => {
         },
       },
     });
+    console.log(roomRes);
     const room = roomRes.rooms[roomRes.rooms.length - 1];
     console.log(room);
 

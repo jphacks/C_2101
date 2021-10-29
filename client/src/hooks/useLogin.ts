@@ -2,7 +2,7 @@ import { useLocalStorage } from "react-use";
 import client from "../utils/api-client.factory";
 import useSWR from "swr";
 
-type AuthHeader = {
+export type AuthHeader = {
   Authorization: string;
 };
 

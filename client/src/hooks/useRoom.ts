@@ -2,20 +2,19 @@ import client from "../utils/api-client.factory";
 
 import useSWR from "swr";
 
-const roomsFetcher = async (key: string) => {
-  const res = await client.api.rooms.get({});
-  return res.body.rooms;
+const roomFetcher = async (key: string, roomId: number) => {
+  return await client.api.rooms._room_id(roomId).$get();
 };
 
-export const useRoom = () => {
-  const { data: rooms, error: roomsError } = useSWR(
-    ["/api/rooms"],
-    roomsFetcher,
+export const useRoom = (roomId: number | undefined) => {
+  const { data: room, error: roomError } = useSWR(
+    roomId ? ["/api/rooms", roomId] : null,
+    roomFetcher,
     {}
   );
 
   return {
-    rooms,
-    roomsError,
+    room,
+    roomError,
   };
 };
