@@ -29,9 +29,7 @@ const Explore: React.VFC = () => {
 
   // 新しいもの順にソート
   rooms.sort((a, b) => {
-    if (a.id < b.id) return 1;
-    if (a.id > b.id) return -1;
-    return 0;
+    return a.startAt < b.startAt ? 1 : -1;
   });
 
   return (
@@ -52,9 +50,7 @@ const Explore: React.VFC = () => {
             </Box>
 
             {rooms.map((room) => (
-              <Flex marginBottom={"20px"} key={room.id}>
-                <RoomCard key={room.id} room={room} />
-              </Flex>
+              <RoomCard key={room.id} room={room} />
             ))}
           </Stack>
         </Stack>
