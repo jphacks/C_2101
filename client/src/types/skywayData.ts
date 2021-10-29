@@ -1,3 +1,6 @@
+import { Timetable } from "./timetable";
+import { Timer } from "./timer";
+
 export type SkywayDataCommon = {
   timestamp: number;
 };
@@ -11,6 +14,7 @@ export type SkywayData = SkywayDataCommon &
     | UpdateAllowList
     | UpdateTimer
     | UpdateTimetable
+    | RequestTimetable
   );
 
 export type ReactionText = {
@@ -49,12 +53,14 @@ export type UpdateAllowList = {
 
 export type UpdateTimer = {
   type: "updateTimer";
-  remainSec: number;
-  section: string;
+  timer: Timer;
 };
 
 export type UpdateTimetable = {
   type: "updateTimetable";
-  remainSec: number;
-  section: string;
+  timetable: Timetable;
+};
+
+export type RequestTimetable = {
+  type: "requestTimetable";
 };

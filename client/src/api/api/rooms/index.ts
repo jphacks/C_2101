@@ -11,7 +11,7 @@ export type Methods = {
 
   /** ルームを作成する。 */
   post: {
-    status: 200
+    status: 201
     /** ルーム作成情報 */
     reqBody: Types.RoomCreateRequest
   }
