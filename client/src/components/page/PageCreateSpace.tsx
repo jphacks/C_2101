@@ -15,7 +15,7 @@ import {
 import { useRouter } from "next/router";
 import client from "../../utils/api-client.factory";
 import { parseAsMoment } from "../../utils/datetime";
-import Layout from "../layout";
+import Layout from "../Layout";
 import DatePicker, { registerLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";

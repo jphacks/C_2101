@@ -1,5 +1,5 @@
 import { TimetableCardProps } from "./TimetableCard";
-import Layout from "../../layout";
+import Layout from "../../Layout";
 import { Box, chakra, Stack, VStack } from "@chakra-ui/react";
 import { MemberBlock } from "./MemberBlock";
 import { TimetableBlock } from "./TimetableBlock";

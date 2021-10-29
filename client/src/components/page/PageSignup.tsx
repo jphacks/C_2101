@@ -14,7 +14,7 @@ import {
 import { useSignup } from "../../hooks/useSignup";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
-import Layout from "../layout";
+import Layout from "../Layout";
 import NextLink from "next/link";
 
 type FormData = {

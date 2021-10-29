@@ -1,6 +1,6 @@
 import { Box, Button, Container, Heading, Stack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
-import Layout from "../layout";
+import Layout from "../Layout";
 import React from "react";
 
 export const PageIndex = () => {

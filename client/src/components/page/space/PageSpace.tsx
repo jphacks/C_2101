@@ -3,7 +3,7 @@ import { useLogin } from "../../../hooks/useLogin";
 import { useSkywayCredential } from "../../../hooks/useSkywayCredential";
 import { useRoom } from "../../../hooks/useRoom";
 import { Authed } from "../../function/Authed";
-import Layout from "../../layout";
+import Layout from "../../Layout";
 import { Text } from "@chakra-ui/react";
 import { SpacePageMain } from "./SpacePageMain";
 

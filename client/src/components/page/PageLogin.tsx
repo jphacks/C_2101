@@ -12,7 +12,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-import Layout from "../layout";
+import Layout from "../Layout";
 import NextLink from "next/link";
 import React, { useEffect } from "react";
 

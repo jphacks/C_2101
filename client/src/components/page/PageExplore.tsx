@@ -1,9 +1,9 @@
 import { useLogin } from "../../hooks/useLogin";
 import { useAllRoom } from "../../hooks/useAllRoom";
-import Layout from "../layout";
+import Layout from "../Layout";
 import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
-import RoomCard from "./room/RoomCard";
+import RoomCard from "./explore/RoomCard";
 import React from "react";
 export const PageExplore = () => {
   const { user } = useLogin();
