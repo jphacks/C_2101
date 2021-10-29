@@ -65,9 +65,11 @@ const Room: React.VFC = () => {
               </Heading>
             </Box>
             <Text width="750px" textAlign={"start"}>
-              {room.description.split("\n").map((str, index) => (
-                <p key={index}>{str}</p>
-              ))}
+              {room.description
+                .split("\n")
+                .map((str, index) =>
+                  str === "" ? <br /> : <p key={index}>{str}</p>
+                )}
             </Text>
 
             <Flex width="100%">
