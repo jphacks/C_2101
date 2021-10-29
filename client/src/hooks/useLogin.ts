@@ -1,12 +1,12 @@
 import { useLocalStorage } from "react-use";
 import client from "../utils/api-client.factory";
 import useSWR from "swr";
-const userFetcher = async (
-  key: string,
-  authHeader: {
-    Authorization: string;
-  }
-) => {
+
+type AuthHeader = {
+  Authorization: string;
+};
+
+const userFetcher = async (key: string, authHeader: AuthHeader) => {
   const res = await client.api.users.me.get();
   return res.body;
 };
