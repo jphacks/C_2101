@@ -1,22 +1,6 @@
 import React from "react";
 import Layout from "../components/layout";
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  Center,
-  Container,
-  Box,
-  Flex,
-  Stack,
-  HStack,
-  VStack,
-  Button,
-  FormErrorMessage,
-  Text,
-  Link,
-  Heading,
-} from "@chakra-ui/react";
+import { Box, Stack, Text, Heading } from "@chakra-ui/react";
 import RoomCard from "../components/room/room-card";
 import { useLogin } from "../hooks/useLogin";
 import { useRoom } from "../hooks/useRoom";
@@ -68,7 +52,7 @@ const Explore: React.VFC = () => {
             </Text>
             {joinRooms.map((room) => (
               <>
-                <RoomCard room={room} key={room.id + 'xx'} />
+                <RoomCard room={room} key={room.id + "xx"} />
                 <br />
               </>
             ))}
