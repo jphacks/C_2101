@@ -2,7 +2,7 @@ import React from "react";
 import Layout from "../components/layout";
 import { Box, Button, Stack, Text, Heading } from "@chakra-ui/react";
 import NextLink from "next/link";
-import RoomCard from "../components/room/room-card";
+import RoomCard from "../components/page/room/RoomCard";
 import { useLogin } from "../hooks/useLogin";
 import { useAllRoom } from "../hooks/useAllRoom";
 
