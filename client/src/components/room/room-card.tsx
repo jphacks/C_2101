@@ -19,14 +19,18 @@ type Props = {
 };
 
 const RoomCard: React.FC<Props> = ({ room }) => {
+  const participants: number = room.speakers.length + room.viewers.length;
+
   return (
     <Stack>
-      <Heading>
+      <Heading as="u">
         <NextLink href={`/explore/${room.id}`} passHref>
           <Link>{room.title}</Link>
         </NextLink>
       </Heading>
       <Text>{room.description}</Text>
+      <Text>{participants}人</Text>
+      <Text>{room.startAt}</Text>
     </Stack>
   );
 };

@@ -34,9 +34,9 @@ const Explore: React.VFC = () => {
       <Stack textAlign={"center"} spacing={{ base: 8, md: 14 }} py={10}>
         <Stack textAlign={"start"}>
           <Heading fontSize="1.5rem">直近開催のイベント</Heading>
-          <Text>こんにちは</Text>
         </Stack>
       </Stack>
+
       {rooms.map((room) => (
         <RoomCard key={room.id} room={room} />
       ))}
