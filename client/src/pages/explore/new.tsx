@@ -94,11 +94,11 @@ const CreateSpace: React.VFC = () => {
   };
   return (
     <Layout>
-      <Stack spacing={4} maxWidth={500} margin="auto" paddingBottom={100}>
+      <Stack spacing={4} maxWidth={500} margin="auto" paddingBottom={50}>
         <Text fontSize="4xl" fontWeight="bold" marginBottom="6" marginTop="12">
           スペースを作成する
         </Text>
-        <Text marginTop={18} fontWeight="bold">
+        <Text marginTop={24} paddingTop={2} fontWeight="bold">
           イベントのタイトル
         </Text>
         <Input
@@ -107,7 +107,7 @@ const CreateSpace: React.VFC = () => {
           onChange={(event) => setTitle(event.target.value)}
           required
         ></Input>
-        <Text marginTop={18} fontWeight="bold">
+        <Text marginTop={24} paddingTop={2} fontWeight="bold">
           イベントの説明
         </Text>
         <Textarea
@@ -116,7 +116,7 @@ const CreateSpace: React.VFC = () => {
           onChange={(event) => setDescription(event.target.value)}
           required
         ></Textarea>
-        <Text marginTop={18} fontWeight="bold">
+        <Text marginTop={24} paddingTop={2} fontWeight="bold">
           開始時間の選択
         </Text>
         <DatePicker
@@ -134,7 +134,7 @@ const CreateSpace: React.VFC = () => {
             </Button>
           }
         />
-        <Text marginTop={18} fontWeight="bold">
+        <Text marginTop={24} paddingTop={2} fontWeight="bold">
           終了時間の選択
         </Text>
         <DatePicker
@@ -150,7 +150,7 @@ const CreateSpace: React.VFC = () => {
             <Button>{parseAsMoment(endDate).format("YYYY/MM/DD HH:mm")}</Button>
           }
         />
-        <Text marginTop={18} fontWeight="bold">
+        <Text marginTop={24} paddingTop={2} fontWeight="bold">
           発表時間
         </Text>
         <Stack direction={["column", "row"]} spacing="24px" alignItems="center">
@@ -171,10 +171,15 @@ const CreateSpace: React.VFC = () => {
           </NumberInput>
           <Text>分</Text>
         </Stack>
-        <Text marginTop={18} fontWeight="bold">
+        <Text marginTop={24} paddingTop={2} fontWeight="bold">
           質問時間
         </Text>
-        <Stack direction={["column", "row"]} spacing="24px" alignItems="center">
+        <Stack
+          direction={["column", "row"]}
+          spacing="24px"
+          alignItems="center"
+          paddingBottom={8}
+        >
           <NumberInput
             min={0}
             max={60}
@@ -191,7 +196,7 @@ const CreateSpace: React.VFC = () => {
           <Text>分</Text>
         </Stack>
 
-        <Button marginTop={42} onClick={create}>
+        <Button marginTop={42} onClick={create} bg="teal.400" color="white">
           作成する
         </Button>
       </Stack>
