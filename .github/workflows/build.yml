@@ -28,6 +28,13 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
+      - name: Run front-end build
+        run: |
+          cd client
+          npm install
+          npm run build
+          cd ../
+
       - name: Run back-end build
         run: |
           ./gradlew build -x test
