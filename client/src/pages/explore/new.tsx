@@ -40,7 +40,7 @@ const CreateSpace: React.VFC = () => {
   const router = useRouter();
   const { authHeader } = useLogin();
   const create = async () => {
-    if (!title || !description) {
+    if (!title || !description || !authHeader) {
       toast({
         title: "タイトル・説明は必須です",
         status: "error",
