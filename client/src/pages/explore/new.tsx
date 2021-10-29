@@ -196,7 +196,15 @@ const CreateSpace: React.VFC = () => {
           <Text>分</Text>
         </Stack>
 
-        <Button marginTop={42} onClick={create} bg="teal.400" color="white">
+        <Button
+          marginTop={42}
+          onClick={create}
+          bg="teal.400"
+          color="white"
+          _hover={{
+            bg: "teal.500",
+          }}
+        >
           作成する
         </Button>
       </Stack>
