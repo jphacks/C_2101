@@ -4,8 +4,13 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Center,
+  Container,
+  Box,
   Flex,
   Stack,
+  HStack,
+  VStack,
   Button,
   FormErrorMessage,
   Text,
@@ -31,15 +36,29 @@ const Explore: React.VFC = () => {
 
   return (
     <Layout>
-      <Stack textAlign={"center"} spacing={{ base: 8, md: 14 }} py={10}>
-        <Stack textAlign={"start"}>
-          <Heading fontSize="1.5rem">直近開催のイベント</Heading>
+      <Stack maxW={"100vw"}>
+        <Stack align={"center"}>
+          <Stack
+            align={"start"}
+            textAlign={"center"}
+            spacing={{ base: 8, md: 14 }}
+            py={10}
+            flex={"center"}
+          >
+            <Box width="750px" borderBottom="4px" borderColor={"teal.400"}>
+              <Heading fontSize="1.5rem" textAlign={"start"}>
+                直近開催のイベント
+              </Heading>
+            </Box>
+
+            {rooms.map((room) => (
+              <Flex marginBottom={"20px"} key={room.id}>
+                <RoomCard key={room.id} room={room} />
+              </Flex>
+            ))}
+          </Stack>
         </Stack>
       </Stack>
-
-      {rooms.map((room) => (
-        <RoomCard key={room.id} room={room} />
-      ))}
     </Layout>
   );
 };
