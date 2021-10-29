@@ -4,11 +4,11 @@ import { Box, Button, Stack, Text, Heading } from "@chakra-ui/react";
 import NextLink from "next/link";
 import RoomCard from "../components/room/room-card";
 import { useLogin } from "../hooks/useLogin";
-import { useRoom } from "../hooks/useRoom";
+import { useAllRoom } from "../hooks/useAllRoom";
 
 const Explore: React.VFC = () => {
   const { user } = useLogin();
-  const { rooms } = useRoom();
+  const { rooms } = useAllRoom();
 
   if (!rooms || !user) {
     return <></>;
@@ -17,7 +17,7 @@ const Explore: React.VFC = () => {
   // 参加登録したルーム
   const now = new Date();
   const joinRooms = rooms.filter((room) => {
-    if (now > room.finishAt) {
+    if (now > new Date(room.finishAt)) {
       return false;
     }
 
