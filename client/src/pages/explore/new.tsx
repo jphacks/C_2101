@@ -14,7 +14,10 @@ import React, { useState } from "react";
 import Layout from "../../components/layout";
 import NextLink from "next/link";
 
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
+import ja from "date-fns/locale/ja";
+registerLocale("ja", ja);
+
 import "react-datepicker/dist/react-datepicker.css";
 import { parseAsMoment } from "../../utils/datetime";
 
@@ -46,6 +49,7 @@ const CreateSpace: React.VFC = () => {
           timeFormat="p"
           timeIntervals={15}
           dateFormat="Pp"
+          locale="ja"
           //   inline
           customInput={
             <Button>
@@ -57,17 +61,16 @@ const CreateSpace: React.VFC = () => {
           終了時間の選択
         </Text>
         <DatePicker
-          selected={startDate}
-          onChange={(date: Date) => setStartDate(date)}
+          selected={endDate}
+          onChange={(date: Date) => setEndDate(date)}
           showTimeSelect
           timeFormat="p"
           timeIntervals={15}
           dateFormat="Pp"
+          locale="ja"
           //   inline
           customInput={
-            <Button>
-              {parseAsMoment(startDate).format("YYYY/MM/DD HH:mm")}
-            </Button>
+            <Button>{parseAsMoment(endDate).format("YYYY/MM/DD HH:mm")}</Button>
           }
         />
         <Text marginTop={18} fontWeight="bold">
