@@ -9,7 +9,8 @@ import {
 import { UserType } from "../components/space/MemberItem";
 import { CommentProps } from "../components/space/CommentItem";
 import { SkywayData } from "../types/skywayData";
-import { Timetable, TimetableSession } from "../types/timetable";
+import { useSyncTimer } from "./useSyncTimer";
+import { useSyncTimetable } from "./useSyncTimetable";
 
 type UseLTPageParam = {
   roomInfo: RoomResponse;
@@ -19,7 +20,7 @@ type UseLTPageParam = {
   cameraVideoRef: RefObject<HTMLVideoElement>;
 };
 
-type Member = Omit<UserResponse, "email"> & {
+export type Member = Omit<UserResponse, "email"> & {
   isOnline: boolean;
   type: UserType;
   isOwner: boolean;
@@ -36,6 +37,9 @@ export const useSkywayRoom = ({
   screenVideoRef,
   cameraVideoRef,
 }: UseLTPageParam) => {
+  const isOwner = roomInfo.owner.id === clientUser.id;
+  const isSpeaker = roomInfo.speakers.some((item) => item.id === clientUser.id);
+
   const peerRef = useRef<Peer>();
   const roomRef = useRef<SfuRoom>();
 
@@ -44,37 +48,25 @@ export const useSkywayRoom = ({
   const localStreamRef = useRef<MediaStream>();
 
   const [commentList, { push: pushComment }] = useList<CommentProps>();
-  const [timetable, setTimetable] = useState<Timetable>({
-    sessions: [],
-    pointer: {
-      inSession: false,
-    },
+  const {
+    state: timetable,
+    timetableAction,
+    getCurrentPresentingUser,
+  } = useSyncTimetable({
+    roomRef: roomRef,
+    isOwner: isOwner,
+    roomInfo: roomInfo,
+    memberFetcher: (peerId) => getMemberFromPeerId(peerId),
   });
 
-  const setWithSendTimetable = (value: Timetable) => {
-    setTimetable(value);
-    sendTimetable(value);
-  };
-
-  const sendTimetable = (value?: Timetable) => {
-    const data: SkywayData = {
-      type: "updateTimetable",
-      timestamp: createTimestamp(),
-      timetable: value ?? timetable,
-    };
-    roomRef.current?.send(data);
-    if (roomRef.current) {
-      console.log("sendTimetable", data);
-    }
-  };
+  const { calcRemainTimerSec, timerAction } = useSyncTimer({
+    roomRef: roomRef,
+    memberFetcher: (peerId) => getMemberFromPeerId(peerId),
+    isOwner: isOwner,
+  });
 
   //初期化
   useAsync(async () => {
-    const isOwner = roomInfo.owner.id === clientUser.id;
-    const isSpeaker = roomInfo.speakers.some(
-      (item) => item.id === clientUser.id
-    );
-
     //とりあえずオーナーとspeakerにはマイクとカメラ許可を求める
     const localStream =
       isOwner || isSpeaker
@@ -115,48 +107,6 @@ export const useSkywayRoom = ({
           timestamp: new Date(),
           textColor: "teal.800",
         });
-
-        //オーナーなら
-        if (isOwner) {
-          const speakersSorted = roomInfo.speakers.sort(
-            (a, b) => a.speakerOrder - b.speakerOrder
-          );
-          const entries: TimetableSession[] = speakersSorted.map((speaker) => {
-            return {
-              user: speaker,
-              title: speaker.title,
-              section: [
-                {
-                  sectionTitle: "発表",
-                  lengthSec: roomInfo.presentationTimeLimit,
-                },
-                {
-                  sectionTitle: "質疑応答",
-                  lengthSec: roomInfo.presentationTimeLimit,
-                },
-              ],
-            };
-          });
-          setWithSendTimetable({
-            sessions: entries,
-            pointer: {
-              inSession: false,
-              // inSession: true,
-              // current: 0,
-            },
-          });
-
-          //テスト用
-          setTimeout(() => {
-            setWithSendTimetable({
-              sessions: entries,
-              pointer: {
-                inSession: true,
-                current: 0,
-              },
-            });
-          }, 5000);
-        }
       });
       sfuRoom.on("peerJoin", (peerId) => {
         const updatedMembers = updateMembers();
@@ -166,9 +116,6 @@ export const useSkywayRoom = ({
           timestamp: new Date(),
           textColor: "teal.800",
         });
-        if (isOwner) {
-          sendTimetable();
-        }
       });
       sfuRoom.on("peerLeave", (peerId) => {
         const updatedMembers = updateMembers();
@@ -193,11 +140,6 @@ export const useSkywayRoom = ({
           });
           return;
         }
-
-        if (data.type === "updateTimetable") {
-          console.log("timetableUpdated");
-          setTimetable(data.timetable);
-        }
       });
 
       sfuRoom.on("stream", (stream) => {
@@ -217,11 +159,10 @@ export const useSkywayRoom = ({
 
   //見ているstreamの更新
   useEffect(() => {
-    if (!timetable.pointer.inSession) return;
-    const session = timetable.sessions[timetable.pointer.current];
-    if (!session) return;
+    const presentingUser = getCurrentPresentingUser();
+    if (!presentingUser) return;
 
-    if (session.user.id === clientUser.id) {
+    if (presentingUser.id === clientUser.id) {
       //自分
       if (!localStreamRef.current) return;
       cameraVideoRef.current!.srcObject = localStreamRef.current;
@@ -229,18 +170,18 @@ export const useSkywayRoom = ({
       void cameraVideoRef.current!.play();
     } else {
       //他の人
-      const stream = streamMapRef.current[session.user.id];
+      const stream = streamMapRef.current[presentingUser.id];
       if (!stream) {
         console.log("stream is not received");
         return;
       }
 
-      console.log(`display stream from ${session.user.id}`);
+      console.log(`display stream from ${presentingUser.id}`);
       cameraVideoRef.current!.srcObject = stream;
       cameraVideoRef.current!.playsInline = true;
       void cameraVideoRef.current!.play();
     }
-  }, [cameraVideoRef, clientUser.id, timetable]);
+  }, [cameraVideoRef, clientUser.id, getCurrentPresentingUser]);
 
   const sendComment = (text: string) => {
     const timestamp = new Date();
@@ -299,12 +240,14 @@ export const useSkywayRoom = ({
   };
 
   return {
-    peerRef,
-    roomRef,
     isEnteredRoom,
     members,
     sendComment,
     commentList,
     timetable,
+    timetableAction,
+    calcRemainTimerSec,
+    timerAction,
+    isOwner,
   };
 };

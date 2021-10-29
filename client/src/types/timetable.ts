@@ -3,11 +3,15 @@ import { UserResponse } from "../api/@types";
 export type Timetable = {
   pointer:
     | {
-        inSession: false;
+        progress: "waitingStart";
       }
     | {
-        inSession: true;
-        current: number;
+        progress: "inSession";
+        currentSession: number;
+        currentSection: number;
+      }
+    | {
+        progress: "finished";
       };
   sessions: TimetableSession[];
 };

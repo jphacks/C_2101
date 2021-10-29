@@ -4,7 +4,6 @@ import { Box, chakra, Stack, VStack } from "@chakra-ui/react";
 import { MemberBlock } from "./MemberBlock";
 import { TimetableBlock } from "./TimetableBlock";
 import { ConfigBlock } from "./ConfigBlock";
-import { TimerBlock } from "./TimerBlock";
 import { CommentBlock } from "./CommentBlock";
 import React, { useRef } from "react";
 import { AuthHeader } from "../../hooks/useLogin";
@@ -14,6 +13,7 @@ import {
   UserResponse,
 } from "../../api/@types";
 import { useSkywayRoom } from "../../hooks/useSkywayRoom";
+import { TimerBlockContainer } from "./TimerBlockContainer";
 
 const Video = chakra("video");
 
@@ -36,13 +36,15 @@ export const LTPage: React.VFC<LTPageProps> = ({
   const cameraVideoRef = useRef<HTMLVideoElement>(null);
 
   const {
-    roomRef,
-    peerRef,
-    members,
     isEnteredRoom,
-    commentList,
+    members,
     sendComment,
+    commentList,
     timetable,
+    timetableAction,
+    calcRemainTimerSec,
+    timerAction,
+    isOwner,
   } = useSkywayRoom({
     roomInfo: room,
     clientUser: user,
@@ -63,11 +65,11 @@ export const LTPage: React.VFC<LTPageProps> = ({
       if (item.user.id === user.id) {
         tags.push("You");
       }
-      if (timetable.pointer.inSession) {
-        if (timetable.pointer.current === index) {
+      if (timetable.pointer.progress === "inSession") {
+        if (timetable.pointer.currentSession === index) {
           tags.push("Presenting");
         }
-        if (timetable.pointer.current + 1 === index) {
+        if (timetable.pointer.currentSession + 1 === index) {
           tags.push("Next");
         }
       }
@@ -102,7 +104,13 @@ export const LTPage: React.VFC<LTPageProps> = ({
             />
           </Box>
           <ConfigBlock />
-          <TimerBlock remainSec={200} fullSec={300} sectionTitle={"発表"} />
+          <TimerBlockContainer
+            isOwner={isOwner}
+            timetable={timetable}
+            timerAction={timerAction}
+            timetableAction={timetableAction}
+            calcRemainTimerSec={calcRemainTimerSec}
+          />
           <CommentBlock comments={commentList} onSubmit={handleSubmit} />
         </VStack>
       </Stack>

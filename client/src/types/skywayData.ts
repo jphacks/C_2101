@@ -1,4 +1,5 @@
 import { Timetable } from "./timetable";
+import { Timer } from "./timer";
 
 export type SkywayDataCommon = {
   timestamp: number;
@@ -52,8 +53,7 @@ export type UpdateAllowList = {
 
 export type UpdateTimer = {
   type: "updateTimer";
-  remainSec: number;
-  section: string;
+  timer: Timer;
 };
 
 export type UpdateTimetable = {
