@@ -61,7 +61,9 @@ export const PageLogin = () => {
   useEffect(() => {
     //すでにログイン済み
     if (user) {
-      void router.push(String(router.query["next"]) ?? "/explore");
+      void router.push(
+        router.query["next"] ? String(router.query["next"]) : "/explore"
+      );
     }
   }, [router, user]);
 
