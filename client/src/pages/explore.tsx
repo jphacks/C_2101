@@ -1,6 +1,7 @@
 import React from "react";
 import Layout from "../components/layout";
-import { Box, Stack, Text, Heading } from "@chakra-ui/react";
+import { Box, Button, Stack, Text, Heading } from "@chakra-ui/react";
+import NextLink from "next/link";
 import RoomCard from "../components/room/room-card";
 import { useLogin } from "../hooks/useLogin";
 import { useRoom } from "../hooks/useRoom";
@@ -39,6 +40,52 @@ const Explore: React.VFC = () => {
 
   return (
     <Layout>
+      <Stack
+        as={Box}
+        textAlign={"center"}
+        spacing={{ base: 8, md: 14 }}
+        paddingTop={{ base: 20, md: 36 }}
+      >
+        <Heading
+          fontWeight={600}
+          fontSize={{ base: "2xl", sm: "4xl", md: "6xl" }}
+          lineHeight={"110%"}
+        >
+          新しいLT Spaceへようこそ <br />
+          <Text as={"span"} color={"green.400"} fontSize="3rem">
+            video conferencing service
+          </Text>
+        </Heading>
+
+        <Text color={"gray.500"}>
+          LT
+          Spaceはオンライン発表会に特化したクラウドベースなビデオチャットプラットフォームです。
+          <br />
+          コミュニティ内でのLT会や勉強会など、快適なオンライン発表環境を提供します。
+        </Text>
+        <Stack
+          direction={"column"}
+          spacing={3}
+          align={"center"}
+          alignSelf={"center"}
+          position={"relative"}
+        >
+          <NextLink href={"/explore/new"} passHref>
+            <Button
+              colorScheme={"green"}
+              bg={"green.400"}
+              rounded={"full"}
+              px={6}
+              _hover={{
+                bg: "green.500",
+              }}
+            >
+              ルームを作成する
+            </Button>
+          </NextLink>
+        </Stack>
+      </Stack>
+
       <Stack maxW={"100vw"}>
         <Stack align={"center"}>
           <Stack align={"start"} textAlign={"center"} py={10} flex={"center"}>
@@ -48,7 +95,9 @@ const Explore: React.VFC = () => {
               </Heading>
             </Box>
             <Text>
-              {joinRooms.length === 0 ? "参加登録したルームはありません。" : ""}
+              {joinRooms.length === 0
+                ? "参加登録しているルームはありません。"
+                : ""}
             </Text>
             {joinRooms.map((room) => (
               <>
