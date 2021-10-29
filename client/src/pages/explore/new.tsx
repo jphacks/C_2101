@@ -15,14 +15,14 @@ import Layout from "../../components/layout";
 import DatePicker, { registerLocale } from "react-datepicker";
 import client from "../../utils/api-client.factory";
 import { useLogin } from "../../hooks/useLogin";
+import { useToast } from "@chakra-ui/react";
 import "react-datepicker/dist/react-datepicker.css";
 import { parseAsMoment } from "../../utils/datetime";
 import ja from "date-fns/locale/ja";
+import { useRouter } from "next/router";
 registerLocale("ja", ja);
 
 const CreateSpace: React.VFC = () => {
-  const initialDate = new Date();
-
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [title, setTitle] = useState<string>("");
@@ -30,24 +30,45 @@ const CreateSpace: React.VFC = () => {
   const [presentationTimeLimit, setPresentationTimeLimit] =
     useState<number>(10);
   const [questionTimeLimit, setQuestionTimeLimit] = useState<number>(3);
-
+  const toast = useToast();
+  const router = useRouter();
   const { authHeader } = useLogin();
   const create = async () => {
-    await client.api.rooms.$post({
-      body: {
-        description: description,
-        startAt: parseAsMoment(startDate).toISOString(),
-        finishAt: parseAsMoment(endDate).toISOString(),
-        presentationTimeLimit: presentationTimeLimit,
-        questionTimeLimit: questionTimeLimit,
-        title: title,
-      },
-      config: {
-        headers: {
-          Authorization: authHeader,
+    const createRoom = async () => {
+      return await client.api.rooms.$post({
+        body: {
+          description: description,
+          startAt: parseAsMoment(startDate).add(9, "h").toISOString(),
+          finishAt: parseAsMoment(endDate).add(9, "h").toISOString(),
+          presentationTimeLimit: presentationTimeLimit,
+          questionTimeLimit: questionTimeLimit,
+          title: title,
         },
-      },
-    });
+        config: {
+          headers: {
+            Authorization: authHeader.Authorization,
+          },
+        },
+      });
+    };
+    await createRoom()
+      .then(() => {
+        toast({
+          title: "スペース予定を作成しました",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        router.push("/explore");
+      })
+      .catch((error: string) => {
+        toast({
+          title: error as string,
+          status: "error",
+          duration: 10000,
+          isClosable: true,
+        });
+      });
   };
   return (
     <Layout>
