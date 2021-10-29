@@ -23,6 +23,7 @@
     "framer-motion": "^4.1.17",
     "next": "11.1.2",
     "react": "17.0.2",
+    "react-datepicker": "^4.3.0",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.17.5",
     "react-icons": "^4.3.1",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@types/react": "17.0.31",
+    "@types/react-datepicker": "^4.1.7",
     "@typescript-eslint/eslint-plugin": "^4.30.0",
     "@typescript-eslint/parser": "^4.30.0",
     "eslint": "^7.32.0",
