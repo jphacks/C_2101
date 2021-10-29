@@ -12,11 +12,19 @@ import {
 import { transform } from "../../utils/datetime";
 import React from "react";
 import { useRoom } from "../../hooks/useRoom";
+import { useJoinRoom } from "../../hooks/useJoinRoom";
+import { useUnJoinRoom } from "../../hooks/useUnJoinRoom";
+import { useRouter } from "next/router";
 
 export const PageSpaceDetail: React.VFC<{
   roomId: number;
 }> = ({ roomId }) => {
-  const { room } = useRoom(roomId);
+  const { room, mutate } = useRoom(roomId);
+
+  const fetchJoin = useJoinRoom(roomId);
+  const fetchUnJoin = useUnJoinRoom(roomId);
+
+  const router = useRouter();
 
   if (!room || !roomId) {
     return (
@@ -25,6 +33,17 @@ export const PageSpaceDetail: React.VFC<{
       </Layout>
     );
   }
+
+  const handleClickJoin = async () => {
+    // await fetchJoin({
+    //   type:
+    // }).then()
+    //最後にmutateを叩かないと画面に表示されてる状態が更新されない
+  };
+
+  const handleClickEnterRoom = async () => {
+    await router.push(`/space/${roomId}`);
+  };
 
   return (
     <Layout>
