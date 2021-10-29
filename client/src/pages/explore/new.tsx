@@ -25,6 +25,12 @@ const CreateSpace: React.VFC = () => {
   const initialDate = new Date();
 
   const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [presentationTimeLimit, setPresentationTimeLimit] =
+    useState<number>(10);
+  const [questionTimeLimit, setQuestionTimeLimit] = useState<number>(3);
   return (
     <Layout>
       <Stack spacing={4} maxWidth={500} margin="auto" paddingBottom={200}>
@@ -34,11 +40,19 @@ const CreateSpace: React.VFC = () => {
         <Text marginTop={18} fontWeight="bold">
           イベントのタイトル
         </Text>
-        <Input placeholder="イベントのタイトル"></Input>
+        <Input
+          placeholder="イベントのタイトル"
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+        ></Input>
         <Text marginTop={18} fontWeight="bold">
           イベントの説明
         </Text>
-        <Textarea placeholder="イベントの説明"></Textarea>
+        <Textarea
+          placeholder="イベントの説明"
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
+        ></Textarea>
         <Text marginTop={18} fontWeight="bold">
           開始時間の選択
         </Text>
@@ -74,10 +88,15 @@ const CreateSpace: React.VFC = () => {
           }
         />
         <Text marginTop={18} fontWeight="bold">
-          プレゼンテーション持ち時間
+          発表時間
         </Text>
         <Stack direction={["column", "row"]} spacing="24px" alignItems="center">
-          <NumberInput defaultValue={10} min={1} max={190} maxWidth={100}>
+          <NumberInput
+            min={1}
+            max={190}
+            value={presentationTimeLimit}
+            onChange={() => (value: number) => setPresentationTimeLimit(value)}
+          >
             <NumberInputField />
             <NumberInputStepper>
               <NumberIncrementStepper />
@@ -90,7 +109,13 @@ const CreateSpace: React.VFC = () => {
           質問時間
         </Text>
         <Stack direction={["column", "row"]} spacing="24px" alignItems="center">
-          <NumberInput defaultValue={3} min={0} max={60} maxWidth={100}>
+          <NumberInput
+            min={0}
+            max={60}
+            maxWidth={100}
+            value={questionTimeLimit}
+            onChange={() => (value: number) => setQuestionTimeLimit(value)}
+          >
             <NumberInputField />
             <NumberInputStepper>
               <NumberIncrementStepper />
