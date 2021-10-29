@@ -62,7 +62,11 @@ export const PageSpaceDetail: React.VFC<{
               </Heading>
             </Box>
             <Text width="750px" textAlign={"start"}>
-              {room.description}
+              {room.description
+                .split("\n")
+                .map((str, index) =>
+                  str === "" ? <br /> : <p key={index}>{str}</p>
+                )}
             </Text>
 
             <Flex width="100%">
