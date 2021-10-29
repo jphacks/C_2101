@@ -21,7 +21,7 @@ import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
 registerLocale("ja", ja);
 
-export const PageNewExplore = () => {
+export const PageCreateSpace = () => {
   const now = new Date();
   const defaultDate = new Date();
   defaultDate.setHours(now.getHours() + 2);

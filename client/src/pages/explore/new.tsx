@@ -1,11 +1,11 @@
 import React from "react";
 import { Authed } from "../../components/function/Authed";
-import { PageNewExplore } from "../../components/page/PageNewExplore";
+import { PageCreateSpace } from "../../components/page/PageCreateSpace";
 
 const CreateSpace: React.VFC = () => {
   return (
     <Authed>
-      <PageNewExplore />
+      <PageCreateSpace />
     </Authed>
   );
 };
