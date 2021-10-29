@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import React from "react";
-import Layout from "../components/layout";
+import Layout from "../components/Layout";
 import client from "../utils/api-client.factory";
 
 const MakeRoom: React.VFC = () => {

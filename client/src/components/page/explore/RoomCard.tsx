@@ -9,8 +9,8 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
-import type * as Types from "../../api/@types";
-import { transform } from "../../utils/datetime";
+import type * as Types from "../../../api/@types";
+import { transform } from "../../../utils/datetime";
 
 type Props = {
   room: Types.RoomResponse;
@@ -24,9 +24,7 @@ const RoomCard: React.FC<Props> = ({ room }) => {
       <Flex>
         <Heading as="u" fontSize={"1.3rem"} textAlign={"start"} width="600px">
           <NextLink href={`/explore/${room.id}`} passHref>
-            <Link>
-              {room.title}
-            </Link>
+            <Link>{room.title}</Link>
           </NextLink>
         </Heading>
         <Spacer />
