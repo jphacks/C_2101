@@ -1,32 +1,21 @@
 import client from "../utils/api-client.factory";
-import { AuthHeader } from "./useLogin";
+
 import useSWR from "swr";
 
-const roomFetcher = async (
-  key: string,
-  roomId: number,
-  authHeader: AuthHeader
-) => {
-  return await client.api.rooms._room_id(roomId).$get({
-    config: {
-      headers: authHeader,
-    },
-  });
+const roomsFetcher = async (key: string) => {
+  const res = await client.api.rooms.get({});
+  return res.body.rooms;
 };
 
-type UseRoomParam = {
-  authHeader: AuthHeader;
-  roomId: number;
-};
-
-export const useRoom = ({ authHeader, roomId }: Partial<UseRoomParam>) => {
-  const { data, error } = useSWR(
-    authHeader && roomId ? ["/api/room/{roomId}", roomId, authHeader] : null,
-    roomFetcher
+export const useRoom = () => {
+  const { data: rooms, error: roomsError } = useSWR(
+    ["/api/rooms"],
+    roomsFetcher,
+    {}
   );
 
   return {
-    data,
-    error,
+    rooms,
+    roomsError,
   };
 };

@@ -1,17 +1,13 @@
 import { useLocalStorage } from "react-use";
 import client from "../utils/api-client.factory";
 import useSWR from "swr";
-
-export type AuthHeader = {
-  Authorization: string;
-};
-
-const userFetcher = async (key: string, authHeader: AuthHeader) => {
-  const res = await client.api.users.me.get({
-    config: {
-      headers: authHeader,
-    },
-  });
+const userFetcher = async (
+  key: string,
+  authHeader: {
+    Authorization: string;
+  }
+) => {
+  const res = await client.api.users.me.get();
   return res.body;
 };
 
@@ -39,11 +35,7 @@ export const useLogin = () => {
     data: user,
     error: userError,
     mutate: mutateUser,
-  } = useSWR(authHeader ? ["/api/users/me", authHeader] : null, userFetcher, {
-    onError: (_) => {
-      destroyAuthHeader();
-    },
-  });
+  } = useSWR(authHeader ? ["/api/users/me"] : null, userFetcher, {});
   //onError未使用になってるけど呼ばれるんだよなあ
 
   const logout = async () => {

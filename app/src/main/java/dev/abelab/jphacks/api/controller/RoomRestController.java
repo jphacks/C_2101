@@ -11,6 +11,7 @@ import dev.abelab.jphacks.annotation.Authenticated;
 import dev.abelab.jphacks.api.request.RoomCreateRequest;
 import dev.abelab.jphacks.api.request.RoomJoinRequest;
 import dev.abelab.jphacks.api.request.RoomAuthenticateRequest;
+import dev.abelab.jphacks.api.response.RoomResponse;
 import dev.abelab.jphacks.api.response.RoomsResponse;
 import dev.abelab.jphacks.api.response.RoomCredentialsResponse;
 import dev.abelab.jphacks.db.entity.User;
@@ -25,6 +26,34 @@ import dev.abelab.jphacks.service.RoomService;
 public class RoomRestController {
 
     private final RoomService roomService;
+
+    /**
+     * ルーム取得API
+     *
+     * @param loginUser ログインユーザ
+     * @param roomId    ルームID
+     *
+     * @return ルーム
+     */
+    @ApiOperation( //
+        value = "ルームの取得", //
+        notes = "ルームを取得する。" //
+    )
+    @ApiResponses( //
+        value = { //
+                @ApiResponse(code = 200, message = "取得成功", response = RoomResponse.class), //
+                @ApiResponse(code = 401, message = "ユーザがログインしていない"), //
+                @ApiResponse(code = 404, message = "ルームが存在しない"), //
+        } //
+    )
+    @GetMapping(value = "/{room_id}")
+    @ResponseStatus(HttpStatus.OK)
+    public RoomResponse getRoom( //
+        @ModelAttribute("LoginUser") final User loginUser, //
+        @ApiParam(name = "room_id", required = true, value = "ルームID") @PathVariable("room_id") final int roomId //
+    ) {
+        return this.roomService.getRoom(roomId, loginUser);
+    }
 
     /**
      * ルーム一覧取得API
@@ -120,7 +149,7 @@ public class RoomRestController {
                 @ApiResponse(code = 200, message = "登録成功"), //
                 @ApiResponse(code = 400, message = "参加登録できないルーム"), //
                 @ApiResponse(code = 401, message = "ユーザがログインしていない"), //
-                @ApiResponse(code = 404, message = "ルームが存在しない"), //
+                @ApiResponse(code = 404, message = "ルームが存在しない/参加タイプが存在しない"), //
                 @ApiResponse(code = 409, message = "既に参加登録済み"), //
         } //
     )
