@@ -8,10 +8,10 @@ axios.interceptors.request.use((config: AxiosRequestConfig) => {
   const itemStr = localStorage.getItem("lt-space-auth-token");
   if (itemStr) {
     const authorization = JSON.parse(itemStr) as AuthHeader;
-    console.log(authorization);
+    // console.log(authorization);
     config.headers = {
-      ...config.headers,
       ...authorization,
+      ...config.headers,
     };
   }
   return config;
