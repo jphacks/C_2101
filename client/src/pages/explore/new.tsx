@@ -34,6 +34,15 @@ const CreateSpace: React.VFC = () => {
   const router = useRouter();
   const { authHeader } = useLogin();
   const create = async () => {
+    if (!title || !description) {
+      toast({
+        title: "タイトル・説明は必須です",
+        status: "error",
+        duration: 10000,
+        isClosable: true,
+      });
+      return;
+    }
     const createRoom = async () => {
       return await client.api.rooms.$post({
         body: {
