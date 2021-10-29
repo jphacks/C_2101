@@ -35,8 +35,8 @@ export const TimerBlockContainer: React.VFC<TimerBlockContainerProps> = ({
   const timerFullSec = currentSection?.lengthSec ?? 0;
   useInterval(() => {
     const remainSec = calcRemainTimerSec(timerFullSec, Date.now());
-    console.log("count down", remainSec);
-    console.log(currentSection);
+    // console.log("count down", remainSec);
+    // console.log(currentSection);
     setTimerRemainSec(remainSec);
   }, 1000);
 

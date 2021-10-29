@@ -1,9 +1,9 @@
 import { MutableRefObject, useCallback, useEffect, useState } from "react";
 import { RoomData, SfuRoom } from "skyway-js";
-import { Member } from "./useSkywayRoom";
 import { Timetable, TimetableSession } from "../types/timetable";
 import { RoomResponse } from "../api/@types";
 import { SkywayData } from "../types/skywayData";
+import { Member } from "./useRoom";
 
 type UseSyncTimetableParam = {
   isOwner: boolean;

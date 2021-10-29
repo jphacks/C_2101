@@ -1,14 +1,29 @@
 import React from "react";
 import { Box, HStack, StackDivider, Text, VStack } from "@chakra-ui/react";
 import { MemberItem, UserWithStatus } from "./MemberItem";
+import { Member } from "../../hooks/useRoom";
+import { MemberStatus } from "../../hooks/useSyncMemberStatus";
 
 type MemberBlockProps = {
-  members: UserWithStatus[];
+  members: Member[];
+  memberStateMap: Record<number, MemberStatus>;
 };
 
-export const MemberBlock: React.VFC<MemberBlockProps> = ({ members }) => {
-  const onlineMembers = members.filter((member) => member.isOnline);
-  const offlineMembers = members.filter((member) => !member.isOnline);
+export const MemberBlock: React.VFC<MemberBlockProps> = ({
+  members,
+  memberStateMap,
+}) => {
+  const memberWithStatus = members.map((member) => ({
+    ...member,
+    ...memberStateMap[member.id],
+  }));
+
+  const onlineMembers = memberWithStatus.filter(
+    (member) => memberStateMap[member.id]?.isOnline
+  );
+  const offlineMembers = memberWithStatus.filter(
+    (member) => !memberStateMap[member.id]?.isOnline
+  );
 
   return (
     <Box bg={"gray.200"} w={"100%"} h={40} p={2} rounded={8}>

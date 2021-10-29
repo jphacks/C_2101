@@ -28,7 +28,7 @@ const Room: React.VFC = () => {
     authHeader: authHeader,
   });
 
-  const { room, roomError } = useRoom(roomId);
+  const { room, roomError, userMap, userList } = useRoom(roomId);
 
   console.log({
     roomId: roomId,
@@ -52,7 +52,7 @@ const Room: React.VFC = () => {
     );
   }
 
-  if (!room || roomError) {
+  if (!room || roomError || !userList || !userMap) {
     return (
       <Layout>
         <Text>Room Not Found</Text>
@@ -63,6 +63,8 @@ const Room: React.VFC = () => {
   return (
     <LTPage
       room={room}
+      memberList={userList}
+      memberMap={userMap}
       user={user}
       authHeader={authHeader}
       credential={credential}

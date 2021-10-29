@@ -2,7 +2,7 @@ import { MutableRefObject, useEffect, useState } from "react";
 import { Timer } from "../types/timer";
 import { SkywayData } from "../types/skywayData";
 import { RoomData, SfuRoom } from "skyway-js";
-import { Member } from "./useSkywayRoom";
+import { Member } from "./useRoom";
 
 const createTimestamp = () => Date.now();
 

@@ -14,11 +14,14 @@ import {
 } from "../../api/@types";
 import { useSkywayRoom } from "../../hooks/useSkywayRoom";
 import { TimerBlockContainer } from "./TimerBlockContainer";
+import { Member } from "../../hooks/useRoom";
 
 const Video = chakra("video");
 
 type LTPageProps = {
   room: RoomResponse;
+  memberMap: Record<number, Member>;
+  memberList: Member[];
   authHeader: AuthHeader;
   user: UserResponse;
   credential: SkywayCredentialsModel;
@@ -26,7 +29,8 @@ type LTPageProps = {
 
 export const LTPage: React.VFC<LTPageProps> = ({
   room,
-  authHeader,
+  memberList,
+  memberMap,
   user,
   credential,
 }) => {
@@ -37,16 +41,18 @@ export const LTPage: React.VFC<LTPageProps> = ({
 
   const {
     isEnteredRoom,
-    members,
     sendComment,
     commentList,
     timetable,
     timetableAction,
     calcRemainTimerSec,
     timerAction,
+    memberStatusMap,
     isOwner,
   } = useSkywayRoom({
     roomInfo: room,
+    memberMap: memberMap,
+    memberList: memberList,
     clientUser: user,
     credential: credential,
     screenVideoRef: screenVideoRef,
@@ -90,7 +96,7 @@ export const LTPage: React.VFC<LTPageProps> = ({
             <Video ref={screenVideoRef} />
           </Box>
 
-          <MemberBlock members={Object.values(members)} />
+          <MemberBlock members={memberList} memberStateMap={memberStatusMap} />
           <TimetableBlock cards={timetableProp} />
         </VStack>
         <VStack flex={1} maxW={"384px"}>

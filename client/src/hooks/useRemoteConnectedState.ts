@@ -49,7 +49,7 @@ export const useRemoteConnectedState = <T>(
         value: value,
       });
     },
-    [key]
+    [emitter, key, state]
   );
 
   // const setState = (value: T) => {
@@ -75,7 +75,7 @@ export const useRemoteConnectedState = <T>(
     });
 
     return remover;
-  }, [key, enabled]);
+  }, [key, enabled, listenerSetter, state, emitter]);
 
   return [state, setState];
 };
