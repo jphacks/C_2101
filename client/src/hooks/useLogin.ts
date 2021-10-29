@@ -8,11 +8,7 @@ const userFetcher = async (
     Authorization: string;
   }
 ) => {
-  const res = await client.api.users.me.get({
-    config: {
-      headers: authHeader,
-    },
-  });
+  const res = await client.api.users.me.get();
   return res.body;
 };
 
@@ -43,11 +39,7 @@ export const useLogin = () => {
     data: user,
     error: userError,
     mutate: mutateUser,
-  } = useSWR(authHeader ? ["/api/users/me", authHeader] : null, userFetcher, {
-    onError: (_) => {
-      destroyAuthHeader();
-    },
-  });
+  } = useSWR(authHeader ? ["/api/users/me"] : null, userFetcher, {});
   //onError未使用になってるけど呼ばれるんだよなあ
 
   const logout = async () => {

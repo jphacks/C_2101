@@ -23,7 +23,6 @@ const UserMenu: React.FC<Props> = ({ contentTitle }) => {
 
   return (
     <>
-      {" "}
       <Menu>
         <MenuButton>
           <Avatar size={"sm"} src={user.iconUrl} />
