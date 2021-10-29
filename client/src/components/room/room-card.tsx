@@ -26,7 +26,6 @@ const RoomCard: React.FC<Props> = ({ room }) => {
           <NextLink href={`/explore/${room.id}`} passHref>
             <Link>
               {room.title}
-              {room.title}
             </Link>
           </NextLink>
         </Heading>
