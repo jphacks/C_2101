@@ -12,14 +12,13 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import Layout from "../../components/layout";
-import NextLink from "next/link";
-
 import DatePicker, { registerLocale } from "react-datepicker";
-import ja from "date-fns/locale/ja";
-registerLocale("ja", ja);
-
+import client from "../../utils/api-client.factory";
+import { useLogin } from "../../hooks/useLogin";
 import "react-datepicker/dist/react-datepicker.css";
 import { parseAsMoment } from "../../utils/datetime";
+import ja from "date-fns/locale/ja";
+registerLocale("ja", ja);
 
 const CreateSpace: React.VFC = () => {
   const initialDate = new Date();
@@ -31,9 +30,28 @@ const CreateSpace: React.VFC = () => {
   const [presentationTimeLimit, setPresentationTimeLimit] =
     useState<number>(10);
   const [questionTimeLimit, setQuestionTimeLimit] = useState<number>(3);
+
+  const { authHeader } = useLogin();
+  const create = async () => {
+    await client.api.rooms.$post({
+      body: {
+        description: description,
+        startAt: parseAsMoment(startDate).toISOString(),
+        finishAt: parseAsMoment(endDate).toISOString(),
+        presentationTimeLimit: presentationTimeLimit,
+        questionTimeLimit: questionTimeLimit,
+        title: title,
+      },
+      config: {
+        headers: {
+          Authorization: authHeader,
+        },
+      },
+    });
+  };
   return (
     <Layout>
-      <Stack spacing={4} maxWidth={500} margin="auto" paddingBottom={200}>
+      <Stack spacing={4} maxWidth={500} margin="auto" paddingBottom={100}>
         <Text fontSize="4xl" fontWeight="bold" marginBottom="6" marginTop="12">
           スペースを作成する
         </Text>
@@ -94,8 +112,11 @@ const CreateSpace: React.VFC = () => {
           <NumberInput
             min={1}
             max={190}
+            maxWidth={100}
             value={presentationTimeLimit}
-            onChange={() => (value: number) => setPresentationTimeLimit(value)}
+            onChange={(value) => {
+              setPresentationTimeLimit(Number(value));
+            }}
           >
             <NumberInputField />
             <NumberInputStepper>
@@ -114,7 +135,7 @@ const CreateSpace: React.VFC = () => {
             max={60}
             maxWidth={100}
             value={questionTimeLimit}
-            onChange={() => (value: number) => setQuestionTimeLimit(value)}
+            onChange={(value) => setQuestionTimeLimit(Number(value))}
           >
             <NumberInputField />
             <NumberInputStepper>
@@ -125,7 +146,9 @@ const CreateSpace: React.VFC = () => {
           <Text>分</Text>
         </Stack>
 
-        <Button marginTop={42}>作成する</Button>
+        <Button marginTop={42} onClick={create}>
+          作成する
+        </Button>
       </Stack>
     </Layout>
   );
