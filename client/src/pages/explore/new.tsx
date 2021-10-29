@@ -16,14 +16,12 @@ import NextLink from "next/link";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { parseAsMoment } from "../../utils/datetime";
 
 const CreateSpace: React.VFC = () => {
   const initialDate = new Date();
-  const [startDate, setStartDate] = useState(initialDate);
-  const handleChange = (date) => {
-    setStartDate(date);
-  };
 
+  const [startDate, setStartDate] = useState(new Date());
   return (
     <Layout>
       <Stack spacing={4} maxWidth={500} margin="auto" paddingBottom={200}>
@@ -41,11 +39,37 @@ const CreateSpace: React.VFC = () => {
         <Text marginTop={18} fontWeight="bold">
           開始時間の選択
         </Text>
-        <DatePicker selected={startDate} onChange={handleChange} />
+        <DatePicker
+          selected={startDate}
+          onChange={(date: Date) => setStartDate(date)}
+          showTimeSelect
+          timeFormat="p"
+          timeIntervals={15}
+          dateFormat="Pp"
+          //   inline
+          customInput={
+            <Button>
+              {parseAsMoment(startDate).format("YYYY/MM/DD HH:mm")}
+            </Button>
+          }
+        />
         <Text marginTop={18} fontWeight="bold">
           終了時間の選択
         </Text>
-        <DatePicker selected={startDate} onChange={handleChange} />
+        <DatePicker
+          selected={startDate}
+          onChange={(date: Date) => setStartDate(date)}
+          showTimeSelect
+          timeFormat="p"
+          timeIntervals={15}
+          dateFormat="Pp"
+          //   inline
+          customInput={
+            <Button>
+              {parseAsMoment(startDate).format("YYYY/MM/DD HH:mm")}
+            </Button>
+          }
+        />
         <Text marginTop={18} fontWeight="bold">
           プレゼンテーション持ち時間
         </Text>
