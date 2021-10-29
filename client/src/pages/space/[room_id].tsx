@@ -28,10 +28,7 @@ const Room: React.VFC = () => {
     authHeader: authHeader,
   });
 
-  const { data: room, error: roomError } = useRoom({
-    roomId,
-    authHeader,
-  });
+  const { room, roomError } = useRoom(roomId);
 
   console.log({
     roomId: roomId,

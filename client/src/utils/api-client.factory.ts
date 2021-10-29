@@ -2,13 +2,18 @@ import api from "../api/$api";
 import aspida from "@aspida/axios";
 import axios from "axios";
 import { AxiosRequestConfig } from "axios";
+import { AuthHeader } from "../hooks/useLogin";
 
 axios.interceptors.request.use((config: AxiosRequestConfig) => {
-  const authToken = localStorage.getItem("lt-space-auth-token");
-  if (authToken !== null) {
-    config.headers = JSON.parse(authToken);
+  const itemStr = localStorage.getItem("lt-space-auth-token");
+  if (itemStr) {
+    const authorization = JSON.parse(itemStr) as AuthHeader;
+    // console.log(authorization);
+    config.headers = {
+      ...authorization,
+      ...config.headers,
+    };
   }
-
   return config;
 });
 

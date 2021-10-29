@@ -32,7 +32,7 @@ const RoomCard: React.FC<Props> = ({ room }) => {
         </Heading>
         <Spacer />
         <Text fontSize={"0.7rem"} color={"#999999"} fontWeight="bold">
-          開催日: {transform(room.startAt, "YYYY/MM/DD")}
+          開催日: {transform(new Date(room.startAt), "YYYY/MM/DD")}
         </Text>
       </Flex>
 
