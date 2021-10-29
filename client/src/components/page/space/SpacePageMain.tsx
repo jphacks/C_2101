@@ -1,20 +1,19 @@
 import { TimetableCardProps } from "./TimetableCard";
-import Layout from "../layout";
+import Layout from "../../layout";
 import { Box, chakra, Stack, VStack } from "@chakra-ui/react";
 import { MemberBlock } from "./MemberBlock";
 import { TimetableBlock } from "./TimetableBlock";
 import { ConfigBlock } from "./ConfigBlock";
 import { CommentBlock } from "./CommentBlock";
 import React, { useRef } from "react";
-import { AuthHeader } from "../../hooks/useLogin";
 import {
   RoomResponse,
   SkywayCredentialsModel,
   UserResponse,
-} from "../../api/@types";
-import { useSkywayRoom } from "../../hooks/useSkywayRoom";
+} from "../../../api/@types";
+import { useSkywayRoom } from "../../../hooks/useSkywayRoom";
 import { TimerBlockContainer } from "./TimerBlockContainer";
-import { Member } from "../../hooks/useRoom";
+import { Member } from "../../../hooks/useRoom";
 
 const Video = chakra("video");
 
@@ -22,12 +21,11 @@ type LTPageProps = {
   room: RoomResponse;
   memberMap: Record<number, Member>;
   memberList: Member[];
-  authHeader: AuthHeader;
   user: UserResponse;
   credential: SkywayCredentialsModel;
 };
 
-export const LTPage: React.VFC<LTPageProps> = ({
+export const SpacePageMain: React.VFC<LTPageProps> = ({
   room,
   memberList,
   memberMap,

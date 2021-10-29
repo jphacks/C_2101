@@ -1,5 +1,5 @@
 import React from "react";
-import { UserResponse } from "../../api/@types";
+import { UserResponse } from "../../../api/@types";
 import {
   Avatar,
   Flex,

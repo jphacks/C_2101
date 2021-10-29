@@ -6,7 +6,7 @@ import {
   SkywayCredentialsModel,
   UserResponse,
 } from "../api/@types";
-import { CommentProps } from "../components/space/CommentItem";
+import { CommentProps } from "../components/page/space/CommentItem";
 import { SkywayData } from "../types/skywayData";
 import { useSyncTimer } from "./useSyncTimer";
 import { useSyncTimetable } from "./useSyncTimetable";
