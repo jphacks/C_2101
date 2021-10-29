@@ -1,5 +1,5 @@
 import React from "react";
-import { UserResponse } from "../../api/@types";
+import { UserResponse } from "../../../api/@types";
 import {
   Avatar,
   Flex,
@@ -29,14 +29,14 @@ export const CommentItem: React.VFC<CommentProps> = ({
     <HStack width={"full"} p={1}>
       <Avatar
         size={"md"}
-        name={user.name}
-        src={user.iconUrl}
+        name={user?.name ?? ""}
+        src={user?.iconUrl}
         alignSelf={"self-start"}
       />
       <Stack width={"full"}>
         <Flex>
           <Heading size={"sm"} textColor={"gray.600"}>
-            {user.name}
+            {user?.name ?? ""}
           </Heading>
           <Spacer />
           <Heading size={"sm"} textColor={"gray.600"}>

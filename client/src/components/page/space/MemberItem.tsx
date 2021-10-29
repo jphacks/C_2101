@@ -1,7 +1,8 @@
 import React from "react";
 import { Avatar, Text, VStack } from "@chakra-ui/react";
-import { UserResponse } from "../../api/@types";
-import { AvatarReactionBadge } from "../common/AvatarReactionBadge";
+import { AvatarReactionBadge } from "../../common/AvatarReactionBadge";
+import { MemberStatus } from "../../../hooks/useSyncMemberStatus";
+import { Member } from "../../../hooks/useRoom";
 
 //別のとこに書いたほうがよさそう
 
@@ -11,12 +12,7 @@ export const UserType = {
 } as const;
 export type UserType = typeof UserType[keyof typeof UserType];
 
-export type UserWithStatus = Omit<UserResponse, "email"> & {
-  isOnline: boolean;
-  reaction?: string;
-  type: UserType;
-  isOwner: boolean;
-};
+export type UserWithStatus = Member & MemberStatus;
 
 export const MemberItem: React.VFC<UserWithStatus> = ({
   iconUrl,
@@ -33,7 +29,7 @@ export const MemberItem: React.VFC<UserWithStatus> = ({
         opacity={isOnline ? "1" : "0.5"}
       >
         {reaction && (
-          <AvatarReactionBadge reactionEmoji={reaction} size={"4xl"} />
+          <AvatarReactionBadge reactionEmoji={reaction.emoji} size={"4xl"} />
         )}
       </Avatar>
       <Text textColor={isOnline ? "gray.600" : "gray.400"} isTruncated>

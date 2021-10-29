@@ -1,6 +1,6 @@
 import { Avatar, HStack, Spacer, Stack, Tag, Text } from "@chakra-ui/react";
 import React from "react";
-import { UserResponse } from "../../api/@types";
+import { UserResponse } from "../../../api/@types";
 
 export type TimetableCardProps = {
   user: Omit<UserResponse, "email">;

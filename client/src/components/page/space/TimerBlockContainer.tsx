@@ -1,7 +1,7 @@
 import { TimerBlock } from "./TimerBlock";
 import React, { useState } from "react";
 import { useInterval } from "react-use";
-import { Timetable } from "../../types/timetable";
+import { Timetable } from "../../../types/timetable";
 
 type TimerBlockContainerProps = {
   isOwner: boolean;
@@ -35,8 +35,8 @@ export const TimerBlockContainer: React.VFC<TimerBlockContainerProps> = ({
   const timerFullSec = currentSection?.lengthSec ?? 0;
   useInterval(() => {
     const remainSec = calcRemainTimerSec(timerFullSec, Date.now());
-    console.log("count down", remainSec);
-    console.log(currentSection);
+    // console.log("count down", remainSec);
+    // console.log(currentSection);
     setTimerRemainSec(remainSec);
   }, 1000);
 

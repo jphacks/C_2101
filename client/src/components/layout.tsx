@@ -1,8 +1,8 @@
 import Head from "next/head";
-import Footer from "./footer/footer";
-import Header from "./header/header";
+import Footer from "./footer/Footer";
+import Header from "./header/Header";
 import React from "react";
-import { Box, Container, Flex } from "@chakra-ui/react";
+import { Box, Container } from "@chakra-ui/react";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -24,7 +24,7 @@ const Layout: React.FC<LayoutProps> = ({ children, contentTitle }) => {
       <Box>{children}</Box>
 
       {/*  フッターを最下部に固定するため */}
-      <Box height="50px"></Box>
+      <Box height="50px" />
 
       <Footer />
     </Container>

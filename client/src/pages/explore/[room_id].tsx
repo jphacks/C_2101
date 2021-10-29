@@ -2,9 +2,7 @@ import React from "react";
 import {
   Box,
   Button,
-  Container,
   Stack,
-  HStack,
   Spacer,
   Text,
   Heading,
@@ -13,14 +11,14 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import Layout from "../../components/layout";
-import { useRoom } from "../../hooks/useRoom";
 import { transform } from "../../utils/datetime";
+import { useAllRoom } from "../../hooks/useAllRoom";
 
 const Room: React.VFC = () => {
   const router = useRouter();
   const roomId = router.query.room_id as string;
 
-  const { rooms } = useRoom();
+  const { rooms } = useAllRoom();
   const room = rooms?.filter((room) => room.id.toString() === roomId)[0];
 
   if (!room || !roomId) {
@@ -71,10 +69,10 @@ const Room: React.VFC = () => {
             </Text>
 
             <Flex width="100%">
-              <Flex align={"center"}></Flex>
+              <Flex align={"center"}/>
               <Spacer />
               <Text fontSize={"0.7rem"} color={"#999999"} fontWeight="bold">
-                開催日: {transform(room.startAt, "YYYY/MM/DD")}
+                開催日: {transform(new Date(room.startAt), "YYYY/MM/DD")}
               </Text>
             </Flex>
 

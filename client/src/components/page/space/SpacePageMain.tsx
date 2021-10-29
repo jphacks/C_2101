@@ -1,32 +1,34 @@
 import { TimetableCardProps } from "./TimetableCard";
-import Layout from "../layout";
+import Layout from "../../layout";
 import { Box, chakra, Stack, VStack } from "@chakra-ui/react";
 import { MemberBlock } from "./MemberBlock";
 import { TimetableBlock } from "./TimetableBlock";
 import { ConfigBlock } from "./ConfigBlock";
 import { CommentBlock } from "./CommentBlock";
 import React, { useRef } from "react";
-import { AuthHeader } from "../../hooks/useLogin";
 import {
   RoomResponse,
   SkywayCredentialsModel,
   UserResponse,
-} from "../../api/@types";
-import { useSkywayRoom } from "../../hooks/useSkywayRoom";
+} from "../../../api/@types";
+import { useSkywayRoom } from "../../../hooks/useSkywayRoom";
 import { TimerBlockContainer } from "./TimerBlockContainer";
+import { Member } from "../../../hooks/useRoom";
 
 const Video = chakra("video");
 
 type LTPageProps = {
   room: RoomResponse;
-  authHeader: AuthHeader;
+  memberMap: Record<number, Member>;
+  memberList: Member[];
   user: UserResponse;
   credential: SkywayCredentialsModel;
 };
 
-export const LTPage: React.VFC<LTPageProps> = ({
+export const SpacePageMain: React.VFC<LTPageProps> = ({
   room,
-  authHeader,
+  memberList,
+  memberMap,
   user,
   credential,
 }) => {
@@ -37,16 +39,18 @@ export const LTPage: React.VFC<LTPageProps> = ({
 
   const {
     isEnteredRoom,
-    members,
     sendComment,
     commentList,
     timetable,
     timetableAction,
     calcRemainTimerSec,
     timerAction,
+    memberStatusMap,
     isOwner,
   } = useSkywayRoom({
     roomInfo: room,
+    memberMap: memberMap,
+    memberList: memberList,
     clientUser: user,
     credential: credential,
     screenVideoRef: screenVideoRef,
@@ -90,7 +94,7 @@ export const LTPage: React.VFC<LTPageProps> = ({
             <Video ref={screenVideoRef} />
           </Box>
 
-          <MemberBlock members={Object.values(members)} />
+          <MemberBlock members={memberList} memberStateMap={memberStatusMap} />
           <TimetableBlock cards={timetableProp} />
         </VStack>
         <VStack flex={1} maxW={"384px"}>

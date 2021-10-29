@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useCallback, useEffect, useRef } from "react";
 import Peer, { SfuRoom } from "skyway-js";
 import { useAsync, useList } from "react-use";
 import {
@@ -6,24 +6,21 @@ import {
   SkywayCredentialsModel,
   UserResponse,
 } from "../api/@types";
-import { UserType } from "../components/space/MemberItem";
-import { CommentProps } from "../components/space/CommentItem";
+import { CommentProps } from "../components/page/space/CommentItem";
 import { SkywayData } from "../types/skywayData";
 import { useSyncTimer } from "./useSyncTimer";
 import { useSyncTimetable } from "./useSyncTimetable";
+import { Member } from "./useRoom";
+import { useSyncMemberStatus } from "./useSyncMemberStatus";
 
 type UseLTPageParam = {
   roomInfo: RoomResponse;
+  memberList: Member[];
+  memberMap: Record<number, Member>;
   clientUser: UserResponse;
   credential: SkywayCredentialsModel;
   screenVideoRef: RefObject<HTMLVideoElement>;
   cameraVideoRef: RefObject<HTMLVideoElement>;
-};
-
-export type Member = Omit<UserResponse, "email"> & {
-  isOnline: boolean;
-  type: UserType;
-  isOwner: boolean;
 };
 
 const skywayApiKey = "401e1886-919c-4988-ba47-ac85cae091a5";
@@ -32,6 +29,8 @@ const createTimestamp = () => Date.now();
 
 export const useSkywayRoom = ({
   roomInfo,
+  memberList,
+  memberMap,
   clientUser,
   credential,
   screenVideoRef,
@@ -47,7 +46,20 @@ export const useSkywayRoom = ({
 
   const localStreamRef = useRef<MediaStream>();
 
-  const [commentList, { push: pushComment }] = useList<CommentProps>();
+  const [commentList, { push: pushComment }] = useList<CommentProps>([]);
+
+  const getMemberFromPeerId = useCallback(
+    (peerId: string) => {
+      console.log("getMemberFromPeerId", memberMap, peerId);
+      return memberMap[Number(peerId)];
+    },
+    [memberMap]
+  );
+  const memberFetcher = useCallback(
+    (peerId) => getMemberFromPeerId(peerId),
+    [getMemberFromPeerId]
+  );
+
   const {
     state: timetable,
     timetableAction,
@@ -56,14 +68,25 @@ export const useSkywayRoom = ({
     roomRef: roomRef,
     isOwner: isOwner,
     roomInfo: roomInfo,
-    memberFetcher: (peerId) => getMemberFromPeerId(peerId),
+    memberFetcher: memberFetcher,
   });
 
   const { calcRemainTimerSec, timerAction } = useSyncTimer({
     roomRef: roomRef,
-    memberFetcher: (peerId) => getMemberFromPeerId(peerId),
+    memberFetcher: memberFetcher,
     isOwner: isOwner,
   });
+
+  const { memberStatusMap, updateStatus } = useSyncMemberStatus({
+    peerRef: peerRef,
+    roomRef: roomRef,
+    memberFetcher: memberFetcher,
+    memberList: memberList,
+  });
+
+  useEffect(() => {
+    console.log(memberStatusMap);
+  }, [memberStatusMap]);
 
   //初期化
   useAsync(async () => {
@@ -100,27 +123,26 @@ export const useSkywayRoom = ({
       roomRef.current = sfuRoom;
 
       sfuRoom.once("open", () => {
-        updateMembers();
         pushComment({
           user: clientUser,
           text: "入室しました",
           timestamp: new Date(),
           textColor: "teal.800",
         });
+        //うーん強引
+        updateStatus();
       });
       sfuRoom.on("peerJoin", (peerId) => {
-        const updatedMembers = updateMembers();
         pushComment({
-          user: getMemberFromPeerId(peerId, updatedMembers),
+          user: getMemberFromPeerId(peerId),
           text: "入室しました",
           timestamp: new Date(),
           textColor: "teal.800",
         });
       });
       sfuRoom.on("peerLeave", (peerId) => {
-        const updatedMembers = updateMembers();
         pushComment({
-          user: getMemberFromPeerId(peerId, updatedMembers),
+          user: getMemberFromPeerId(peerId),
           text: "退室しました",
           timestamp: new Date(),
           textColor: "teal.800",
@@ -200,54 +222,17 @@ export const useSkywayRoom = ({
     });
   };
 
-  const getMemberFromPeerId = (
-    peerId: string | number,
-    memberList?: Record<number, Member>
-  ) => {
-    console.log("getMemberFromPeerId", members, peerId);
-    return (memberList ?? members)[Number(peerId)];
-  };
-
   const isEnteredRoom = !!peerRef.current?.open && !!roomRef.current;
-
-  const [members, setMembers] = useState<Record<number, Member>>({});
-  const updateMembers = () => {
-    const updatedMembers = [
-      ...roomInfo.speakers.map((item) => ({
-        ...item,
-        type: UserType.Speaker,
-      })),
-      ...roomInfo.viewers.map((item) => ({
-        ...item,
-        type: UserType.Viewer,
-      })),
-    ]
-      .map((item) => ({
-        ...item,
-        isOnline:
-          peerRef.current?.id === String(item.id) ||
-          !!roomRef.current?.members.includes(String(item.id)),
-        isOwner: roomInfo.owner.id === item.id,
-      }))
-      .reduce<Record<number, Member>>((acc, item) => {
-        acc[item.id] = item;
-        return acc;
-      }, {});
-    setMembers(updatedMembers);
-    console.log(updatedMembers);
-    console.log(roomRef.current);
-    return updatedMembers;
-  };
 
   return {
     isEnteredRoom,
-    members,
     sendComment,
     commentList,
     timetable,
     timetableAction,
     calcRemainTimerSec,
     timerAction,
+    memberStatusMap,
     isOwner,
   };
 };
