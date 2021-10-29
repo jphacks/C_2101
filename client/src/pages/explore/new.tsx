@@ -70,6 +70,13 @@ const CreateSpace: React.VFC = () => {
         });
       });
   };
+
+  const changeStartdate = (date: Date) => {
+    var end = new Date(date.getTime());
+    end.setHours(end.getHours() + 2);
+    setStartDate(date);
+    setEndDate(end);
+  };
   return (
     <Layout>
       <Stack spacing={4} maxWidth={500} margin="auto" paddingBottom={100}>
@@ -97,7 +104,7 @@ const CreateSpace: React.VFC = () => {
         </Text>
         <DatePicker
           selected={startDate}
-          onChange={(date: Date) => setStartDate(date)}
+          onChange={changeStartdate}
           showTimeSelect
           timeFormat="p"
           timeIntervals={15}
