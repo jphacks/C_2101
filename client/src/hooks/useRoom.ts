@@ -1,4 +1,5 @@
 import client from "../utils/api-client.factory";
+
 import useSWR from "swr";
 
 const roomsFetcher = async (key: string) => {

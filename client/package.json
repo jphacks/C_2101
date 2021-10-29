@@ -21,6 +21,7 @@
     "@emotion/styled": "^11.3.0",
     "axios": "^0.23.0",
     "framer-motion": "^4.1.17",
+    "mdi-react": "^8.1.0",
     "moment": "^2.29.1",
     "next": "11.1.2",
     "react": "17.0.2",
@@ -29,6 +30,7 @@
     "react-icons": "^4.3.1",
     "react-use": "^17.3.1",
     "recoil": "^0.4.1",
+    "skyway-js": "^4.4.2",
     "swr": "^1.0.1"
   },
   "devDependencies": {
