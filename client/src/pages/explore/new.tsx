@@ -23,8 +23,14 @@ import { useRouter } from "next/router";
 registerLocale("ja", ja);
 
 const CreateSpace: React.VFC = () => {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  let now = new Date();
+  let defaultDate = new Date();
+  defaultDate.setHours(now.getHours() + 2);
+  let defaultEndDate = new Date();
+  defaultEndDate.setHours(defaultDate.getHours() + 2);
+
+  const [startDate, setStartDate] = useState(defaultDate);
+  const [endDate, setEndDate] = useState(defaultEndDate);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [presentationTimeLimit, setPresentationTimeLimit] =
@@ -99,6 +105,7 @@ const CreateSpace: React.VFC = () => {
           placeholder="イベントのタイトル"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
+          required
         ></Input>
         <Text marginTop={18} fontWeight="bold">
           イベントの説明
@@ -107,6 +114,7 @@ const CreateSpace: React.VFC = () => {
           placeholder="イベントの説明"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
+          required
         ></Textarea>
         <Text marginTop={18} fontWeight="bold">
           開始時間の選択
