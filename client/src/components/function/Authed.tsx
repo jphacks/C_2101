@@ -7,15 +7,11 @@ type AuthedProps = {
 };
 
 export const Authed: React.FC = ({ children }) => {
-  console.log("authed");
-
   const { user } = useLogin();
   const router = useRouter();
 
   useEffect(() => {
-    console.log("effect");
     if (!user) {
-      console.log("push router");
       void router.push(`/login?next=${router.asPath}`);
     }
   }, [user, router]);

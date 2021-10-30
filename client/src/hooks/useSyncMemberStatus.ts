@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useEffect} from "react";
+import { MutableRefObject, useCallback, useEffect } from "react";
 import Peer, { RoomData, SfuRoom } from "skyway-js";
 import { Member } from "./useRoom";
 import { useMap } from "react-use";
@@ -22,6 +22,12 @@ type ReactionState = {
   emoji: string;
   timerId: NodeJS.Timeout | undefined;
 };
+
+// type ConnectionState = {
+//   peerId: string,
+//   label: "main" | "sub",
+//
+// }
 
 export const useSyncMemberStatus = ({
   peerRef,
@@ -98,7 +104,7 @@ export const useSyncMemberStatus = ({
       room?.off("peerLeave", listener);
       // room?.off("open", listener);
     };
-  }, [roomRef, updateStatus]);
+  });
 
   useEffect(() => {
     const room = roomRef.current;
@@ -138,7 +144,7 @@ export const useSyncMemberStatus = ({
     return () => {
       room.off("data", listener);
     };
-  }, [memberFetcher, memberStatusMap, roomRef, set]);
+  });
 
   return {
     memberStatusMap,

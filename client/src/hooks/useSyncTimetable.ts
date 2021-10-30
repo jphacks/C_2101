@@ -93,7 +93,7 @@ export const useSyncTimetable = ({
       };
       roomRef.current?.send(data);
       if (roomRef.current) {
-        console.log("sendTimer", data);
+        console.log("sendTimetable", data);
       }
     },
     [roomRef, state]
@@ -112,13 +112,15 @@ export const useSyncTimetable = ({
   };
 
   useEffect(() => {
+    // console.log("effect timetable");
     const room = roomRef.current;
     if (!room) return;
-    console.log("init timetable");
+    // console.log("init timetable");
 
     const listener = (param: RoomData) => {
       const member = memberFetcher(param.src);
       const data = param.data as SkywayData;
+      console.log("receive timetable", data);
       if (data.type === "updateTimetable" && member && member.isOwner) {
         setState(data.timetable);
       }
@@ -128,7 +130,7 @@ export const useSyncTimetable = ({
     return () => {
       room.off("data", listener);
     };
-  }, [memberFetcher, roomRef]);
+  });
 
   const [initialized, setInitialized] = useState<boolean>(false);
 

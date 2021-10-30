@@ -1,6 +1,6 @@
 import { TimetableCardProps } from "./TimetableCard";
 import Layout from "../../Layout";
-import { Box, chakra, Stack, VStack } from "@chakra-ui/react";
+import { Box, Button, chakra, Stack, VStack } from "@chakra-ui/react";
 import { MemberBlock } from "./MemberBlock";
 import { TimetableBlock } from "./TimetableBlock";
 import { ConfigBlock } from "./ConfigBlock";
@@ -23,6 +23,7 @@ type LTPageProps = {
   memberList: Member[];
   user: UserResponse;
   credential: SkywayCredentialsModel;
+  credentialSub: SkywayCredentialsModel;
 };
 
 export const SpacePageMain: React.VFC<LTPageProps> = ({
@@ -31,6 +32,7 @@ export const SpacePageMain: React.VFC<LTPageProps> = ({
   memberMap,
   user,
   credential,
+  credentialSub,
 }) => {
   console.log("LTPage", room);
 
@@ -47,12 +49,14 @@ export const SpacePageMain: React.VFC<LTPageProps> = ({
     timerAction,
     memberStatusMap,
     isOwner,
+    startScreenShare,
   } = useSkywayRoom({
     roomInfo: room,
     memberMap: memberMap,
     memberList: memberList,
     clientUser: user,
     credential: credential,
+    credentialSub: credentialSub,
     screenVideoRef: screenVideoRef,
     cameraVideoRef: cameraVideoRef,
   });
@@ -86,14 +90,31 @@ export const SpacePageMain: React.VFC<LTPageProps> = ({
     }
   );
 
+  const handleClickStartScreenShare = async () => {
+    await startScreenShare();
+  };
+
   return (
     <Layout contentTitle={room.title}>
       <Stack direction={"row"} p={4} bg={"gray.50"}>
         <VStack flex={3}>
-          <Box rounded={8} p={4} bg={"gray.200"} w={"full"} h={"full"}>
-            <Video ref={screenVideoRef} />
+          <Box
+            rounded={8}
+            p={4}
+            bg={"gray.200"}
+            w={"full"}
+            h={"full"}
+            textAlign={"center"}
+          >
+            <Video ref={screenVideoRef} muted />
+            <Button
+              colorScheme={"teal"}
+              onClick={handleClickStartScreenShare}
+              alignSelf={"center"}
+            >
+              画面を開始する
+            </Button>
           </Box>
-
           <MemberBlock members={memberList} memberStateMap={memberStatusMap} />
           <TimetableBlock cards={timetableProp} />
         </VStack>
