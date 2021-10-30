@@ -125,7 +125,6 @@ export const useSyncTimer = ({
   };
 
   const calcTimerSec = (now?: number) => {
-    console.log("calcTimer", now ?? Date.now());
     if (state.timerEnabled) {
       console.log(state);
       return Math.floor(
@@ -156,7 +155,7 @@ export const useSyncTimer = ({
     return () => {
       room.off("data", listener);
     };
-  }, [memberFetcher, roomRef]);
+  });
 
   return {
     state,
