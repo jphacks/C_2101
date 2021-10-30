@@ -1,8 +1,8 @@
 import React from "react";
-import { useLogin } from "../../../hooks/useLogin";
-import { useSkywayCredential } from "../../../hooks/useSkywayCredential";
-import { useRoom } from "../../../hooks/useRoom";
-import Layout from "../../Layout";
+import { useLogin } from "../../../../hooks/useLogin";
+import { useSkywayCredential } from "../../../../hooks/useSkywayCredential";
+import { useRoom } from "../../../../hooks/useRoom";
+import Layout from "../../../Layout";
 import { Text } from "@chakra-ui/react";
 import { SpacePageMain } from "./SpacePageMainComment";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { Authed } from "../../../components/function/Authed";
-import { Space } from "../../../components/page/space/PageSpaceSP";
+import { Space } from "../../../components/page/space/sp/PageSpaceSP";
 import Error from "next/error";
 
 const Room: React.VFC = () => {

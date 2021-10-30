@@ -1,19 +1,19 @@
-import { TimetableCardProps } from "./TimetableCard";
-import Layout from "../../Layout";
+import { TimetableCardProps } from "./../TimetableCard";
+import Layout from "../../../Layout";
 import { Box, Button, chakra, Stack, VStack } from "@chakra-ui/react";
-import { MemberBlock } from "./MemberBlock";
-import { TimetableBlock } from "./TimetableBlock";
-import { ConfigBlock } from "./ConfigBlock";
-import { CommentBlock } from "./CommentBlock";
+import { MemberBlock } from "./../MemberBlock";
+import { TimetableBlock } from "./../TimetableBlock";
+import { ConfigBlock } from "./../ConfigBlock";
+import { CommentBlock } from "./CommentBlockSP";
 import React, { useRef } from "react";
 import {
   RoomResponse,
   SkywayCredentialsModel,
   UserResponse,
-} from "../../../api/@types";
-import { useSkywayRoom } from "../../../hooks/useSkywayRoom";
-import { TimerBlockContainer } from "./TimerBlockContainer";
-import { Member } from "../../../hooks/useRoom";
+} from "../../../../api/@types";
+import { useSkywayRoom } from "../../../../hooks/useSkywayRoom";
+import { TimerBlockContainer } from "./../TimerBlockContainer";
+import { Member } from "../../../../hooks/useRoom";
 
 const Video = chakra("video");
 
