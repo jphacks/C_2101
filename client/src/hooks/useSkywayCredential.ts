@@ -2,17 +2,18 @@ import { AuthHeader } from "./useLogin";
 import client from "../utils/api-client.factory";
 import useSWR from "swr";
 import { RoomCredentialsResponse } from "../api/@types";
+import { useRef } from "react";
 
 const credentialFetcher = async (
   key: string,
-  userId: number,
+  peerId: string,
   roomId: number,
   authHeaderParam: string
 ) => {
-  // console.log("fetch");
+  console.log("fetch", peerId);
   return await client.api.rooms._room_id(roomId).authenticate.$post({
     body: {
-      peerId: userId.toString(),
+      peerId: peerId,
     },
     config: {
       headers: {
@@ -24,24 +25,24 @@ const credentialFetcher = async (
 
 type FetchCredentialParam = {
   userId: number;
+  index: number;
   roomId: number;
   authHeader: AuthHeader;
 };
 
 export const useSkywayCredential = (param: Partial<FetchCredentialParam>) => {
-  const { userId, roomId, authHeader } = param;
-  //
-  // console.log(
-  //   `enable: ${userId != undefined && roomId != undefined && authHeader}`
-  // );
+  const { userId, index, roomId, authHeader } = param;
 
-  // const peerId = ``
+  const ref = useRef<number>(Math.floor(Math.random() * 1000));
 
   const { data, error, mutate } = useSWR<RoomCredentialsResponse>(
-    userId != undefined && roomId != undefined && authHeader
+    userId != undefined &&
+      index != undefined &&
+      roomId != undefined &&
+      authHeader
       ? [
           `/api/rooms/{roomId}/authenticate`,
-          userId,
+          `${userId}-${index}-${ref.current}`,
           roomId,
           authHeader.Authorization,
         ]

@@ -2,7 +2,6 @@ import React from "react";
 import { useLogin } from "../../../hooks/useLogin";
 import { useSkywayCredential } from "../../../hooks/useSkywayCredential";
 import { useRoom } from "../../../hooks/useRoom";
-import { Authed } from "../../function/Authed";
 import Layout from "../../Layout";
 import { Text } from "@chakra-ui/react";
 import { SpacePageMain } from "./SpacePageMain";
@@ -14,56 +13,58 @@ export const Space: React.VFC<{
 
   const { credential } = useSkywayCredential({
     roomId: roomId,
+    index: 0,
     userId: user?.id,
+    authHeader,
+  });
+
+  const { credential: credentialSub } = useSkywayCredential({
+    roomId: roomId,
+    index: 1,
+    userId: user?.id,
+    authHeader,
   });
 
   const { room, roomError, userMap, userList } = useRoom(roomId);
 
-  console.log({
-    roomId: roomId,
-    userId: user?.id,
-    authHeader: authHeader,
-  });
+  // console.log({
+  //   roomId: roomId,
+  //   userId: user?.id,
+  //   authHeader: authHeader,
+  // });
 
   if (!user || !authHeader) {
     return (
-      <Authed>
-        <Layout>
-          <Text>Not Authorized</Text>
-        </Layout>
-      </Authed>
+      <Layout>
+        <Text>Not Authorized</Text>
+      </Layout>
     );
   }
 
-  if (!credential) {
+  if (!credential || !credentialSub) {
     return (
-      <Authed>
-        <Layout>
-          <Text>Not Credential Authorized</Text>
-        </Layout>
-      </Authed>
+      <Layout>
+        <Text>Not Credential Authorized</Text>
+      </Layout>
     );
   }
 
   if (!room || roomError || !userList || !userMap) {
     return (
-      <Authed>
-        <Layout>
-          <Text>Room Not Found</Text>
-        </Layout>
-      </Authed>
+      <Layout>
+        <Text>Room Not Found</Text>
+      </Layout>
     );
   }
 
   return (
-    <Authed>
-      <SpacePageMain
-        room={room}
-        memberList={userList}
-        memberMap={userMap}
-        user={user}
-        credential={credential}
-      />
-    </Authed>
+    <SpacePageMain
+      room={room}
+      memberList={userList}
+      memberMap={userMap}
+      user={user}
+      credential={credential}
+      credentialSub={credentialSub}
+    />
   );
 };

@@ -1,17 +1,16 @@
 import { RefObject, useCallback, useEffect, useRef } from "react";
 import Peer, { SfuRoom } from "skyway-js";
-import { useAsync, useList } from "react-use";
+import { useAsync } from "react-use";
 import {
   RoomResponse,
   SkywayCredentialsModel,
   UserResponse,
 } from "../api/@types";
-import { CommentProps } from "../components/page/space/CommentItem";
-import { SkywayData } from "../types/skywayData";
 import { useSyncTimer } from "./useSyncTimer";
 import { useSyncTimetable } from "./useSyncTimetable";
 import { Member } from "./useRoom";
 import { useSyncMemberStatus } from "./useSyncMemberStatus";
+import { useSyncComment } from "./useSyncComment";
 
 type UseLTPageParam = {
   roomInfo: RoomResponse;
@@ -19,6 +18,7 @@ type UseLTPageParam = {
   memberMap: Record<number, Member>;
   clientUser: UserResponse;
   credential: SkywayCredentialsModel;
+  credentialSub: SkywayCredentialsModel;
   screenVideoRef: RefObject<HTMLVideoElement>;
   cameraVideoRef: RefObject<HTMLVideoElement>;
 };
@@ -33,6 +33,7 @@ export const useSkywayRoom = ({
   memberMap,
   clientUser,
   credential,
+  credentialSub,
   screenVideoRef,
   cameraVideoRef,
 }: UseLTPageParam) => {
@@ -40,18 +41,21 @@ export const useSkywayRoom = ({
   const isSpeaker = roomInfo.speakers.some((item) => item.id === clientUser.id);
 
   const peerRef = useRef<Peer>();
+  const subPeerRef = useRef<Peer>();
   const roomRef = useRef<SfuRoom>();
 
   const streamMapRef = useRef<Record<number, MediaStream>>({});
 
-  const localStreamRef = useRef<MediaStream>();
-
-  const [commentList, { push: pushComment }] = useList<CommentProps>([]);
+  const localCameraStreamRef = useRef<MediaStream>();
+  const localScreenStreamRef = useRef<MediaStream>();
 
   const getMemberFromPeerId = useCallback(
     (peerId: string) => {
       console.log("getMemberFromPeerId", memberMap, peerId);
-      return memberMap[Number(peerId)];
+      const regex = /(?<userId>[0-9]+)-(?<index>[0-9]+)-(?<rand>[0-9]+)/;
+      const result = regex.exec(peerId);
+      const userId = result?.groups?.userId;
+      return memberMap[Number(userId)];
     },
     [memberMap]
   );
@@ -84,14 +88,24 @@ export const useSkywayRoom = ({
     memberList: memberList,
   });
 
+  const { sendComment, commentList } = useSyncComment({
+    roomRef: roomRef,
+    clientUser: clientUser,
+    memberFetcher: memberFetcher,
+  });
+
   useEffect(() => {
     console.log(memberStatusMap);
   }, [memberStatusMap]);
 
   //初期化
   useAsync(async () => {
+    if (peerRef.current) {
+      peerRef.current?.destroy();
+    }
+
     //とりあえずオーナーとspeakerにはマイクとカメラ許可を求める
-    const localStream =
+    const localCameraStream =
       isOwner || isSpeaker
         ? await navigator.mediaDevices
             .getUserMedia({
@@ -104,123 +118,165 @@ export const useSkywayRoom = ({
             })
         : undefined;
 
-    localStreamRef.current = localStream;
+    localCameraStreamRef.current = localCameraStream;
 
-    const peer = new Peer(String(clientUser.id), {
+    const peer = new Peer(credential.peerId, {
       key: skywayApiKey,
       credential: credential,
       debug: 2,
     });
-
     peerRef.current = peer;
 
     peer.once("open", () => {
+      console.log("open peer", peer);
       const sfuRoom = peer.joinRoom<SfuRoom>(roomInfo.id.toString(), {
         mode: "sfu",
-        stream: localStream,
+        stream: localCameraStreamRef.current,
       });
 
       roomRef.current = sfuRoom;
 
-      sfuRoom.once("open", () => {
-        pushComment({
-          user: clientUser,
-          text: "入室しました",
-          timestamp: new Date(),
-          textColor: "teal.800",
-        });
-        //うーん強引
+      sfuRoom.on("open", () => {
         updateStatus();
-      });
-      sfuRoom.on("peerJoin", (peerId) => {
-        pushComment({
-          user: getMemberFromPeerId(peerId),
-          text: "入室しました",
-          timestamp: new Date(),
-          textColor: "teal.800",
-        });
-      });
-      sfuRoom.on("peerLeave", (peerId) => {
-        pushComment({
-          user: getMemberFromPeerId(peerId),
-          text: "退室しました",
-          timestamp: new Date(),
-          textColor: "teal.800",
-        });
-      });
-
-      sfuRoom.on("data", (param) => {
-        const srcUser = getMemberFromPeerId(param.src);
-        const data = param.data as SkywayData;
-
-        if (data.type === "reactionText") {
-          //コメント受信
-          pushComment({
-            user: srcUser,
-            text: data.text,
-            timestamp: new Date(data.timestamp),
-          });
-          return;
-        }
       });
 
       sfuRoom.on("stream", (stream) => {
         console.log("receive stream", stream.peerId, timetable);
         streamMapRef.current = {
           ...streamMapRef.current,
-          [Number(stream.peerId)]: stream,
+          [stream.peerId]: stream,
         };
+        console.log(streamMapRef.current);
+        updateStreamVideoRef();
       });
     });
 
     return () => {
+      roomRef.current?.close();
       peerRef.current?.destroy();
+
+      subPeerRef.current?.destroy();
+
       console.log("peer destroy");
+      console.log("subpeer destroy");
     };
   }, []);
 
-  //見ているstreamの更新
-  useEffect(() => {
+  const startScreenShare = async () => {
+    if (subPeerRef.current) {
+      subPeerRef.current?.destroy();
+    }
+
+    const localScreenStream =
+      isOwner || isSpeaker
+        ? await navigator.mediaDevices.getDisplayMedia({
+            audio: true,
+            video: true,
+          })
+        : undefined;
+    localScreenStreamRef.current = localScreenStream;
+
+    if (!localScreenStream) return;
+
+    const subPeer = new Peer(credentialSub.peerId, {
+      key: skywayApiKey,
+      credential: credentialSub,
+      debug: 2,
+    });
+    subPeerRef.current = subPeer;
+
+    subPeer.once("open", () => {
+      console.log("open subpeer", subPeer);
+      const sfuRoom = subPeer.joinRoom<SfuRoom>(roomInfo.id.toString(), {
+        mode: "sfu",
+        stream: localScreenStreamRef.current,
+      });
+
+      sfuRoom.on("open", () => {
+        // updateStatus();
+      });
+    });
+  };
+
+  //TODO
+  //peerIdから、どっちが主かをわかるようにする
+  //getDisplayMediaのawaitとかをどうにかする
+
+  const updateStreamVideoRef = useCallback(() => {
     const presentingUser = getCurrentPresentingUser();
+
+    console.log("updateStreamVideoRef", presentingUser);
     if (!presentingUser) return;
 
     if (presentingUser.id === clientUser.id) {
       //自分
-      if (!localStreamRef.current) return;
-      cameraVideoRef.current!.srcObject = localStreamRef.current;
-      cameraVideoRef.current!.playsInline = true;
-      void cameraVideoRef.current!.play();
+      if (localCameraStreamRef.current) {
+        cameraVideoRef.current!.srcObject = localCameraStreamRef.current;
+        cameraVideoRef.current!.playsInline = true;
+        void cameraVideoRef.current!.play();
+      }
+      if (localScreenStreamRef.current) {
+        screenVideoRef.current!.srcObject = localScreenStreamRef.current;
+        screenVideoRef.current!.playsInline = true;
+        void screenVideoRef.current!.play();
+      }
     } else {
       //他の人
-      const stream = streamMapRef.current[presentingUser.id];
-      if (!stream) {
-        console.log("stream is not received");
-        return;
+
+      const status = memberStatusMap[presentingUser.id];
+
+      const idList = status.peerIdList.map((peerId) => {
+        const regex = /(?<userId>[0-9]+)-(?<index>[0-9]+)-(?<rand>[0-9]+)/;
+        const result = regex.exec(peerId);
+
+        return {
+          peerId: peerId,
+          userId: result?.groups?.userId,
+          index: result?.groups?.index,
+          rand: result?.groups?.rand,
+        };
+      });
+
+      console.log(idList);
+      const mainPeerId = idList.find(
+        (item) => item && Number(item.index) == 0
+      )?.peerId;
+      const subPeerId = idList.find(
+        (item) => item && Number(item.index) == 1
+      )?.peerId;
+
+      const cameraStream = Object.values(
+        roomRef.current?.remoteStreams ?? {}
+      ).find((item) => item.peerId === mainPeerId);
+
+      const screenStream = Object.values(
+        roomRef.current?.remoteStreams ?? {}
+      ).find((item) => item.peerId === subPeerId);
+
+      if (cameraStream) {
+        cameraVideoRef.current!.srcObject = cameraStream;
+        cameraVideoRef.current!.playsInline = true;
+        void cameraVideoRef.current!.play();
       }
 
-      console.log(`display stream from ${presentingUser.id}`);
-      cameraVideoRef.current!.srcObject = stream;
-      cameraVideoRef.current!.playsInline = true;
-      void cameraVideoRef.current!.play();
+      if (screenStream) {
+        screenVideoRef.current!.srcObject = screenStream;
+        screenVideoRef.current!.playsInline = true;
+        void screenVideoRef.current!.play();
+      }
     }
-  }, [cameraVideoRef, clientUser.id, getCurrentPresentingUser]);
+  }, [
+    cameraVideoRef,
+    clientUser.id,
+    getCurrentPresentingUser,
+    memberStatusMap,
+    screenVideoRef,
+  ]);
 
-  const sendComment = (text: string) => {
-    const timestamp = new Date();
-    const data: SkywayData = {
-      type: "reactionText",
-      text: text,
-      timestamp: timestamp.valueOf(),
-    };
-
-    roomRef.current?.send(data);
-
-    pushComment({
-      user: clientUser,
-      text: text,
-      timestamp: timestamp,
-    });
-  };
+  //見ているstreamの更新
+  useEffect(() => {
+    updateStreamVideoRef();
+  }, [updateStreamVideoRef]);
 
   const isEnteredRoom = !!peerRef.current?.open && !!roomRef.current;
 
@@ -234,5 +290,6 @@ export const useSkywayRoom = ({
     timerAction,
     memberStatusMap,
     isOwner,
+    startScreenShare,
   };
 };

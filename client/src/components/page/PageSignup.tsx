@@ -51,7 +51,7 @@ export const PageSignup = () => {
       })
       .catch((error: any) => {
         toast({
-          title: error.response.data.message as string,
+          title: error as string,
           status: "error",
           duration: 10000,
           isClosable: true,
