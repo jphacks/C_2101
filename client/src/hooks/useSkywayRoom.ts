@@ -213,11 +213,13 @@ export const useSkywayRoom = ({
       if (localCameraStreamRef.current) {
         cameraVideoRef.current!.srcObject = localCameraStreamRef.current;
         cameraVideoRef.current!.playsInline = true;
+        cameraVideoRef.current!.muted = true;
         void cameraVideoRef.current!.play();
       }
       if (localScreenStreamRef.current) {
         screenVideoRef.current!.srcObject = localScreenStreamRef.current;
         screenVideoRef.current!.playsInline = true;
+        cameraVideoRef.current!.muted = true;
         void screenVideoRef.current!.play();
       }
     } else {
