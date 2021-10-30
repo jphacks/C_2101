@@ -38,3 +38,7 @@ jobs:
       - name: Run back-end build
         run: |
           ./gradlew build -x test
+
+      - name: Thank you server
+        run: |
+          echo "ありがとう"
