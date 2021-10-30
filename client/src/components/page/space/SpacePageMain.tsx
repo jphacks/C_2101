@@ -112,7 +112,7 @@ export const SpacePageMain: React.VFC<LTPageProps> = ({
               onClick={handleClickStartScreenShare}
               alignSelf={"center"}
             >
-              画面を開始する
+              画面共有を開始する
             </Button>
           </Box>
           <MemberBlock members={memberList} memberStateMap={memberStatusMap} />

@@ -14,11 +14,11 @@ export type Member = Omit<UserResponse, "email"> & {
   isOwner: boolean;
 };
 export const useRoom = (roomId: number | undefined) => {
-  const { data: room, error: roomError } = useSWR(
-    roomId ? ["/api/rooms", roomId] : null,
-    roomFetcher,
-    {}
-  );
+  const {
+    data: room,
+    error: roomError,
+    mutate,
+  } = useSWR(roomId ? ["/api/rooms", roomId] : null, roomFetcher, {});
 
   const { userList, userMap } = useMemo<{
     userList: Member[] | undefined;
@@ -59,6 +59,7 @@ export const useRoom = (roomId: number | undefined) => {
   return {
     room,
     roomError,
+    mutate,
     userList: userList,
     userMap: userMap,
   };
