@@ -491,6 +491,11 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 				.build();
 			roomMapper.insert(room);
 
+			final var participations = Arrays.asList( //
+				ParticipationSample.builder().userId(user.getId()).roomId(room.getId()).type(ParticipationTypeEnum.SPEAKER.getId()).build() //
+			);
+			participations.forEach(participationMapper::insert);
+
 			final var requestBody = RoomJoinRequest.builder() //
 				.type(type.getId()) //
 				.title(title) //
@@ -513,8 +518,8 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			}).stream().findFirst();
 			assertThat(participation.isPresent()).isTrue();
 			assertThat(participation.get()) //
-				.extracting(Participation::getType, Participation::getTitle) //
-				.containsExactly(requestBody.getType(), requestBody.getTitle());
+				.extracting(Participation::getType, Participation::getTitle, Participation::getSpeakerOrder) //
+				.containsExactly(requestBody.getType(), requestBody.getTitle(), participations.size() + 1);
 		}
 
 		Stream<Arguments> 正_ルームに参加登録する() {
