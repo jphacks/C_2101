@@ -116,7 +116,7 @@ export const PageSpaceDetail: React.VFC<{
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>登壇者登録</ModalHeader>
+          <ModalHeader>参加登録</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <form
