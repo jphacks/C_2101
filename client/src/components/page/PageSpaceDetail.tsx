@@ -4,17 +4,30 @@ import {
   Box,
   Button,
   Flex,
+  FormControl,
+  FormLabel,
   Heading,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Spacer,
   Stack,
   Text,
+  Input,
+  useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { transform } from "../../utils/datetime";
-import React from "react";
+import React, { useState } from "react";
 import { useRoom } from "../../hooks/useRoom";
 import { useJoinRoom } from "../../hooks/useJoinRoom";
 import { useUnJoinRoom } from "../../hooks/useUnJoinRoom";
 import { useRouter } from "next/router";
+import NextLink from "next/link";
+import { UserType } from "./space/MemberItem";
 
 export const PageSpaceDetail: React.VFC<{
   roomId: number;
@@ -26,6 +39,10 @@ export const PageSpaceDetail: React.VFC<{
 
   const router = useRouter();
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [titleFormValue, setTitleFormValue] = useState<string>();
+  const toast = useToast();
+
   if (!room || !roomId) {
     return (
       <Layout>
@@ -35,14 +52,35 @@ export const PageSpaceDetail: React.VFC<{
   }
 
   const handleClickJoin = async () => {
-    // await fetchJoin({
-    //   type:
-    // }).then()
+    await fetchJoin({
+      title: titleFormValue,
+      type: UserType.Speaker,
+    })
+      .then(() => mutate())
+      .then((res) => {
+        console.log(res);
+        toast({
+          title: "登録しました",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
     //最後にmutateを叩かないと画面に表示されてる状態が更新されない
   };
 
-  const handleClickEnterRoom = async () => {
-    await router.push(`/space/${roomId}`);
+  const handleClickUnJoin = async () => {
+    await fetchUnJoin()
+      .then(() => mutate())
+      .then((res) => {
+        console.log(res);
+        toast({
+          title: "登録削除しました",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
   };
 
   return (
@@ -71,6 +109,31 @@ export const PageSpaceDetail: React.VFC<{
           コミュニティ内でのLT会や勉強会など、快適なオンライン発表環境を提供します。
         </Text>
       </Stack>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>登壇者登録</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                handleClickJoin();
+              }}
+            >
+              <FormControl>
+                <FormLabel>発表タイトル</FormLabel>
+                <Input
+                  type={"text"}
+                  onChange={(event) => setTitleFormValue(event.target.value)}
+                />
+                <Button type={"submit"}>登録</Button>
+              </FormControl>
+            </form>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
 
       <Stack maxW={"100vw"}>
         <Stack align={"center"}>
@@ -147,6 +210,7 @@ export const PageSpaceDetail: React.VFC<{
                   bg: "teal.500",
                 }}
                 type="submit"
+                onClick={onOpen}
               >
                 参加登録
               </Button>
@@ -161,24 +225,27 @@ export const PageSpaceDetail: React.VFC<{
                   bg: "gray.500",
                 }}
                 type="submit"
+                onClick={handleClickUnJoin}
               >
                 参加辞退
               </Button>
 
               <Spacer />
 
-              <Button
-                mt={8}
-                borderRadius={0}
-                bg={"teal.400"}
-                color={"white"}
-                _hover={{
-                  bg: "teal.500",
-                }}
-                type="submit"
-              >
-                ルームに参加
-              </Button>
+              <NextLink href={`/space/${roomId}`} passHref>
+                <Button
+                  mt={8}
+                  borderRadius={0}
+                  bg={"teal.400"}
+                  color={"white"}
+                  _hover={{
+                    bg: "teal.500",
+                  }}
+                  type="submit"
+                >
+                  ルームに参加
+                </Button>
+              </NextLink>
             </Flex>
           </Stack>
         </Stack>

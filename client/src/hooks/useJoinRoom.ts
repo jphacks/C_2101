@@ -14,7 +14,7 @@ export const useJoinRoom = (roomId: number) => {
       .catch((err) => {
         toast({
           title: err.message,
-          status: err,
+          status: "error",
           duration: 5000,
           isClosable: true,
         });
