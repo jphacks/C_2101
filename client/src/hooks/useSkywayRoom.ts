@@ -256,6 +256,7 @@ export const useSkywayRoom = ({
       if (cameraStream) {
         cameraVideoRef.current!.srcObject = cameraStream;
         cameraVideoRef.current!.playsInline = true;
+        cameraVideoRef.current!.muted = false;
         void cameraVideoRef.current!.play();
       }
 
