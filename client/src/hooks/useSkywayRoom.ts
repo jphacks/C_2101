@@ -213,11 +213,13 @@ export const useSkywayRoom = ({
       if (localCameraStreamRef.current) {
         cameraVideoRef.current!.srcObject = localCameraStreamRef.current;
         cameraVideoRef.current!.playsInline = true;
+        cameraVideoRef.current!.muted = true;
         void cameraVideoRef.current!.play();
       }
       if (localScreenStreamRef.current) {
         screenVideoRef.current!.srcObject = localScreenStreamRef.current;
         screenVideoRef.current!.playsInline = true;
+        cameraVideoRef.current!.muted = true;
         void screenVideoRef.current!.play();
       }
     } else {
@@ -256,6 +258,7 @@ export const useSkywayRoom = ({
       if (cameraStream) {
         cameraVideoRef.current!.srcObject = cameraStream;
         cameraVideoRef.current!.playsInline = true;
+        cameraVideoRef.current!.muted = false;
         void cameraVideoRef.current!.play();
       }
 
