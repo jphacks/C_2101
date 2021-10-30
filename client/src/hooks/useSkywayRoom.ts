@@ -147,7 +147,9 @@ export const useSkywayRoom = ({
           [stream.peerId]: stream,
         };
         console.log(streamMapRef.current);
-        updateStreamVideoRef();
+        setTimeout(() => {
+          updateStreamVideoRef();
+        });
       });
     });
 
