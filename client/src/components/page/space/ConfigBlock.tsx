@@ -30,13 +30,13 @@ export const ConfigBlock: React.VFC<ConfigBlockProps> = ({}) => {
           <Icon w={8} h={8} as={(props) => <VideocamIcon {...props} />} />
           <Switch size={"lg"} colorScheme={"teal"} />
         </HStack>
-        <IconButton
-          aria-label={"setting"}
-          bg={"gray.200"}
-          icon={
-            <Icon w={8} h={8} as={(props) => <SettingsIcon {...props} />} />
-          }
-        />
+        {/*<IconButton*/}
+        {/*  aria-label={"setting"}*/}
+        {/*  bg={"gray.200"}*/}
+        {/*  icon={*/}
+        {/*    <Icon w={8} h={8} as={(props) => <SettingsIcon {...props} />} />*/}
+        {/*  }*/}
+        {/*/>*/}
       </HStack>
     </Box>
   );
