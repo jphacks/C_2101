@@ -149,7 +149,7 @@ export const useSkywayRoom = ({
         console.log(streamMapRef.current);
         setTimeout(() => {
           updateStreamVideoRef();
-        });
+        }, 1000);
       });
     });
 
