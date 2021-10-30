@@ -20,7 +20,7 @@ export const CommentBlock: React.VFC<CommentBlockProps> = ({
   onSubmit,
 }) => {
   return (
-    <VStack w={"full"} minH={64} h={"512px"} bg={"gray.200"} rounded={8} p={2}>
+    <VStack w={"full"} minH={64} h={"100vh"} bg={"gray.200"} rounded={8} p={2}>
       <VStack w={"full"} h={"full"} overflowY={"scroll"}>
         {comments.map((item, index) => (
           <CommentItem {...item} key={`comment-${index}`} />
