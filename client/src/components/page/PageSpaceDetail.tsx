@@ -19,6 +19,8 @@ import {
   Input,
   useToast,
   useDisclosure,
+  Radio,
+  RadioGroup,
 } from "@chakra-ui/react";
 import { transform } from "../../utils/datetime";
 import React, { useState } from "react";
@@ -41,6 +43,7 @@ export const PageSpaceDetail: React.VFC<{
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [titleFormValue, setTitleFormValue] = useState<string>();
+  const [userType, setUserType] = useState(1);
   const toast = useToast();
 
   if (!room || !roomId) {
@@ -54,7 +57,7 @@ export const PageSpaceDetail: React.VFC<{
   const handleClickJoin = async () => {
     await fetchJoin({
       title: titleFormValue,
-      type: UserType.Speaker,
+      type: userType,
     })
       .then(() => mutate())
       .then((res) => {
@@ -123,11 +126,32 @@ export const PageSpaceDetail: React.VFC<{
               }}
             >
               <FormControl>
-                <FormLabel>発表タイトル</FormLabel>
-                <Input
-                  type={"text"}
-                  onChange={(event) => setTitleFormValue(event.target.value)}
-                />
+                <RadioGroup
+                  onChange={(usertype) => {
+                    setUserType(Number(usertype));
+                  }}
+                  value={userType}
+                >
+                  <Stack direction="row">
+                    <Radio value={UserType.Speaker}>登壇者</Radio>
+                    <Radio value={UserType.Viewer}>視聴者</Radio>
+                  </Stack>
+                </RadioGroup>
+
+                {UserType.Speaker === userType ? (
+                  <>
+                    <FormLabel>発表タイトル</FormLabel>
+                    <Input
+                      type={"text"}
+                      onChange={(event) =>
+                        setTitleFormValue(event.target.value)
+                      }
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
+
                 <Button type={"submit"}>登録</Button>
               </FormControl>
             </form>
