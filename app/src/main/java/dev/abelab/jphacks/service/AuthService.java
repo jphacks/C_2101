@@ -69,7 +69,7 @@ public class AuthService {
         String iconUrl = null;
         if (requestBody.getIcon() != null) {
             final var file = FileModel.builder().content(Base64.decodeBase64(requestBody.getIcon())).build();
-            file.setName("icons/" + file.getName() + ".jpg");
+            file.setName("icons/" + file.getName());
             iconUrl = this.cloudStorageUtil.uploadFile(file);
         }
 
