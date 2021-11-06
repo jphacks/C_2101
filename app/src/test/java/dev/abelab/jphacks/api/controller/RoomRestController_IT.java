@@ -136,9 +136,9 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			 */
 			assertThat(response) //
 				.extracting(RoomResponse::getId, RoomResponse::getTitle, RoomResponse::getDescription,
-					RoomResponse::getPresentationTimeLimit, RoomResponse::getQuestionTimeLimit) //
+					RoomResponse::getPresentationTimeLimit, RoomResponse::getQuestionTimeLimit, RoomResponse::getImageUrl) //
 				.containsExactly(room.getId(), room.getTitle(), room.getDescription(), room.getPresentationTimeLimit(),
-					room.getQuestionTimeLimit());
+					room.getQuestionTimeLimit(), room.getImageUrl());
 
 			// オーナー
 			assertThat(response.getOwner()) //
@@ -202,7 +202,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			final var rooms = Arrays.asList( //
 				RoomSample.builder().ownerId(loginUser.getId()).build(), //
 				RoomSample.builder().ownerId(loginUser.getId()).build(), //
-				RoomSample.builder().ownerId(loginUser.getId()).build() //
+				RoomSample.builder().ownerId(loginUser.getId()).imageUrl(null).build() //
 			);
 			rooms.forEach(roomMapper::insert);
 
@@ -239,9 +239,9 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			 */
 			assertThat(response.getRooms()) //
 				.extracting(RoomResponse::getId, RoomResponse::getTitle, RoomResponse::getDescription,
-					RoomResponse::getPresentationTimeLimit, RoomResponse::getQuestionTimeLimit) //
+					RoomResponse::getPresentationTimeLimit, RoomResponse::getQuestionTimeLimit, RoomResponse::getImageUrl) //
 				.containsExactlyElementsOf(rooms.stream().map(room -> tuple(room.getId(), room.getTitle(), room.getDescription(),
-					room.getPresentationTimeLimit(), room.getQuestionTimeLimit())).collect(Collectors.toList()));
+					room.getPresentationTimeLimit(), room.getQuestionTimeLimit(), room.getImageUrl())).collect(Collectors.toList()));
 
 			// オーナー
 			response.getRooms().forEach(room -> {
