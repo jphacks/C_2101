@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.net.util.Base64;
 import org.modelmapper.ModelMapper;
 
 import lombok.*;
@@ -18,6 +19,7 @@ import dev.abelab.jphacks.api.response.RoomCredentialsResponse;
 import dev.abelab.jphacks.db.entity.User;
 import dev.abelab.jphacks.db.entity.Room;
 import dev.abelab.jphacks.db.entity.Participation;
+import dev.abelab.jphacks.model.FileModel;
 import dev.abelab.jphacks.model.SkywayCredentialsModel;
 import dev.abelab.jphacks.enums.ParticipationTypeEnum;
 import dev.abelab.jphacks.repository.RoomRepository;
@@ -25,6 +27,7 @@ import dev.abelab.jphacks.repository.ParticipationRepository;
 import dev.abelab.jphacks.logic.RoomLogic;
 import dev.abelab.jphacks.util.RoomUtil;
 import dev.abelab.jphacks.util.AuthUtil;
+import dev.abelab.jphacks.util.CloudStorageUtil;
 import dev.abelab.jphacks.property.SkywayProperty;
 import dev.abelab.jphacks.exception.ErrorCode;
 import dev.abelab.jphacks.exception.BadRequestException;
@@ -43,6 +46,8 @@ public class RoomService {
     private final RoomLogic roomLogic;
 
     private final SkywayProperty skywayProperty;
+
+    private final CloudStorageUtil cloudStorageUtil;
 
     /**
      * ルームを取得
@@ -99,9 +104,18 @@ public class RoomService {
             throw new BadRequestException(ErrorCode.INVALID_ROOM_TIME);
         }
 
+        // アイコンをアップロード
+        String imageUrl = null;
+        if (requestBody.getImage() != null) {
+            final var file = FileModel.builder().content(Base64.decodeBase64(requestBody.getImage())).build();
+            file.setName("rooms/" + file.getName());
+            imageUrl = this.cloudStorageUtil.uploadFile(file);
+        }
+
         // ルームを作成
         final var room = this.modelMapper.map(requestBody, Room.class);
         room.setOwnerId(loginUser.getId());
+        room.setImageUrl(imageUrl);
         this.roomRepository.insert(room);
     }
 

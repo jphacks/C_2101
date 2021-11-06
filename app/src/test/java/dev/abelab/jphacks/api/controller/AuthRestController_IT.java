@@ -176,7 +176,7 @@ public class AuthRestController_IT extends AbstractRestController_IT {
 		}
 
 		@Test
-		void 正_アイコンがNULLのアイコンURLもNULLになる() throws Exception {
+		void 正_アイコンがNULLの時はアイコンURLもNULLになる() throws Exception {
 			/*
 			 * given
 			 */

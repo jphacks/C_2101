@@ -80,7 +80,7 @@ public class UserService {
         String iconUrl = null;
         if (requestBody.getIcon() != null) {
             final var file = FileModel.builder().content(Base64.decodeBase64(requestBody.getIcon())).build();
-            file.setName(file.getName() + ".jpg");
+            file.setName("icons/" + file.getName());
             iconUrl = this.cloudStorageUtil.uploadFile(file);
         }
 

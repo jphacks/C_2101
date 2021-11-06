@@ -20,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.modelmapper.ModelMapper;
+import mockit.Expectations;
+import mockit.Mocked;
 
 import dev.abelab.jphacks.api.request.RoomCreateRequest;
 import dev.abelab.jphacks.api.request.RoomJoinRequest;
@@ -36,14 +38,15 @@ import dev.abelab.jphacks.db.entity.ParticipationExample;
 import dev.abelab.jphacks.db.mapper.UserMapper;
 import dev.abelab.jphacks.db.mapper.RoomMapper;
 import dev.abelab.jphacks.db.mapper.ParticipationMapper;
+import dev.abelab.jphacks.model.FileModel;
 import dev.abelab.jphacks.model.SkywayCredentialsModel;
 import dev.abelab.jphacks.enums.ParticipationTypeEnum;
-import dev.abelab.jphacks.model.SkywayCredentialsModel;
 import dev.abelab.jphacks.helper.sample.UserSample;
 import dev.abelab.jphacks.helper.sample.RoomSample;
 import dev.abelab.jphacks.helper.sample.ParticipationSample;
 import dev.abelab.jphacks.helper.util.RandomUtil;
 import dev.abelab.jphacks.util.DateTimeUtil;
+import dev.abelab.jphacks.util.CloudStorageUtil;
 import dev.abelab.jphacks.property.SkywayProperty;
 import dev.abelab.jphacks.exception.ErrorCode;
 import dev.abelab.jphacks.exception.BaseException;
@@ -85,6 +88,9 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 
 	@Autowired
 	SkywayProperty skywayProperty;
+
+	@Mocked
+	CloudStorageUtil cloudStorageUtil;
 
 	/**
 	 * ルーム詳細取得APIのテスト
@@ -130,9 +136,9 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			 */
 			assertThat(response) //
 				.extracting(RoomResponse::getId, RoomResponse::getTitle, RoomResponse::getDescription,
-					RoomResponse::getPresentationTimeLimit, RoomResponse::getQuestionTimeLimit) //
+					RoomResponse::getPresentationTimeLimit, RoomResponse::getQuestionTimeLimit, RoomResponse::getImageUrl) //
 				.containsExactly(room.getId(), room.getTitle(), room.getDescription(), room.getPresentationTimeLimit(),
-					room.getQuestionTimeLimit());
+					room.getQuestionTimeLimit(), room.getImageUrl());
 
 			// オーナー
 			assertThat(response.getOwner()) //
@@ -196,7 +202,7 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			final var rooms = Arrays.asList( //
 				RoomSample.builder().ownerId(loginUser.getId()).build(), //
 				RoomSample.builder().ownerId(loginUser.getId()).build(), //
-				RoomSample.builder().ownerId(loginUser.getId()).build() //
+				RoomSample.builder().ownerId(loginUser.getId()).imageUrl(null).build() //
 			);
 			rooms.forEach(roomMapper::insert);
 
@@ -233,9 +239,9 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 			 */
 			assertThat(response.getRooms()) //
 				.extracting(RoomResponse::getId, RoomResponse::getTitle, RoomResponse::getDescription,
-					RoomResponse::getPresentationTimeLimit, RoomResponse::getQuestionTimeLimit) //
+					RoomResponse::getPresentationTimeLimit, RoomResponse::getQuestionTimeLimit, RoomResponse::getImageUrl) //
 				.containsExactlyElementsOf(rooms.stream().map(room -> tuple(room.getId(), room.getTitle(), room.getDescription(),
-					room.getPresentationTimeLimit(), room.getQuestionTimeLimit())).collect(Collectors.toList()));
+					room.getPresentationTimeLimit(), room.getQuestionTimeLimit(), room.getImageUrl())).collect(Collectors.toList()));
 
 			// オーナー
 			response.getRooms().forEach(room -> {
@@ -297,6 +303,15 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 				.finishAt(DateTimeUtil.addDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
 				.build();
 			final var requestBody = modelMapper.map(room, RoomCreateRequest.class);
+			requestBody.setImage(SAMPLE_STR);
+
+			final var imageUrl = "http://example.com/test_file.jpg";
+			new Expectations() {
+				{
+					cloudStorageUtil.uploadFile((FileModel) any);
+					result = imageUrl;
+				}
+			};
 
 			/*
 			 * test
@@ -312,14 +327,51 @@ public class RoomRestController_IT extends AbstractRestController_IT {
 				{
 					createCriteria().andOwnerIdEqualTo(loginUser.getId());
 				}
-			});
-			assertThat(createdRoom)
+			}).stream().findFirst();
+			assertThat(createdRoom.isPresent()).isTrue();
+			assertThat(createdRoom.get())
 				.extracting(Room::getTitle, Room::getDescription, Room::getOwnerId, Room::getPresentationTimeLimit,
-					Room::getQuestionTimeLimit) //
-				.containsExactly(tuple(requestBody.getTitle(), requestBody.getDescription(), loginUser.getId(),
-					requestBody.getPresentationTimeLimit(), requestBody.getQuestionTimeLimit()));
-			assertThat(createdRoom.get(0).getStartAt()).isInSameMinuteAs(room.getStartAt());
-			assertThat(createdRoom.get(0).getFinishAt()).isInSameMinuteAs(room.getFinishAt());
+					Room::getQuestionTimeLimit, Room::getImageUrl) //
+				.containsExactly(requestBody.getTitle(), requestBody.getDescription(), loginUser.getId(),
+					requestBody.getPresentationTimeLimit(), requestBody.getQuestionTimeLimit(), imageUrl);
+			assertThat(createdRoom.get().getStartAt()).isInSameMinuteAs(room.getStartAt());
+			assertThat(createdRoom.get().getFinishAt()).isInSameMinuteAs(room.getFinishAt());
+		}
+
+		@Test
+		void 正_アイキャッチ画像がNULLの時は画像URLもNULLになる() throws Exception {
+			/*
+			 * given
+			 */
+			final var loginUser = createLoginUser(true);
+			final var credentials = getLoginUserCredentials(loginUser);
+
+			final var room = RoomSample.builder() //
+				.presentationTimeLimit(300) //
+				.questionTimeLimit(60) //
+				.startAt(DateTimeUtil.editDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 10)) //
+				.finishAt(DateTimeUtil.addDateTime(TOMORROW, Calendar.HOUR_OF_DAY, 11)) //
+				.build();
+			final var requestBody = modelMapper.map(room, RoomCreateRequest.class);
+			requestBody.setImage(null);
+
+			/*
+			 * test
+			 */
+			final var request = postRequest(CREATE_ROOM_PATH, requestBody);
+			request.header(HttpHeaders.AUTHORIZATION, credentials);
+			execute(request, HttpStatus.CREATED);
+
+			/*
+			 * verify
+			 */
+			final var createdRoom = roomMapper.selectByExampleWithBLOBs(new RoomExample() {
+				{
+					createCriteria().andOwnerIdEqualTo(loginUser.getId());
+				}
+			}).stream().findFirst();
+			assertThat(createdRoom.isPresent()).isTrue();
+			assertThat(createdRoom.get().getImageUrl()).isNull();
 		}
 
 		@ParameterizedTest

@@ -1,0 +1,1 @@
+ALTER TABLE `room` ADD `image_url` VARCHAR(2048) NULL;
