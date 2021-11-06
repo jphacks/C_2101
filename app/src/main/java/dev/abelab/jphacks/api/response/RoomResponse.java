@@ -64,4 +64,9 @@ public class RoomResponse {
      */
     List<UserResponse> viewers;
 
+    /**
+     * アイキャッチ画像URL
+     */
+    String imageUrl;
+
 }
