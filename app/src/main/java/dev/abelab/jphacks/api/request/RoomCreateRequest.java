@@ -57,4 +57,9 @@ public class RoomCreateRequest {
     @NotNull
     Date finishAt;
 
+    /**
+     * アイキャッチ画像
+     */
+    String image;
+
 }
