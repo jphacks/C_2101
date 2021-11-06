@@ -108,7 +108,7 @@ public class RoomService {
         String imageUrl = null;
         if (requestBody.getImage() != null) {
             final var file = FileModel.builder().content(Base64.decodeBase64(requestBody.getImage())).build();
-            file.setName(file.getName() + ".jpg");
+            file.setName("rooms/" + file.getName() + ".jpg");
             imageUrl = this.cloudStorageUtil.uploadFile(file);
         }
 
