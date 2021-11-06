@@ -42,7 +42,7 @@ public class CloudStorageUtil {
                 .setCredentials(GoogleCredentials.fromStream(new FileInputStream(this.gcpProperty.getCredentialsPath()))) //
                 .build().getService();
 
-            final var blobId = BlobId.of(this.gcpProperty.getCloudStorage().getBucketName(), "icons/" + file.getName());
+            final var blobId = BlobId.of(this.gcpProperty.getCloudStorage().getBucketName(), file.getName());
             final var blobInfo = BlobInfo.newBuilder(blobId).build();
             storage.create(blobInfo, file.getContent());
 
