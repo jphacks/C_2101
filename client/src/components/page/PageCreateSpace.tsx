@@ -8,6 +8,7 @@ import {
   NumberInputField,
   NumberInputStepper,
   Stack,
+  Image,
   Text,
   Textarea,
   useToast,
@@ -56,6 +57,7 @@ export const PageCreateSpace = () => {
           presentationTimeLimit: presentationTimeLimit,
           questionTimeLimit: questionTimeLimit,
           title: title,
+          image: fileBase64,
         },
       });
     };
@@ -80,16 +82,38 @@ export const PageCreateSpace = () => {
   };
 
   const changeStartDate = (date: Date) => {
+    //開催日時が変更された場合、終了日時を2時間後に設定する
     const end = new Date(date.getTime());
     end.setHours(end.getHours() + 2);
     setStartDate(date);
     setEndDate(end);
   };
+
+  const [fileUrl, setFileUrl] = useState("");
+  const [fileBase64, setFileBase64] = useState("");
+  const processImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.item(0);
+    const allowFileTypes = ["image/jpeg", "image/png"];
+    if (!file || !allowFileTypes.includes(file.type)) {
+      setFileUrl("");
+      return;
+    }
+    const imageUrl = URL.createObjectURL(file);
+    setFileUrl(imageUrl);
+    let fr = new FileReader();
+    fr.onload = function (evt) {
+      if (evt.target == null || evt.target.result == null) return;
+      const content = evt.target.result as string;
+      setFileBase64(content.slice(content.indexOf(",") + 1));
+    };
+    fr.readAsDataURL(file);
+  };
+
   return (
     <Layout>
       <Stack spacing={4} maxWidth={500} margin="auto" paddingBottom={50}>
         <Text fontSize="4xl" fontWeight="bold" marginBottom="6" marginTop="12">
-          スペースを作成する
+          ルームを作成する
         </Text>
         <Text marginTop={24} paddingTop={2} fontWeight="bold">
           イベントのタイトル
@@ -167,12 +191,7 @@ export const PageCreateSpace = () => {
         <Text marginTop={24} paddingTop={2} fontWeight="bold">
           質問時間
         </Text>
-        <Stack
-          direction={["column", "row"]}
-          spacing="24px"
-          alignItems="center"
-          paddingBottom={8}
-        >
+        <Stack direction={["column", "row"]} spacing="24px" alignItems="center">
           <NumberInput
             min={0}
             max={60}
@@ -188,9 +207,15 @@ export const PageCreateSpace = () => {
           </NumberInput>
           <Text>分</Text>
         </Stack>
-
+        <Text marginTop={24} paddingTop={2} fontWeight="bold">
+          サムネイル画像
+        </Text>
+        <input type="file" accept="image/*" onChange={processImage} />
+        {fileUrl && (
+          <Image src={fileUrl} alt="preview" width={100} height={100} />
+        )}
         <Button
-          marginTop={42}
+          marginTop="42px"
           onClick={create}
           bg="teal.400"
           color="white"

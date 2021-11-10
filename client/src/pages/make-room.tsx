@@ -2,11 +2,21 @@ import { Button } from "@chakra-ui/react";
 import React from "react";
 import Layout from "../components/Layout";
 import client from "../utils/api-client.factory";
+import { useLogin } from "../hooks/useLogin";
 
 const MakeRoom: React.VFC = () => {
   //以下テスト用の書きちらし
   //momentjs使ったほうが良い
+  const { user, authHeader } = useLogin();
   const fetchMakeRoom = async () => {
+    const res = await client.api.rooms._room_id(15).join.$post({
+      body: {
+        // title: "Figmaによる入門UIデザイン",
+        type: 2,
+      },
+    });
+    console.log(res);
+    return;
     const users = [
       {
         email: "test@mail.com",
