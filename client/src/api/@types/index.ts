@@ -1,24 +1,24 @@
 /* eslint-disable */
 export type AccessTokenResponse = {
-  accessToken: string;
-  tokenType: string;
-};
+  accessToken: string
+  tokenType: string
+}
 
 export type LoginRequest = {
-  email: string;
-  password: string;
-};
+  email: string
+  password: string
+}
 
 export type LoginUserPasswordUpdateRequest = {
-  currentPassword: string;
-  newPassword: string;
-};
+  currentPassword: string
+  newPassword: string
+}
 
 export type LoginUserUpdateRequest = {
-  email: string;
-  icon?: string;
-  name: string;
-};
+  email: string
+  icon?: string
+  name: string
+}
 
 export type RoomAuthenticateRequest = {
   peerId: string
@@ -27,6 +27,7 @@ export type RoomAuthenticateRequest = {
 export type RoomCreateRequest = {
   description: string
   finishAt: string
+  image?: string
   presentationTimeLimit: number
   questionTimeLimit: number
   startAt: string
@@ -47,6 +48,7 @@ export type RoomResponse = {
   description: string
   finishAt: string
   id: number
+  imageUrl: string
   owner: UserResponse
   presentationTimeLimit: number
   questionTimeLimit: number
@@ -57,8 +59,8 @@ export type RoomResponse = {
 }
 
 export type RoomsResponse = {
-  rooms: RoomResponse[];
-};
+  rooms: RoomResponse[]
+}
 
 export type SignupRequest = {
   email: string
@@ -84,12 +86,12 @@ export type SpeakerResponse = {
 }
 
 export type UserResponse = {
-  email: string;
-  iconUrl: string;
-  id: number;
-  name: string;
-};
+  email: string
+  iconUrl: string
+  id: number
+  name: string
+}
 
 export type UsersResponse = {
-  users: UserResponse[];
-};
+  users: UserResponse[]
+}
