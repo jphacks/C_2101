@@ -191,12 +191,7 @@ export const PageCreateSpace = () => {
         <Text marginTop={24} paddingTop={2} fontWeight="bold">
           質問時間
         </Text>
-        <Stack
-          direction={["column", "row"]}
-          spacing="24px"
-          alignItems="center"
-          paddingBottom={8}
-        >
+        <Stack direction={["column", "row"]} spacing="24px" alignItems="center">
           <NumberInput
             min={0}
             max={60}
