@@ -30,8 +30,8 @@ jobs:
 
       - name: Run front-end build
         run: |
-          cd client
           npm install
+          cd client
           npm run build
           cd ../
 
