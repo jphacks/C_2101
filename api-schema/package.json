@@ -1,0 +1,16 @@
+{
+  "name": "api-schema",
+  "version": "1.0.0",
+  "dependencies": {
+    "aspida": "^1.7.1"
+  },
+  "scripts": {
+    "generate:aspida": "npx openapi2aspida"
+  },
+  "devDependencies": {
+    "eslint": "^8.2.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "prettier": "^2.4.1"
+  }
+}

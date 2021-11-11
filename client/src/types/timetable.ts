@@ -1,4 +1,4 @@
-import { UserResponse } from "../api/@types";
+import { UserResponse } from "@api-schema/api/@types";
 
 export type Timetable = {
   pointer:

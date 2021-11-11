@@ -1,8 +1,8 @@
-import api from "../api/$api";
 import aspida from "@aspida/axios";
 import axios from "axios";
 import { AxiosRequestConfig } from "axios";
 import { AuthHeader } from "../hooks/useLogin";
+import api from "../../../api-schema/src/api/$api";
 
 axios.interceptors.request.use((config: AxiosRequestConfig) => {
   const itemStr = localStorage.getItem("lt-space-auth-token");

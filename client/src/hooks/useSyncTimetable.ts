@@ -1,7 +1,7 @@
 import { MutableRefObject, useCallback, useEffect, useState } from "react";
 import { RoomData, SfuRoom } from "skyway-js";
 import { Timetable, TimetableSession } from "../types/timetable";
-import { RoomResponse } from "../api/@types";
+import { RoomResponse } from "@api-schema/api/@types";
 import { SkywayData } from "../types/skywayData";
 import { Member } from "./useRoom";
 

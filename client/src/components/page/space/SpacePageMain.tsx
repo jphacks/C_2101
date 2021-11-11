@@ -5,15 +5,16 @@ import { MemberBlock } from "./MemberBlock";
 import { TimetableBlock } from "./TimetableBlock";
 import { ConfigBlock } from "./ConfigBlock";
 import { CommentBlock } from "./CommentBlock";
-import React, { useRef } from "react";
+
 import {
   RoomResponse,
   SkywayCredentialsModel,
   UserResponse,
-} from "../../../api/@types";
+} from "@api-schema/api/@types";
 import { useSkywayRoom } from "../../../hooks/useSkywayRoom";
 import { TimerBlockContainer } from "./TimerBlockContainer";
 import { Member } from "../../../hooks/useRoom";
+import React, { useRef } from "react";
 
 const Video = chakra("video");
 
