@@ -278,7 +278,7 @@ export const PageSpaceDetail: React.VFC<{
                   }}
                   type="submit"
                 >
-                  ルームに参加
+                  スペースに参加
                 </Button>
               </NextLink>
             </Flex>
