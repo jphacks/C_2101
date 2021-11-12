@@ -22,15 +22,18 @@ import {
   Radio,
   RadioGroup,
   Image,
+  HStack,
 } from "@chakra-ui/react";
 import { transform } from "../../utils/datetime";
-import React, { useState } from "react";
+import React, { MouseEventHandler, useState } from "react";
 import { useRoom } from "../../hooks/useRoom";
 import { useJoinRoom } from "../../hooks/useJoinRoom";
 import { useUnJoinRoom } from "../../hooks/useUnJoinRoom";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
 import { UserType } from "./space/MemberItem";
+import { FaFacebookF, FaTwitter } from "react-icons/fa";
+import { SiLine } from "react-icons/si";
 
 export const PageSpaceDetail: React.VFC<{
   roomId: number;
@@ -98,12 +101,72 @@ export const PageSpaceDetail: React.VFC<{
           alt="thumbnail"
         />
       ) : (
-        <></>
+        <Box />
       );
     return (
-      <Box borderRadius={5} width="100%" height="300px" bg="gray.200" my={10}>
+      <Box borderRadius={5} width="100%" height="300px" bg="gray.200">
         <Img />
       </Box>
+    );
+  };
+  const ShareBtns = () => {
+    const onClickShare = (e: React.MouseEvent<HTMLButtonElement>) => {
+      const url = (inTxt: string, inUrl: string) => {
+        const txt = encodeURIComponent(inTxt);
+        const url = encodeURIComponent(inUrl);
+        if (e.currentTarget.getAttribute("data-social") === "twitter")
+          return `https://twitter.com/share?text=${txt}&url=${url}`;
+        else if (e.currentTarget.getAttribute("data-social") === "facebook")
+          return `http://www.facebook.com/share.php?u=${url}`;
+        else if (e.currentTarget.getAttribute("data-social") === "line")
+          return `https://line.me/R/msg/text/?${txt} ${url}`;
+        return "";
+      };
+      window.open(
+        url(room.title, `https://lt-space.abelab.dev/explore/${roomId}`),
+        "",
+        "width=580,height=400,menubar=no,toolbar=no,scrollbars=yes"
+      );
+    };
+    return (
+      <HStack>
+        <Button
+          size="40px"
+          color="white"
+          bg="#1DA1F1"
+          borderRadius="50%"
+          boxSize="30px"
+          _hover={{ bg: "#5AB4F4" }}
+          data-social="twitter"
+          onClick={onClickShare}
+        >
+          <FaTwitter />
+        </Button>
+        <Button
+          size="40px"
+          color="white"
+          bg="#4167B2"
+          borderRadius="50%"
+          boxSize="30px"
+          _hover={{ bg: "#5192F5" }}
+          data-social="facebook"
+          onClick={onClickShare}
+        >
+          <FaFacebookF />
+        </Button>
+        <Button
+          size="40px"
+          color="white"
+          bg="#01B902"
+          borderRadius="50%"
+          boxSize="30px"
+          _hover={{ bg: "#5192F5" }}
+          data-social="line"
+          onClick={onClickShare}
+        >
+          <SiLine />
+        </Button>
+      </HStack>
     );
   };
   return (
@@ -156,19 +219,29 @@ export const PageSpaceDetail: React.VFC<{
 
       <Stack maxW={"100vw"}>
         <Stack align={"center"}>
-          <Stack align={"start"} textAlign={"center"} flex={"center"}>
-            <Flex width="100%" align="flex-end" my={5}>
-              <Heading fontSize="1.7rem" textAlign={"start"}>
-                {room.title}
-              </Heading>
+          <Stack align={"start"} textAlign={"center"} flex={"center"} pt={5}>
+            <Flex alignItems="flex-end" w="100%">
+              <Box textAlign="left">
+                <Text fontSize={"1rem"} color={"#999999"} fontWeight="bold">
+                  開催日: {transform(new Date(room.startAt), "YYYY/MM/DD")}
+                </Text>
+                <Heading fontSize="1.7rem" textAlign={"start"} pt={1}>
+                  {room.title}
+                </Heading>
+              </Box>
               <Spacer />
-              <Text fontSize={"0.7rem"} color={"#999999"} fontWeight="bold">
-                開催日: {transform(new Date(room.startAt), "YYYY/MM/DD")}
-              </Text>
+              <ShareBtns />
             </Flex>
+            <Box py="15px" w={"100%"}>
+              <Thumbnail imageUrl={room.imageUrl} />
+            </Box>
 
-            <Thumbnail imageUrl={room.imageUrl} />
-
+            <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
+              <Heading fontSize="1.5rem" textAlign={"start"}>
+                スペース概要
+              </Heading>
+            </Box>
+            {/* TODO: */}
             <Text width="100%" textAlign={"start"}>
               {room.description
                 .split("\n")
@@ -177,6 +250,7 @@ export const PageSpaceDetail: React.VFC<{
                 )}
             </Text>
 
+            <br />
             <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
               <Heading fontSize="1.5rem" textAlign={"start"}>
                 登壇者
