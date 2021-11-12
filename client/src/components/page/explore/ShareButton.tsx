@@ -3,9 +3,11 @@ import React from "react";
 import { FaFacebookF, FaTwitter } from "react-icons/fa";
 import { SiLine } from "react-icons/si";
 import type * as Types from "../../../api/@types";
-export const ShareBtns: React.VFC<{
+
+type Props = {
   room: Types.RoomResponse;
-}> = ({ room }) => {
+};
+export const ShareBtns: React.VFC<Props> = ({ room }) => {
   const onClickShare = (e: React.MouseEvent<HTMLButtonElement>) => {
     const url = (inTxt: string, inUrl: string) => {
       const txt = encodeURIComponent(inTxt);
