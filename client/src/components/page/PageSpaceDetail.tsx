@@ -22,18 +22,16 @@ import {
   Radio,
   RadioGroup,
   Image,
-  HStack,
 } from "@chakra-ui/react";
 import { transform } from "../../utils/datetime";
-import React, { MouseEventHandler, useState } from "react";
+import React, { useState } from "react";
 import { useRoom } from "../../hooks/useRoom";
 import { useJoinRoom } from "../../hooks/useJoinRoom";
 import { useUnJoinRoom } from "../../hooks/useUnJoinRoom";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
 import { UserType } from "./space/MemberItem";
-import { FaFacebookF, FaTwitter } from "react-icons/fa";
-import { SiLine } from "react-icons/si";
+import { ShareBtns } from "./explore/ShareButton";
 
 export const PageSpaceDetail: React.VFC<{
   roomId: number;
@@ -109,66 +107,7 @@ export const PageSpaceDetail: React.VFC<{
       </Box>
     );
   };
-  const ShareBtns = () => {
-    const onClickShare = (e: React.MouseEvent<HTMLButtonElement>) => {
-      const url = (inTxt: string, inUrl: string) => {
-        const txt = encodeURIComponent(inTxt);
-        const url = encodeURIComponent(inUrl);
-        if (e.currentTarget.getAttribute("data-social") === "twitter")
-          return `https://twitter.com/share?text=${txt}&url=${url}`;
-        else if (e.currentTarget.getAttribute("data-social") === "facebook")
-          return `http://www.facebook.com/share.php?u=${url}`;
-        else if (e.currentTarget.getAttribute("data-social") === "line")
-          return `https://line.me/R/msg/text/?${txt} ${url}`;
-        return "";
-      };
-      window.open(
-        url(room.title, `https://lt-space.abelab.dev/explore/${roomId}`),
-        "",
-        "width=580,height=400,menubar=no,toolbar=no,scrollbars=yes"
-      );
-    };
-    return (
-      <HStack>
-        <Button
-          size="40px"
-          color="white"
-          bg="#1DA1F1"
-          borderRadius="50%"
-          boxSize="30px"
-          _hover={{ bg: "#5AB4F4" }}
-          data-social="twitter"
-          onClick={onClickShare}
-        >
-          <FaTwitter />
-        </Button>
-        <Button
-          size="40px"
-          color="white"
-          bg="#4167B2"
-          borderRadius="50%"
-          boxSize="30px"
-          _hover={{ bg: "#5192F5" }}
-          data-social="facebook"
-          onClick={onClickShare}
-        >
-          <FaFacebookF />
-        </Button>
-        <Button
-          size="40px"
-          color="white"
-          bg="#01B902"
-          borderRadius="50%"
-          boxSize="30px"
-          _hover={{ bg: "#5192F5" }}
-          data-social="line"
-          onClick={onClickShare}
-        >
-          <SiLine />
-        </Button>
-      </HStack>
-    );
-  };
+
   return (
     <Layout>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -230,7 +169,7 @@ export const PageSpaceDetail: React.VFC<{
                 </Heading>
               </Box>
               <Spacer />
-              <ShareBtns />
+              <ShareBtns room={room} />
             </Flex>
             <Box py="15px" w={"100%"}>
               <Thumbnail imageUrl={room.imageUrl} />
