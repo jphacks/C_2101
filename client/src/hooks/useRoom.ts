@@ -3,7 +3,7 @@ import client from "../utils/api-client.factory";
 import useSWR from "swr";
 import { useMemo } from "react";
 import { UserType } from "../components/page/space/MemberItem";
-import { UserResponse } from "../api/@types";
+import { UserResponse } from "@api-schema/api/@types";
 
 const roomFetcher = async (key: string, roomId: number) => {
   return await client.api.rooms._room_id(roomId).$get();

@@ -1,5 +1,5 @@
 import client from "../utils/api-client.factory";
-import { RoomJoinRequest } from "../api/@types";
+import { RoomJoinRequest } from "@api-schema/api/@types";
 import { useToast } from "@chakra-ui/react";
 
 export const useJoinRoom = (roomId: number) => {
@@ -11,7 +11,7 @@ export const useJoinRoom = (roomId: number) => {
       .join.$post({
         body: body,
       })
-      .catch((err) => {
+      .catch((err: { message: any }) => {
         toast({
           title: err.message,
           status: "error",

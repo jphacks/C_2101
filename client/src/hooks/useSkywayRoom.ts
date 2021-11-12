@@ -5,7 +5,7 @@ import {
   RoomResponse,
   SkywayCredentialsModel,
   UserResponse,
-} from "../api/@types";
+} from "@api-schema/api/@types";
 import { useSyncTimer } from "./useSyncTimer";
 import { useSyncTimetable } from "./useSyncTimetable";
 import { Member } from "./useRoom";

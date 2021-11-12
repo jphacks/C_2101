@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
-import type * as Types from "../../../api/@types";
+import type * as Types from "@api-schema/api/@types";
 import { transform } from "../../../utils/datetime";
 
 type Props = {

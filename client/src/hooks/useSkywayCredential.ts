@@ -1,7 +1,7 @@
 import { AuthHeader } from "./useLogin";
 import client from "../utils/api-client.factory";
 import useSWR from "swr";
-import { RoomCredentialsResponse } from "../api/@types";
+import { RoomCredentialsResponse } from "@api-schema/api/@types";
 import { useRef } from "react";
 
 const credentialFetcher = async (

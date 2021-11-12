@@ -3,7 +3,7 @@ import { CommentProps } from "../components/page/space/CommentItem";
 import { MutableRefObject, useEffect } from "react";
 import { RoomData, SfuRoom } from "skyway-js";
 import { Member } from "./useRoom";
-import { UserResponse } from "../api/@types";
+import { UserResponse } from "@api-schema/api/@types";
 import { SkywayData } from "../types/skywayData";
 
 type UseSyncCommentParam = {

@@ -1,5 +1,5 @@
 import { Timetable } from "./timetable";
-import { Timer } from "./timer";
+import { TimerState } from "@api-schema/types/timerState";
 
 export type SkywayDataCommon = {
   timestamp: number;
@@ -53,7 +53,7 @@ export type UpdateAllowList = {
 
 export type UpdateTimer = {
   type: "updateTimer";
-  timer: Timer;
+  timer: TimerState;
 };
 
 export type UpdateTimetable = {

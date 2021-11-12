@@ -1,5 +1,4 @@
 import React from "react";
-import { UserResponse } from "../../../api/@types";
 import {
   Avatar,
   Flex,
@@ -11,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Token } from "@chakra-ui/styled-system/dist/types/utils";
 import * as CSS from "csstype";
+import { UserResponse } from "@api-schema/api/@types";
 
 export type CommentProps = {
   user: Omit<UserResponse, "email">;

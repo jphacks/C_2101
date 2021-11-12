@@ -1,5 +1,5 @@
 import { MutableRefObject, useEffect, useState } from "react";
-import { Timer } from "../types/timer";
+import { TimerState } from "@api-schema/types/timerState";
 import { SkywayData } from "../types/skywayData";
 import { RoomData, SfuRoom } from "skyway-js";
 import { Member } from "./useRoom";
@@ -24,7 +24,7 @@ type Action =
       type: "resume";
     };
 
-const timerStateReducer = (state: Timer, action: Action): Timer => {
+const timerStateReducer = (state: TimerState, action: Action): TimerState => {
   console.log("reducer");
   console.log(state);
   console.log(action);
@@ -70,12 +70,12 @@ export const useSyncTimer = ({
   memberFetcher,
 }: UserTimerParam) => {
   //かなり変則的ではある
-  const [state, setState] = useState<Timer>({
+  const [state, setState] = useState<TimerState>({
     timerEnabled: false,
     accTime: 0,
   });
 
-  const sendTimer = (value?: Timer) => {
+  const sendTimer = (value?: TimerState) => {
     const data: SkywayData = {
       type: "updateTimer",
       timestamp: createTimestamp(),

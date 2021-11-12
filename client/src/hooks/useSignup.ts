@@ -1,8 +1,7 @@
-import api from "../api/$api";
+import api from "@api-schema/api/$api";
 import aspida from "@aspida/axios";
 import { useLocalStorage } from "react-use";
 import axios from "axios";
-import useSWR from "swr";
 
 const client = api(aspida(axios, {}));
 

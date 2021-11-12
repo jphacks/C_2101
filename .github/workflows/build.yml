@@ -30,6 +30,9 @@ jobs:
 
       - name: Run front-end build
         run: |
+          cd api-schema
+          npm install
+          cd ../
           cd client
           npm install
           npm run build
