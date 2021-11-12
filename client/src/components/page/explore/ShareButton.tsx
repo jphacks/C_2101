@@ -2,10 +2,10 @@ import { Button, HStack } from "@chakra-ui/react";
 import React from "react";
 import { FaFacebookF, FaTwitter } from "react-icons/fa";
 import { SiLine } from "react-icons/si";
-import type * as Types from "../../../api/@types";
+//import type * as Types from "../../../api/@types";
 
 type Props = {
-  room: Types.RoomResponse;
+  room: any; //Types.RoomResponse;
 };
 export const ShareBtns: React.VFC<Props> = ({ room }) => {
   const onClickShare = (e: React.MouseEvent<HTMLButtonElement>) => {
