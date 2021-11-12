@@ -93,10 +93,10 @@ export const PageExplore = () => {
                 : ""}
             </Text>
             {joinRooms.map((room) => (
-              <>
+              <Box key={room.id}>
                 <RoomCard room={room} key={room.id + "xx"} />
                 <br />
-              </>
+              </Box>
             ))}
             <br />
 
@@ -107,10 +107,10 @@ export const PageExplore = () => {
             </Box>
 
             {rooms.map((room) => (
-              <>
-                <RoomCard room={room} key={room.id} />
+              <Box key={room.id}>
+                <RoomCard room={room} />
                 <br />
-              </>
+              </Box>
             ))}
           </Stack>
         </Stack>

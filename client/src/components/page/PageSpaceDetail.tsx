@@ -180,14 +180,13 @@ export const PageSpaceDetail: React.VFC<{
                 スペース概要
               </Heading>
             </Box>
-            {/* TODO: */}
-            <Text width="100%" textAlign={"start"}>
+            <Box width="100%" textAlign={"start"}>
               {room.description
                 .split("\n")
-                .map((str, index) =>
-                  str === "" ? <br /> : <p key={index}>{str}</p>
+                .map((str: string, index: number) =>
+                  str === "" ? <br key={index} /> : <p key={index}>{str}</p>
                 )}
-            </Text>
+            </Box>
 
             <br />
             <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
