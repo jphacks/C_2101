@@ -21,6 +21,7 @@ import {
   useDisclosure,
   Radio,
   RadioGroup,
+  Image,
 } from "@chakra-ui/react";
 import { transform } from "../../utils/datetime";
 import React, { useState } from "react";
@@ -85,34 +86,28 @@ export const PageSpaceDetail: React.VFC<{
         });
       });
   };
-
+  const Thumbnail: React.VFC<{ imageUrl: string }> = ({ imageUrl }) => {
+    const Img = () =>
+      imageUrl ? (
+        <Image
+          borderRadius={5}
+          w="100%"
+          h="100%"
+          objectFit="cover"
+          src={imageUrl}
+          alt="thumbnail"
+        />
+      ) : (
+        <></>
+      );
+    return (
+      <Box borderRadius={5} width="100%" height="300px" bg="gray.200" my={10}>
+        <Img />
+      </Box>
+    );
+  };
   return (
     <Layout>
-      <Stack
-        as={Box}
-        textAlign={"center"}
-        spacing={{ base: 8, md: 14 }}
-        paddingTop={{ base: 20, md: 36 }}
-      >
-        <Heading
-          fontWeight={600}
-          fontSize={{ base: "2xl", sm: "4xl", md: "6xl" }}
-          lineHeight={"110%"}
-        >
-          新しいLT Spaceへようこそ <br />
-          <Text as={"span"} color={"green.400"} fontSize="3rem">
-            video conferencing service
-          </Text>
-        </Heading>
-
-        <Text color={"gray.500"}>
-          LT
-          Spaceはオンライン発表会に特化したクラウドベースなビデオチャットプラットフォームです。
-          <br />
-          コミュニティ内でのLT会や勉強会など、快適なオンライン発表環境を提供します。
-        </Text>
-      </Stack>
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -161,13 +156,20 @@ export const PageSpaceDetail: React.VFC<{
 
       <Stack maxW={"100vw"}>
         <Stack align={"center"}>
-          <Stack align={"start"} textAlign={"center"} py={10} flex={"center"}>
-            <Box width="750px" borderBottom="4px" borderColor={"teal.400"}>
-              <Heading fontSize="1.5rem" textAlign={"start"}>
+          <Stack align={"start"} textAlign={"center"} flex={"center"}>
+            <Flex width="100%" align="flex-end" my={5}>
+              <Heading fontSize="1.7rem" textAlign={"start"}>
                 {room.title}
               </Heading>
-            </Box>
-            <Text width="750px" textAlign={"start"}>
+              <Spacer />
+              <Text fontSize={"0.7rem"} color={"#999999"} fontWeight="bold">
+                開催日: {transform(new Date(room.startAt), "YYYY/MM/DD")}
+              </Text>
+            </Flex>
+
+            <Thumbnail imageUrl={room.imageUrl} />
+
+            <Text width="100%" textAlign={"start"}>
               {room.description
                 .split("\n")
                 .map((str, index) =>
@@ -175,17 +177,7 @@ export const PageSpaceDetail: React.VFC<{
                 )}
             </Text>
 
-            <Flex width="100%">
-              <Flex align={"center"} />
-              <Spacer />
-              <Text fontSize={"0.7rem"} color={"#999999"} fontWeight="bold">
-                開催日: {transform(new Date(room.startAt), "YYYY/MM/DD")}
-              </Text>
-            </Flex>
-
-            <br />
-
-            <Box width="750px" borderBottom="4px" borderColor={"teal.400"}>
+            <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
               <Heading fontSize="1.5rem" textAlign={"start"}>
                 登壇者
               </Heading>
