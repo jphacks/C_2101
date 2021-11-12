@@ -1,4 +1,4 @@
-export type Timer =
+export type TimerState =
   | {
       timerEnabled: false;
       accTime: number;
