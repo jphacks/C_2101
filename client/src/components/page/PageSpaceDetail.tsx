@@ -156,7 +156,7 @@ export const PageSpaceDetail: React.VFC<{
         </ModalContent>
       </Modal>
 
-      <Stack maxW={"100vw"}>
+      <Stack maxW={"800px"} w="100%" margin="auto">
         <Stack align={"center"}>
           <Stack align={"start"} textAlign={"center"} flex={"center"} pt={5}>
             <Flex alignItems="flex-end" w="100%">
