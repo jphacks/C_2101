@@ -13,7 +13,8 @@ const Layout: React.FC<LayoutProps> = ({ children, contentTitle }) => {
   return (
     <Container
       minHeight="100vh"
-      minWidth="100vw"
+      width="100%"
+      maxW="none"
       padding="0"
       position="relative"
     >

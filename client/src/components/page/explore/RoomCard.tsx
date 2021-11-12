@@ -13,17 +13,18 @@ import React from "react";
 import NextLink from "next/link";
 import type * as Types from "@api-schema/api/@types";
 import { transform } from "../../../utils/datetime";
-
+import { useMediaQuery } from "@chakra-ui/react";
 type Props = {
   room: Types.RoomResponse;
 };
 
 type ThumbnailProps = {
   imageUrl: string;
+  roomId: number;
 };
-const Thumbnail: React.VFC<ThumbnailProps> = ({ imageUrl }) => {
-  const Img = () =>
-    imageUrl ? (
+const Thumbnail: React.VFC<ThumbnailProps> = ({ imageUrl, roomId }) => {
+  const Img = () => {
+    return imageUrl ? (
       <Image
         borderRadius={5}
         w="100%"
@@ -33,21 +34,27 @@ const Thumbnail: React.VFC<ThumbnailProps> = ({ imageUrl }) => {
         alt="thumbnail"
       />
     ) : (
-      <></>
+      <Box />
     );
+  };
   return (
-    <Box borderRadius={5} width="150px" bg="gray.200">
-      <Img />
-    </Box>
+    <NextLink href={`/explore/${roomId}`} passHref>
+      <Box borderRadius={5} width="150px" bg="gray.200" cursor="pointer">
+        <Img />
+      </Box>
+    </NextLink>
   );
 };
+
 const RoomCard: React.FC<Props> = ({ room }) => {
   const participants: number = room.speakers.length + room.viewers.length;
-
+  const [isMobile] = useMediaQuery("(max-width: 650px)");
+  const [isMobileSmall] = useMediaQuery("(max-width: 550px)");
+  const limitCount = isMobileSmall ? 0 : isMobile ? 40 : 70;
   return (
-    <Stack width="750px">
+    <Stack w="100%">
       <Flex height="100px">
-        <Thumbnail imageUrl={room.imageUrl} />
+        <Thumbnail imageUrl={room.imageUrl} roomId={room.id} />
         <Flex paddingLeft={3} flex="1" direction="column">
           <Flex>
             <Heading as="u" fontSize={"1.3rem"} textAlign={"start"}>
@@ -66,8 +73,10 @@ const RoomCard: React.FC<Props> = ({ room }) => {
             fontWeight="bold"
             textAlign={"start"}
           >
-            {room.description.slice(0, 70)}
-            {room.description.length > 70 ? "..." : ""}
+            {room.description.slice(0, limitCount)}
+            {room.description.length > limitCount && limitCount > 0
+              ? "..."
+              : ""}
           </Text>
           <Flex marginTop="auto">
             <Flex align={"center"}>

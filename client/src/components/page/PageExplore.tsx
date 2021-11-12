@@ -5,7 +5,7 @@ import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import RoomCard from "./explore/RoomCard";
 import React from "react";
-export const PageExplore = () => {
+export const PageExplore: React.VFC = () => {
   const { user } = useLogin();
   const { rooms } = useAllRoom();
 
@@ -79,40 +79,45 @@ export const PageExplore = () => {
         </Stack>
       </Stack>
 
-      <Stack maxW={"100vw"}>
-        <Stack align={"center"}>
-          <Stack align={"start"} textAlign={"center"} py={10} flex={"center"}>
-            <Box width="750px" borderBottom="4px" borderColor={"teal.400"}>
-              <Heading fontSize="1.5rem" textAlign={"start"}>
-                参加登録したルーム
-              </Heading>
+      <Stack align={"center"} maxW={"800px"} w="100%" margin="auto">
+        <Stack
+          align={"start"}
+          textAlign={"center"}
+          w="100%"
+          py={10}
+          px={5}
+          flex={"center"}
+        >
+          <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
+            <Heading fontSize="1.5rem" textAlign={"start"}>
+              参加登録したルーム
+            </Heading>
+          </Box>
+          <Text>
+            {joinRooms.length === 0
+              ? "参加登録しているルームはありません。"
+              : ""}
+          </Text>
+          {joinRooms.map((room) => (
+            <Box key={room.id} w="100%">
+              <RoomCard room={room} key={room.id + "xx"} />
+              <br />
             </Box>
-            <Text>
-              {joinRooms.length === 0
-                ? "参加登録しているルームはありません。"
-                : ""}
-            </Text>
-            {joinRooms.map((room) => (
-              <>
-                <RoomCard room={room} key={room.id + "xx"} />
-                <br />
-              </>
-            ))}
-            <br />
+          ))}
+          <br />
 
-            <Box width="750px" borderBottom="4px" borderColor={"teal.400"}>
-              <Heading fontSize="1.5rem" textAlign={"start"}>
-                新着ルーム
-              </Heading>
+          <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
+            <Heading fontSize="1.5rem" textAlign={"start"}>
+              新着ルーム
+            </Heading>
+          </Box>
+
+          {rooms.map((room) => (
+            <Box key={room.id} w="100%">
+              <RoomCard room={room} />
+              <br />
             </Box>
-
-            {rooms.map((room) => (
-              <>
-                <RoomCard room={room} key={room.id} />
-                <br />
-              </>
-            ))}
-          </Stack>
+          ))}
         </Stack>
       </Stack>
     </Layout>

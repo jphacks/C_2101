@@ -156,9 +156,16 @@ export const PageSpaceDetail: React.VFC<{
         </ModalContent>
       </Modal>
 
-      <Stack maxW={"100vw"}>
-        <Stack align={"center"}>
-          <Stack align={"start"} textAlign={"center"} flex={"center"} pt={5}>
+      <Stack maxW={"800px"} w="100%" margin="auto">
+        <Stack align={"center"} w="100%">
+          <Stack
+            align={"start"}
+            textAlign={"center"}
+            w="100%"
+            flex={"center"}
+            pt={5}
+            px={5}
+          >
             <Flex alignItems="flex-end" w="100%">
               <Box textAlign="left">
                 <Text fontSize={"1rem"} color={"#999999"} fontWeight="bold">
@@ -180,14 +187,13 @@ export const PageSpaceDetail: React.VFC<{
                 スペース概要
               </Heading>
             </Box>
-            {/* TODO: */}
-            <Text width="100%" textAlign={"start"}>
+            <Box width="100%" textAlign={"start"}>
               {room.description
                 .split("\n")
-                .map((str, index) =>
-                  str === "" ? <br /> : <p key={index}>{str}</p>
+                .map((str: string, index: number) =>
+                  str === "" ? <br key={index} /> : <p key={index}>{str}</p>
                 )}
-            </Text>
+            </Box>
 
             <br />
             <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
@@ -209,7 +215,7 @@ export const PageSpaceDetail: React.VFC<{
 
             <br />
 
-            <Box width="750px" borderBottom="4px" borderColor={"teal.400"}>
+            <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
               <Heading fontSize="1.5rem" textAlign={"start"}>
                 視聴者
               </Heading>
