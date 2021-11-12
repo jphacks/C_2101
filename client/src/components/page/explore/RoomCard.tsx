@@ -20,10 +20,11 @@ type Props = {
 
 type ThumbnailProps = {
   imageUrl: string;
+  roomId: number;
 };
-const Thumbnail: React.VFC<ThumbnailProps> = ({ imageUrl }) => {
-  const Img = () =>
-    imageUrl ? (
+const Thumbnail: React.VFC<ThumbnailProps> = ({ imageUrl, roomId }) => {
+  const Img = () => {
+    return imageUrl ? (
       <Image
         borderRadius={5}
         w="100%"
@@ -33,12 +34,15 @@ const Thumbnail: React.VFC<ThumbnailProps> = ({ imageUrl }) => {
         alt="thumbnail"
       />
     ) : (
-      <></>
+      <Box />
     );
+  };
   return (
-    <Box borderRadius={5} width="150px" bg="gray.200">
-      <Img />
-    </Box>
+    <NextLink href={`/explore/${roomId}`} passHref>
+      <Box borderRadius={5} width="150px" bg="gray.200" cursor="pointer">
+        <Img />
+      </Box>
+    </NextLink>
   );
 };
 
@@ -50,7 +54,7 @@ const RoomCard: React.FC<Props> = ({ room }) => {
   return (
     <Stack w="100%">
       <Flex height="100px">
-        <Thumbnail imageUrl={room.imageUrl} />
+        <Thumbnail imageUrl={room.imageUrl} roomId={room.id} />
         <Flex paddingLeft={3} flex="1" direction="column">
           <Flex>
             <Heading as="u" fontSize={"1.3rem"} textAlign={"start"}>
