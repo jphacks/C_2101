@@ -1,6 +1,7 @@
 import { useLocalStorage } from "react-use";
 import client from "../utils/api-client.factory";
 import useSWR from "swr";
+import { useRouter } from "next/router";
 
 export type AuthHeader = {
   Authorization: string;
@@ -38,9 +39,11 @@ export const useLogin = () => {
   } = useSWR(authHeader ? ["/api/users/me"] : null, userFetcher, {});
   //onError未使用になってるけど呼ばれるんだよなあ
 
+  const router = useRouter();
   const logout = async () => {
     destroyAuthHeader();
     await mutateUser(undefined);
+    await router.push('/');
   };
 
   const isAuthed = !!authHeader;
