@@ -1,5 +1,6 @@
+import { UserId } from "@api-schema/types/user";
+
 export type ReactionItem = {
   emoji: string;
-  userId: string;
-  timestamp: number;
+  userId: UserId;
 };
