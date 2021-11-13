@@ -11,9 +11,17 @@ export const useJoinRoom = (roomId: number) => {
       .join.$post({
         body: body,
       })
-      .catch((err: { message: any }) => {
+      .then(() => {
         toast({
-          title: err.message,
+          title: "登録しました",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .catch((err:string) => {
+        toast({
+          title: err,
           status: "error",
           duration: 5000,
           isClosable: true,

@@ -60,32 +60,12 @@ export const PageSpaceDetail: React.VFC<{
     await fetchJoin({
       title: titleFormValue,
       type: userType,
-    })
-      .then(() => mutate())
-      .then((res) => {
-        console.log(res);
-        toast({
-          title: "登録しました",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-      });
+    }).then(() => mutate());
     //最後にmutateを叩かないと画面に表示されてる状態が更新されない
   };
 
   const handleClickUnJoin = async () => {
-    await fetchUnJoin()
-      .then(() => mutate())
-      .then((res) => {
-        console.log(res);
-        toast({
-          title: "登録削除しました",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-      });
+    await fetchUnJoin().then(() => mutate());
   };
   const Thumbnail: React.VFC<{ imageUrl: string }> = ({ imageUrl }) => {
     const Img = () =>
