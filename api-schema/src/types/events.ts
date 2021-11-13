@@ -1,6 +1,7 @@
 import { SkywayCredentialsModel } from "@api-schema/api/@types";
 import { CommentItem } from "@api-schema/types/comment";
 import { ReactionItem } from "@api-schema/types/reaction";
+import { RoomState } from "@api-schema/types/roomState";
 import { TimerState } from "@api-schema/types/timerState";
 import { TimetableState } from "@api-schema/types/timetableState";
 
@@ -64,7 +65,7 @@ export interface ClientToServerEventsMap {
       comments: CommentItem[];
       timetable: TimetableState;
       timer: TimerState;
-      focusScreen: string;
+      roomState: RoomState;
     }>
   ) => void;
 }
@@ -86,18 +87,19 @@ export interface ServerToClientsEventsMap {
    * タイムテーブルの更新
    * @param timetable
    */
-  updateTimetable: (timetable: TimetableState) => void;
+  updateTimetable: (timetableState: TimetableState) => void;
 
   /**
    * タイマーの更新
    * @param timer
    */
-  updateTimer: (timer: TimerState) => void;
+  updateTimer: (timerState: TimerState) => void;
 
   /**
-   * 画面に表示すべきMediaStreamのidを通知
+   * ルームステートの更新
+   * @param roomState
    */
-  updateFocusScreen: (mediaStreamId: string) => void;
+  updateRoomState: (roomState: RoomState) => void;
 }
 
 type EmitResponse<T> = (res: T) => void;
