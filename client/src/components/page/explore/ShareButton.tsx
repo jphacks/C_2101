@@ -58,7 +58,7 @@ export const ShareBtns: React.VFC<Props> = ({ room }) => {
         bg="#01B902"
         borderRadius="50%"
         boxSize="30px"
-        _hover={{ bg: "#5192F5" }}
+        _hover={{ bg: "#55C74C" }}
         data-social="line"
         onClick={onClickShare}
       >

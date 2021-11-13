@@ -117,7 +117,9 @@ export const PageSpaceDetail: React.VFC<{
 
                 {UserType.Speaker === userType ? (
                   <>
-                    <FormLabel>発表タイトル</FormLabel>
+                    <FormLabel mt={2} mb={1}>
+                      発表タイトル
+                    </FormLabel>
                     <Input
                       type={"text"}
                       onChange={(event) =>
@@ -129,14 +131,16 @@ export const PageSpaceDetail: React.VFC<{
                   <></>
                 )}
 
-                <Button type={"submit"}>登録</Button>
+                <Button my={2} type={"submit"}>
+                  登録
+                </Button>
               </FormControl>
             </form>
           </ModalBody>
         </ModalContent>
       </Modal>
 
-      <Stack maxW={"800px"} w="100%" margin="auto">
+      <Stack maxW={"800px"} w="100%" margin="auto" pb={8}>
         <Stack align={"center"} w="100%">
           <Stack
             align={"start"}
