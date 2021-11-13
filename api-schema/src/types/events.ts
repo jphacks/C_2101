@@ -55,6 +55,18 @@ export interface ClientToServerEventsMap {
    * @param timer
    */
   setTimer: (timer: TimerState) => void;
+
+  /**
+   * 各種状態を全て取得
+   */
+  getInitialStatus: (
+    res: EmitResponse<{
+      comments: CommentItem[];
+      timetable: TimetableState;
+      timer: TimerState;
+      focusScreen: string;
+    }>
+  ) => void;
 }
 
 export interface ServerToClientsEventsMap {
