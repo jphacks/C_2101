@@ -1,14 +1,17 @@
 import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 import { CommentItem } from "@api-schema/types/comment";
-import { socket } from "./socket";
+import { socket } from "../hooks/socket";
 import { useCallback, useEffect } from "react";
 
+/**
+ *
+ */
 const commentsState = atom<CommentItem[]>({
-  key: "commentsState",
+  key: "useSyncComment-commentsState",
   default: [],
 });
 
-const useSetCommentsHandler = () => {
+export const useSetCommentsHandler = () => {
   const setState = useSetRecoilState(commentsState);
 
   useEffect(() => {
@@ -25,7 +28,7 @@ const useSetCommentsHandler = () => {
   }, [setState]);
 };
 
-const useCommentsAction = () => {
+export const useCommentsAction = () => {
   const postComment = useCallback((commentItem: CommentItem) => {
     socket.emit("postComment", commentItem);
   }, []);
@@ -35,6 +38,6 @@ const useCommentsAction = () => {
   };
 };
 
-const useCommentsValue = () => {
+export const useCommentsValue = () => {
   return useRecoilValue(commentsState);
 };

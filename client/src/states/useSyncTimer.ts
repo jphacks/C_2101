@@ -1,18 +1,18 @@
 import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 import { TimerState } from "@api-schema/types/timerState";
 import { useCallback, useEffect, useState } from "react";
-import { socket } from "./socket";
-import { calcTimerSec } from "@api-schema/lib/timer";
+import { socket } from "../hooks/socket";
+import { calcTimerSec, timerStateReducer } from "@api-schema/lib/timer";
 
 const timerState = atom<TimerState>({
-  key: "timerState",
+  key: "useSyncTimer-timerState",
   default: {
     timerEnabled: false,
     accTime: 0,
   },
 });
 
-const useSetTimerHandler = () => {
+export const useSetTimerHandler = () => {
   const setState = useSetRecoilState(timerState);
 
   useEffect(() => {
@@ -27,56 +27,7 @@ const useSetTimerHandler = () => {
   }, [setState]);
 };
 
-type Action =
-  | {
-      type: "reset";
-      enable: boolean;
-    }
-  | {
-      type: "pause";
-    }
-  | {
-      type: "resume";
-    };
-
-const timerStateReducer = (state: TimerState, action: Action): TimerState => {
-  switch (action.type) {
-    case "reset":
-      if (action.enable) {
-        return {
-          timerEnabled: true,
-          startTime: Date.now(),
-          accTime: 0,
-        };
-      } else {
-        return {
-          timerEnabled: false,
-          accTime: 0,
-        };
-      }
-    case "pause":
-      if (state.timerEnabled) {
-        return {
-          timerEnabled: false,
-          accTime: Date.now() - state.startTime,
-        };
-      } else {
-        return state;
-      }
-    case "resume":
-      if (state.timerEnabled) {
-        return state;
-      } else {
-        return {
-          timerEnabled: true,
-          startTime: Date.now(),
-          accTime: state.accTime,
-        };
-      }
-  }
-};
-
-const useTimerAction = () => {
+export const useTimerAction = () => {
   const timer = useRecoilValue(timerState);
   //ここで権限チェック入れた方がいいかも？
   const hasPermission = true;
@@ -116,7 +67,7 @@ const useTimerAction = () => {
   };
 };
 
-const useTimerElapsedSec = () => {
+export const useTimerElapsedSec = () => {
   const timer = useRecoilValue(timerState);
   const [second, setSecond] = useState<number>(0);
 
@@ -133,7 +84,7 @@ const useTimerElapsedSec = () => {
   return second;
 };
 
-const useTimerRemainSec = (fullSec: number) => {
+export const useTimerRemainSec = (fullSec: number) => {
   const elapsedSec = useTimerElapsedSec();
   return fullSec - elapsedSec;
 };

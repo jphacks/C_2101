@@ -1,30 +1,32 @@
 import { UserId } from "@api-schema/types/user";
 
 export type TimetableState = {
-  cursor: TimetableCursor;
+  cursor: number;
   sections: TimetableSection[];
 };
 
-export type TimetableCursor =
-  | {
-      progress: "waitingStart";
-    }
-  | {
-      progress: "section";
-      index: number;
-    }
-  | {
-      progress: "betweenSection";
-      prevIndex: number;
-      nextIndex: number;
-    }
-  | {
-      progress: "finished";
-    };
+export type TimetableSection =
+  | SpeakingSection
+  | PreparationSection
+  | BetweenSection
+  | CloseSection;
 
-export type TimetableSection = {
+export type SpeakingSection = {
+  type: "speaking";
   userId: UserId;
   sessionTitle: string;
   sectionTitle: string;
-  estimateTimeMs: number;
+  estimateTimeSec: number;
+};
+
+export type PreparationSection = {
+  type: "startPreparation";
+};
+
+export type BetweenSection = {
+  type: "between";
+};
+
+export type CloseSection = {
+  type: "closed";
 };
