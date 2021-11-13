@@ -4,17 +4,47 @@ import { ReactionItem } from "@api-schema/types/reaction";
 import { RoomState } from "@api-schema/types/roomState";
 import { TimerState } from "@api-schema/types/timerState";
 import { TimetableState } from "@api-schema/types/timetableState";
+import { UserId } from "@api-schema/types/user";
 
 //socket.ioのイベント型
 
 export interface ClientToServerEventsMap {
   /**
-   * ビデオ通話用のskywayCredentialを要求
+   * ルームに参加登録済みユーザとして入室する
+   * @param param
    * @param res
    */
-  getVideotelephonyCredential: (
-    credential: EmitResponse<SkywayCredentialsModel>
+  joinRoomAsUser: (
+    param: {
+      roomId: number;
+      auth: string;
+      userId: UserId;
+    },
+    res: EmitResponse<
+      | { status: "success"; credential: SkywayCredentialsModel }
+      | { status: "failure"; reason: string }
+    >
   ) => void;
+
+  /**
+   * ルームにゲストとして入室する
+   * @param param
+   * @param res
+   */
+  joinRoomAsGuest: (
+    param: {
+      roomId: number;
+    },
+    res: EmitResponse<
+      | { status: "success"; credential: SkywayCredentialsModel }
+      | { status: "failure"; reason: string }
+    >
+  ) => void;
+
+  /**
+   * ルームから退室する
+   */
+  leaveRoom: () => void;
 
   /**
    * 画面共有用のskywayCredentialを要求
