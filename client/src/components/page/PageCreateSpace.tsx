@@ -113,7 +113,7 @@ export const PageCreateSpace = () => {
     <Layout>
       <Stack spacing={4} maxWidth={500} margin="auto" paddingBottom={50}>
         <Text fontSize="4xl" fontWeight="bold" marginBottom="6" marginTop="12">
-          ルームを作成する
+          スペースを作成する
         </Text>
         <Text marginTop={24} paddingTop={2} fontWeight="bold">
           イベントのタイトル

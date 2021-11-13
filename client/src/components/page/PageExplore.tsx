@@ -13,7 +13,7 @@ export const PageExplore: React.VFC = () => {
     return <></>;
   }
 
-  // 参加登録したルーム
+  // 参加登録したスペース
   const now = new Date();
   const joinRooms = rooms.filter((room) => {
     if (now > new Date(room.finishAt)) {
@@ -73,7 +73,7 @@ export const PageExplore: React.VFC = () => {
                 bg: "green.500",
               }}
             >
-              ルームを作成する
+              スペースを作成する
             </Button>
           </NextLink>
         </Stack>
@@ -90,12 +90,12 @@ export const PageExplore: React.VFC = () => {
         >
           <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
             <Heading fontSize="1.5rem" textAlign={"start"}>
-              参加登録したルーム
+              参加登録したスペース
             </Heading>
           </Box>
           <Text>
             {joinRooms.length === 0
-              ? "参加登録しているルームはありません。"
+              ? "参加登録しているスペースはありません。"
               : ""}
           </Text>
           {joinRooms.map((room) => (
@@ -108,7 +108,7 @@ export const PageExplore: React.VFC = () => {
 
           <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
             <Heading fontSize="1.5rem" textAlign={"start"}>
-              新着ルーム
+              新着スペース
             </Heading>
           </Box>
 
