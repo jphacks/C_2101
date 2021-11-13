@@ -11,7 +11,7 @@ import {
   SkywayCredentialsModel,
   UserResponse,
 } from "@api-schema/api/@types";
-import { useSkywayRoom } from "../../../hooks/useSkywayRoom";
+import { useLegacySkywayRoom } from "../../../hooks/useLegacySkywayRoom";
 import { TimerBlockContainer } from "./TimerBlockContainer";
 import { Member } from "../../../hooks/useRoom";
 import React, { useRef } from "react";
@@ -51,7 +51,7 @@ export const SpacePageMain: React.VFC<LTPageProps> = ({
     memberStatusMap,
     isOwner,
     startScreenShare,
-  } = useSkywayRoom({
+  } = useLegacySkywayRoom({
     roomInfo: room,
     memberMap: memberMap,
     memberList: memberList,

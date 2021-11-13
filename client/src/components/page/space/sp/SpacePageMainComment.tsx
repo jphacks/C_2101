@@ -2,7 +2,7 @@ import { TimetableCardProps } from "../TimetableCard";
 import { chakra } from "@chakra-ui/react";
 import { CommentBlock } from "./CommentBlockSP";
 import React, { useRef } from "react";
-import { useSkywayRoom } from "../../../../hooks/useSkywayRoom";
+import { useLegacySkywayRoom } from "../../../../hooks/useLegacySkywayRoom";
 import { Member } from "../../../../hooks/useRoom";
 import {
   RoomResponse,
@@ -43,7 +43,7 @@ export const SpacePageMain: React.VFC<LTPageProps> = ({
     memberStatusMap,
     isOwner,
     startScreenShare,
-  } = useSkywayRoom({
+  } = useLegacySkywayRoom({
     roomInfo: room,
     memberMap: memberMap,
     memberList: memberList,

@@ -18,7 +18,7 @@ const unknownUser: Omit<UserResponse, "email"> = {
   name: "unknown user",
 };
 
-export const useSyncComment = ({
+export const useLegacySyncComment = ({
   roomRef,
   clientUser,
   memberFetcher,
