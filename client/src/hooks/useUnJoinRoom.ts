@@ -8,10 +8,18 @@ export const useUnJoinRoom = (roomId: number) => {
     return await client.api.rooms
       ._room_id(roomId)
       .unjoin.$post({})
-      .catch((err) => {
+      .then(() => {
         toast({
-          title: err.message,
-          status: err,
+          title: "登録削除しました",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .catch((err:string) => {
+        toast({
+          title: err,
+          status: "error",
           duration: 5000,
           isClosable: true,
         });
