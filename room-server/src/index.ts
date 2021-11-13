@@ -9,7 +9,8 @@ const io = new Server<ClientToServerEventsMap, ServerToClientsEventsMap>({
 });
 
 io.on("connection", (socket) => {
-  // ...
+  //権限とかのチェック
+  const auth = socket.handshake.auth;
 });
 
 io.listen(process.env.PORT ? Number(process.env.PORT) : 3001);
