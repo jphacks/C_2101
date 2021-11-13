@@ -68,19 +68,16 @@ export const PageSpaceDetail: React.VFC<{
     await fetchUnJoin().then(() => mutate());
   };
   const Thumbnail: React.VFC<{ imageUrl: string }> = ({ imageUrl }) => {
-    const Img = () =>
-      imageUrl ? (
-        <Image
-          borderRadius={5}
-          w="100%"
-          h="100%"
-          objectFit="cover"
-          src={imageUrl}
-          alt="thumbnail"
-        />
-      ) : (
-        <Box />
-      );
+    const Img = () => (
+      <Image
+        borderRadius={5}
+        w="100%"
+        h="100%"
+        objectFit="cover"
+        src={imageUrl ? imageUrl : "/no_image.png"}
+        alt="thumbnail"
+      />
+    );
     return (
       <Box borderRadius={5} width="100%" height="300px" bg="gray.200">
         <Img />

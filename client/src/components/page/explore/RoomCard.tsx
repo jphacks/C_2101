@@ -24,17 +24,15 @@ type ThumbnailProps = {
 };
 const Thumbnail: React.VFC<ThumbnailProps> = ({ imageUrl, roomId }) => {
   const Img = () => {
-    return imageUrl ? (
+    return (
       <Image
         borderRadius={5}
         w="100%"
         h="100%"
         objectFit="cover"
-        src={imageUrl}
+        src={imageUrl ? imageUrl : "/no_image.png"}
         alt="thumbnail"
       />
-    ) : (
-      <Box />
     );
   };
   return (
