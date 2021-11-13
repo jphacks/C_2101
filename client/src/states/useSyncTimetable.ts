@@ -2,8 +2,13 @@ import { TimetableState } from "@api-schema/types/timetableState";
 import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 import { useCallback, useEffect } from "react";
 import { socket } from "../hooks/socket";
+import { InitialStateParams } from "@api-schema/types/events";
 
-const timetableState = atom<TimetableState>({
+/**
+ * 直接コンポーネントから参照しない
+ * hookを作ってそれを介して使う
+ */
+export const timetableState = atom<TimetableState>({
   key: "useStateTimetable-timetableState",
   default: {
     cursor: 0,
@@ -54,3 +59,13 @@ export const useTimetableValue = () => {
 };
 
 export const useTimetableCardProps = () => {};
+
+export const useSetInitialTimetableState = () => {
+  const setState = useSetRecoilState(timetableState);
+  return useCallback(
+    (initialStateParams: InitialStateParams) => {
+      setState(initialStateParams.timetable);
+    },
+    [setState]
+  );
+};

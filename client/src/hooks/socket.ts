@@ -15,3 +15,7 @@ export const socket: ClientSocket = io(socketUrl, {});
 socket.on("connect", () => {
   console.log("socket.io connected");
 });
+
+export const joinRoomGuest = (roomId: number) => {
+  // socket.emit("")
+};

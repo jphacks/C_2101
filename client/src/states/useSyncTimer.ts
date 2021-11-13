@@ -3,8 +3,13 @@ import { TimerState } from "@api-schema/types/timerState";
 import { useCallback, useEffect, useState } from "react";
 import { socket } from "../hooks/socket";
 import { calcTimerSec, timerStateReducer } from "@api-schema/lib/timer";
+import { InitialStateParams } from "@api-schema/types/events";
 
-const timerState = atom<TimerState>({
+/**
+ * 直接コンポーネントから参照しない
+ * hookを作ってそれを介して使う
+ */
+export const timerState = atom<TimerState>({
   key: "useSyncTimer-timerState",
   default: {
     timerEnabled: false,
@@ -87,4 +92,14 @@ export const useTimerElapsedSec = () => {
 export const useTimerRemainSec = (fullSec: number) => {
   const elapsedSec = useTimerElapsedSec();
   return fullSec - elapsedSec;
+};
+
+export const useSetInitialTimerState = () => {
+  const setState = useSetRecoilState(timerState);
+  return useCallback(
+    (initialStateParams: InitialStateParams) => {
+      setState(initialStateParams.timer);
+    },
+    [setState]
+  );
 };

@@ -1,11 +1,16 @@
 import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 import { RoomState } from "@api-schema/types/roomState";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { socket } from "../hooks/socket";
+import { InitialStateParams } from "@api-schema/types/events";
 
 //default微妙かも
 
-const roomState = atom<RoomState>({
+/**
+ * 直接コンポーネントから参照しない
+ * hookを作ってそれを介して使う
+ */
+export const roomState = atom<RoomState>({
   key: "useSyncRoomState-roomState",
   default: {
     roomId: -1,
@@ -31,4 +36,14 @@ export const useSetRoomStateHandler = () => {
 
 export const useRoomStateValue = () => {
   return useRecoilValue(roomState);
+};
+
+export const useSetInitialRoomState = () => {
+  const setState = useSetRecoilState(roomState);
+  return useCallback(
+    (initialStateParams: InitialStateParams) => {
+      setState(initialStateParams.roomState);
+    },
+    [setState]
+  );
 };

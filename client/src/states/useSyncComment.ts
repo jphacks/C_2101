@@ -2,11 +2,13 @@ import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 import { CommentItem } from "@api-schema/types/comment";
 import { socket } from "../hooks/socket";
 import { useCallback, useEffect } from "react";
+import { InitialStateParams } from "@api-schema/types/events";
 
 /**
- *
+ * 直接コンポーネントから参照しない
+ * hookを作ってそれを介して使う
  */
-const commentsState = atom<CommentItem[]>({
+export const commentsState = atom<CommentItem[]>({
   key: "useSyncComment-commentsState",
   default: [],
 });
@@ -40,4 +42,14 @@ export const useCommentsAction = () => {
 
 export const useCommentsValue = () => {
   return useRecoilValue(commentsState);
+};
+
+export const useSetInitialCommentsState = () => {
+  const setState = useSetRecoilState(commentsState);
+  return useCallback(
+    (initialStateParams: InitialStateParams) => {
+      setState(initialStateParams.comments);
+    },
+    [setState]
+  );
 };
