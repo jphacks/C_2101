@@ -2,11 +2,21 @@ import { Box, Flex, Heading, HStack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React from "react";
 import UserMenu from "./UserMenu";
-
+import { useLogin } from "../../hooks/useLogin";
 type Props = {
   contentTitle?: string;
 };
+const HeaderLogo = () => {
+  const { user } = useLogin();
+  let topUrl = "/";
+  if (user) topUrl = "/explore";
 
+  return (
+    <Heading as={"h1"} size={"lg"} color={"gray.100"}>
+      <NextLink href={topUrl}>LT Space</NextLink>
+    </Heading>
+  );
+};
 const Header: React.FC<Props> = ({ contentTitle }) => {
   return (
     <Flex
@@ -19,9 +29,7 @@ const Header: React.FC<Props> = ({ contentTitle }) => {
       color={"gray.100"}
     >
       <Flex align={"center"} mr={5}>
-        <Heading as={"h1"} size={"lg"} color={"gray.100"}>
-          <NextLink href={"/"}>LT Space</NextLink>
-        </Heading>
+        <HeaderLogo />
       </Flex>
       <HStack
         width={{ base: "full", md: "auto" }}
