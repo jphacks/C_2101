@@ -1,5 +1,12 @@
 export type CommentItem = {
   text: string;
-  userId: string;
   timestamp: number;
-};
+} & (
+  | {
+      type: "user";
+      userId: string;
+    }
+  | {
+      type: "system";
+    }
+);
