@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import React from "react";
 // import VolumeHighIcon from "mdi-react/VolumeHighIcon";
+import Twemoji from "./Twemoji";
 
 type ConfigBlockProps = {};
 const EmojiBtn: React.VFC<{ emoji: string }> = ({ emoji }) => {
@@ -14,7 +15,7 @@ const EmojiBtn: React.VFC<{ emoji: string }> = ({ emoji }) => {
       //   transitionDuration=".5s"
       textAlign="center"
     >
-      {emoji}
+      <Twemoji emoji={emoji} />
     </Box>
   );
 };
