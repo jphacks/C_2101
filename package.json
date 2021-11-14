@@ -16,5 +16,12 @@
     "url": "https://github.com/jphacks/C_2101/issues"
   },
   "homepage": "https://github.com/jphacks/C_2101#readme",
-  "workspaces": ["client", "room-server", "api-schema"]
+  "workspaces": [
+    "client",
+    "room-server",
+    "api-schema"
+  ],
+  "dependencies": {
+    "twemoji": "^13.1.0"
+  }
 }
