@@ -1,27 +1,34 @@
 import { UserId } from "@api-schema/types/user";
 
-type UserSessionStore = Record<UserId, UserSessionValue>;
+type UserSessionStore = Record<string, UserSessionValue>;
 
 export type UserSessionValue = {
-  userId: UserId;
   roomId: number;
   socketId: string;
-};
+} & (
+  | {
+      isGuest: true;
+    }
+  | {
+      isGuest: false;
+      userId: UserId;
+    }
+);
 
 interface UserSessionRepository {
-  get(userId: UserId): Promise<UserSessionValue | null>;
-  set(userId: UserId, value: UserSessionValue): Promise<void>;
+  get(socketId: string): Promise<UserSessionValue | null>;
+  set(socketId: string, value: UserSessionValue): Promise<void>;
 }
 
 class TempUserSessionRepository implements UserSessionRepository {
   private userStore: UserSessionStore = {};
 
-  async get(userId: UserId): Promise<UserSessionValue | null> {
-    return this.userStore[userId];
+  async get(socketId: string): Promise<UserSessionValue | null> {
+    return this.userStore[socketId];
   }
 
-  async set(userId: UserId, value: UserSessionValue): Promise<void> {
-    this.userStore[userId] = value;
+  async set(socketId: string, value: UserSessionValue): Promise<void> {
+    this.userStore[socketId] = value;
   }
 }
 

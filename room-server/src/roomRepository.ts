@@ -1,5 +1,6 @@
+import { RoomMember } from "@api-schema/types/member";
+import { StreamState } from "@api-schema/types/streamState";
 import { CommentItem } from "api-schema/src/types/comment";
-import { RoomState } from "api-schema/src/types/roomState";
 import { TimerState } from "api-schema/src/types/timerState";
 import { TimetableState } from "api-schema/src/types/timetableState";
 
@@ -8,7 +9,8 @@ export type RoomSessionValue = {
   comments: CommentItem[];
   timetable: TimetableState;
   timer: TimerState;
-  roomState: RoomState;
+  members: RoomMember[];
+  streamState: StreamState;
 };
 
 interface RoomSessionRepository {
