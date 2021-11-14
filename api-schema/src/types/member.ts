@@ -16,6 +16,7 @@ export type RoomMember = {
       }
     | {
         isOnline: true;
+        socketId: string;
         skywayPeerIds: {
           videotelephony: string;
           screenShare: string | null;

@@ -14,7 +14,7 @@ import {
 import {
   useSetInitialRoomState,
   useSetRoomStateHandler,
-} from "../../states/useSyncRoomState";
+} from "../../states/useSyncMembers";
 import { socket } from "../../hooks/socket";
 import { UserInfo } from "@api-schema/types/user";
 import { InitialStateParams } from "@api-schema/types/events";

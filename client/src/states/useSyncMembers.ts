@@ -1,8 +1,8 @@
 import { atom, useRecoilValue, useSetRecoilState } from "recoil";
-import { RoomState } from "@api-schema/types/roomState";
 import { useCallback, useEffect } from "react";
 import { socket } from "../hooks/socket";
 import { InitialStateParams } from "@api-schema/types/events";
+import { RoomMember } from "@api-schema/types/member";
 
 //default微妙かも
 
@@ -10,39 +10,35 @@ import { InitialStateParams } from "@api-schema/types/events";
  * 直接コンポーネントから参照しない
  * hookを作ってそれを介して使う
  */
-export const roomState = atom<RoomState>({
-  key: "useSyncRoomState-roomState",
-  default: {
-    roomId: -1,
-    members: [],
-    focusStreamId: null,
-  },
+export const membersState = atom<RoomMember[]>({
+  key: "useSyncMember-membersState",
+  default: [],
 });
 
 export const useSetRoomStateHandler = () => {
-  const setState = useSetRecoilState(roomState);
+  const setState = useSetRecoilState(membersState);
 
   useEffect(() => {
-    const listener = (roomState: RoomState) => {
-      setState(roomState);
+    const listener = (members: RoomMember[]) => {
+      setState(members);
     };
 
-    socket.on("updateRoomState", listener);
+    socket.on("updateMembersState", listener);
     return () => {
-      socket.off("updateRoomState", listener);
+      socket.off("updateMembersState", listener);
     };
   }, [setState]);
 };
 
-export const useRoomStateValue = () => {
-  return useRecoilValue(roomState);
+export const useMembersStateValue = () => {
+  return useRecoilValue(membersState);
 };
 
 export const useSetInitialRoomState = () => {
-  const setState = useSetRecoilState(roomState);
+  const setState = useSetRecoilState(membersState);
   return useCallback(
     (initialStateParams: InitialStateParams) => {
-      setState(initialStateParams.roomState);
+      setState(initialStateParams.members);
     },
     [setState]
   );
