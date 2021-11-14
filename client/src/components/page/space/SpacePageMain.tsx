@@ -5,6 +5,7 @@ import { MemberBlock } from "./MemberBlock";
 import { TimetableBlock } from "./TimetableBlock";
 import { ConfigBlock } from "./ConfigBlock";
 import { CommentBlock } from "./CommentBlock";
+import { ReactionBlock } from "./ReactionBlock";
 
 import {
   RoomResponse,
@@ -129,6 +130,7 @@ export const SpacePageMain: React.VFC<LTPageProps> = ({
               rounded={8}
             />
           </Box>
+          <ReactionBlock />
           <ConfigBlock />
           <TimerBlockContainer
             isOwner={isOwner}
