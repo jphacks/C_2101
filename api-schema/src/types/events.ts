@@ -130,6 +130,18 @@ export interface ServerToClientsEventsMap {
    * @param roomState
    */
   updateRoomState: (roomState: StreamState) => void;
+
+  /**
+   * 画面共有などの状態更新
+   * @param roomState
+   */
+  updateStreamState: (streamState: StreamState) => void;
+
+  /**
+   * メンバーの状態更新
+   * @param roomState
+   */
+  updateMembersState: (members: RoomMember[]) => void;
 }
 
 type EmitResponse<T> = (res: T) => void;
