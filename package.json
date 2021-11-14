@@ -23,5 +23,8 @@
   ],
   "dependencies": {
     "twemoji": "^13.1.0"
+  },
+  "devDependencies": {
+    "@types/twemoji": "^12.1.2"
   }
 }
