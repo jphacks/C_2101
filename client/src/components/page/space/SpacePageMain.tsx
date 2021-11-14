@@ -1,10 +1,10 @@
-import { TimetableCardProps } from "./TimetableCard";
+import { TimetableCardProps } from "./timetableBlock/TimetableCard";
 import Layout from "../../Layout";
 import { Box, Button, chakra, Stack, VStack } from "@chakra-ui/react";
-import { MemberBlock } from "./MemberBlock";
-import { TimetableBlock } from "./TimetableBlock";
-import { ConfigBlock } from "./ConfigBlock";
-import { CommentBlock } from "./CommentBlock";
+import { MemberBlock } from "./memberBlock/MemberBlock";
+import { TimetableBlock } from "./timetableBlock/TimetableBlock";
+import { ConfigBlock } from "./configBlock/ConfigBlock";
+import { CommentBlock } from "./commentBlock/CommentBlock";
 
 import {
   RoomResponse,
@@ -12,7 +12,7 @@ import {
   UserResponse,
 } from "@api-schema/api/@types";
 import { useLegacySkywayRoom } from "../../../hooks/useLegacySkywayRoom";
-import { TimerBlockContainer } from "./TimerBlockContainer";
+import { TimerBlockContainer } from "./timerBlock/TimerBlockContainer";
 import { Member } from "../../../hooks/useRoom";
 import React, { useRef } from "react";
 

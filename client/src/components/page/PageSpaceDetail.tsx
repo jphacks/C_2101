@@ -30,7 +30,7 @@ import { useJoinRoom } from "../../hooks/useJoinRoom";
 import { useUnJoinRoom } from "../../hooks/useUnJoinRoom";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
-import { UserType } from "./space/MemberItem";
+import { UserType } from "./space/memberBlock/MemberItem";
 import { ShareBtns } from "./explore/ShareButton";
 
 export const PageSpaceDetail: React.VFC<{

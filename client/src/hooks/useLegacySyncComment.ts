@@ -1,5 +1,5 @@
 import { useList } from "react-use";
-import { CommentProps } from "../components/page/space/CommentItem";
+import { CommentProps } from "../components/page/space/commentBlock/CommentItem";
 import { MutableRefObject, useEffect } from "react";
 import { RoomData, SfuRoom } from "skyway-js";
 import { Member } from "./useRoom";

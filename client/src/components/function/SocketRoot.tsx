@@ -58,6 +58,7 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
         },
         (res) => {
           if (res.status === "success") {
+            //TODO credentialをどこかに記録する
             socket.emit("getInitialStates", (res) => {
               setInitialStates(res);
             });
@@ -72,6 +73,7 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
         },
         (res) => {
           if (res.status === "success") {
+            //TODO credentialをどこかに記録する
             socket.emit("getInitialStates", (res) => {
               setInitialStates(res);
             });

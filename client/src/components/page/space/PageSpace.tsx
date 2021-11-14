@@ -1,6 +1,6 @@
 import React from "react";
 import { useLogin } from "../../../hooks/useLogin";
-import { useSkywayCredential } from "../../../hooks/useSkywayCredential";
+import { useLegacySkywayCredential } from "../../../hooks/useLegacySkywayCredential";
 import { useRoom } from "../../../hooks/useRoom";
 import Layout from "../../Layout";
 import { Text } from "@chakra-ui/react";
@@ -11,14 +11,14 @@ export const Space: React.VFC<{
 }> = ({ roomId }) => {
   const { user, authHeader } = useLogin();
 
-  const { credential } = useSkywayCredential({
+  const { credential } = useLegacySkywayCredential({
     roomId: roomId,
     index: 0,
     userId: user?.id,
     authHeader,
   });
 
-  const { credential: credentialSub } = useSkywayCredential({
+  const { credential: credentialSub } = useLegacySkywayCredential({
     roomId: roomId,
     index: 1,
     userId: user?.id,

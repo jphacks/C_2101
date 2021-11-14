@@ -1,4 +1,4 @@
-import { TimetableCardProps } from "../TimetableCard";
+import { TimetableCardProps } from "../timetableBlock/TimetableCard";
 import { chakra } from "@chakra-ui/react";
 import { CommentBlock } from "./CommentBlockSP";
 import React, { useRef } from "react";

@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, HStack, StackDivider, Text, VStack } from "@chakra-ui/react";
 import { MemberItem, UserWithStatus } from "./MemberItem";
-import { Member } from "../../../hooks/useRoom";
-import { MemberStatus } from "../../../hooks/useLegacySyncMemberStatus";
+import { Member } from "../../../../hooks/useRoom";
+import { MemberStatus } from "../../../../hooks/useLegacySyncMemberStatus";
 
 type MemberBlockProps = {
   members: Member[];
