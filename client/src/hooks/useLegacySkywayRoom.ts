@@ -6,11 +6,11 @@ import {
   SkywayCredentialsModel,
   UserResponse,
 } from "@api-schema/api/@types";
-import { useSyncTimer } from "./useSyncTimer";
-import { useSyncTimetable } from "./useSyncTimetable";
+import { useLegacySyncTimer } from "./useLegacySyncTimer";
+import { useLegacySyncTimetable } from "./useLegacySyncTimetable";
 import { Member } from "./useRoom";
-import { useSyncMemberStatus } from "./useSyncMemberStatus";
-import { useSyncComment } from "./useSyncComment";
+import { useLegacySyncMemberStatus } from "./useLegacySyncMemberStatus";
+import { useLegacySyncComment } from "./useLegacySyncComment";
 
 type UseLTPageParam = {
   roomInfo: RoomResponse;
@@ -27,7 +27,7 @@ const skywayApiKey = "401e1886-919c-4988-ba47-ac85cae091a5";
 
 const createTimestamp = () => Date.now();
 
-export const useSkywayRoom = ({
+export const useLegacySkywayRoom = ({
   roomInfo,
   memberList,
   memberMap,
@@ -68,27 +68,27 @@ export const useSkywayRoom = ({
     state: timetable,
     timetableAction,
     getCurrentPresentingUser,
-  } = useSyncTimetable({
+  } = useLegacySyncTimetable({
     roomRef: roomRef,
     isOwner: isOwner,
     roomInfo: roomInfo,
     memberFetcher: memberFetcher,
   });
 
-  const { calcRemainTimerSec, timerAction } = useSyncTimer({
+  const { calcRemainTimerSec, timerAction } = useLegacySyncTimer({
     roomRef: roomRef,
     memberFetcher: memberFetcher,
     isOwner: isOwner,
   });
 
-  const { memberStatusMap, updateStatus } = useSyncMemberStatus({
+  const { memberStatusMap, updateStatus } = useLegacySyncMemberStatus({
     peerRef: peerRef,
     roomRef: roomRef,
     memberFetcher: memberFetcher,
     memberList: memberList,
   });
 
-  const { sendComment, commentList } = useSyncComment({
+  const { sendComment, commentList } = useLegacySyncComment({
     roomRef: roomRef,
     clientUser: clientUser,
     memberFetcher: memberFetcher,

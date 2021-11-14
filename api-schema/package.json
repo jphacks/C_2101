@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "aspida": "^1.7.1",
+    "immer": "^9.0.6",
     "socket.io": "^4.3.2"
   },
   "scripts": {

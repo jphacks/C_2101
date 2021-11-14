@@ -29,7 +29,7 @@ type ReactionState = {
 //
 // }
 
-export const useSyncMemberStatus = ({
+export const useLegacySyncMemberStatus = ({
   peerRef,
   roomRef,
   memberList,

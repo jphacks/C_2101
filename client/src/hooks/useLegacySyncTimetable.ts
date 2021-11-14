@@ -71,7 +71,7 @@ const timetableStateReducer = (state: Timetable, action: Action): Timetable => {
   }
 };
 
-export const useSyncTimetable = ({
+export const useLegacySyncTimetable = ({
   roomInfo,
   roomRef,
   memberFetcher,
