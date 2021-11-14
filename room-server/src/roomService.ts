@@ -5,6 +5,7 @@ import { UserId, UserInfo } from "@api-schema/types/user";
 import produce from "immer";
 
 import { roomSessionRepository, RoomSessionValue } from "./roomRepository";
+import { userSessionRepository } from "./userSessionRepository";
 
 export const joinUser = async (
   user: UserInfo,
@@ -45,6 +46,13 @@ export const joinUser = async (
         .push(member);
     })
   );
+
+  await userSessionRepository.set(socketId, {
+    userId: user.id,
+    isGuest: false,
+    roomId: roomInfo.id,
+    socketId: socketId,
+  });
 };
 
 const getInitialRoomSession = (roomInfo: RoomResponse) => {
