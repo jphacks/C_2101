@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-//@ts-ignore
 import twemoji from "twemoji";
 
 type props = { emoji: string };
