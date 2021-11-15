@@ -1,7 +1,7 @@
 import { Box, keyframes } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 // import VolumeHighIcon from "mdi-react/VolumeHighIcon";
-import Twemoji from "./Twemoji";
+import Twemoji from "../../../common/Emoji/Twemoji";
 
 const spin = keyframes`
   0% {

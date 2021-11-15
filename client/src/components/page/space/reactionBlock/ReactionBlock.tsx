@@ -1,8 +1,8 @@
 import { Box, HStack } from "@chakra-ui/react";
 import React from "react";
 // import VolumeHighIcon from "mdi-react/VolumeHighIcon";
-import EmojiBtn from "../../common/Emoji/EmojiBtn";
-import EmojiMoreBtn from "../../common/Emoji/EmojiMoreBtn";
+import EmojiBtn from "./EmojiBtn";
+import EmojiMoreBtn from "./EmojiMoreBtn";
 
 type ConfigBlockProps = {};
 const defaultEmojis = Array.from("✋👍👏🙌👋");
