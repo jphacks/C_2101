@@ -39,7 +39,7 @@ const EmojiBtn: React.VFC<Props> = ({ emoji, onClick = () => {} }) => {
 
   const animation = isAnime ? undefined : `${spin} 1 0.8s ease-in-out`;
   const click = (e: React.MouseEvent<HTMLDivElement>, emoji: string) => {
-    // alert(emoji);
+    console.log(emoji);
     onClick(e);
     setAnime(true);
     setTimeout(() => setAnime(false));
