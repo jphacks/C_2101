@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   IconButton,
@@ -11,18 +11,24 @@ import {
   PopoverArrow,
   PopoverCloseButton,
   Button,
+  Grid,
 } from "@chakra-ui/react";
-// import VolumeHighIcon from "mdi-react/VolumeHighIcon";
 import { FiMoreHorizontal } from "react-icons/fi";
+import EmojiBtn from "./EmojiBtn";
 
-type ConfigBlockProps = {};
-
-const EmojiMoreBtn: React.VFC<{}> = () => {
+const Emojis = Array.from(
+  "😄😍😘😂😭😱😎🥺😇😺😸😻😽😼🙀😿😹😾👎👌👊✊🙏👏💩🔥✨💢👀❤️❌⭕❗❓🔰🎉🍣💯"
+).filter((c) => c.charCodeAt(0) !== 65039); //ハートマークの後に処理しきれない謎Unicodeが入るため除外
+const EmojiMoreBtn: React.VFC = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const open = () => setIsOpen(!isOpen);
+  const close = () => setIsOpen(false);
   return (
     <>
-      <Popover isLazy>
+      <Popover isLazy isOpen={isOpen} onClose={close}>
         <PopoverTrigger>
           <IconButton
+            onClick={open}
             aria-label="more"
             rounded="full"
             bg="gray.300"
@@ -32,11 +38,14 @@ const EmojiMoreBtn: React.VFC<{}> = () => {
           />
         </PopoverTrigger>
         <PopoverContent>
-          {/* <PopoverHeader fontWeight="semibold">Popover placement</PopoverHeader> */}
           <PopoverArrow />
           <PopoverCloseButton />
-          <PopoverBody>
-            😄😍😘😂😭😱😎🥺😇 😺😸😻😽😼🙀😿😹😾 💩🔥✨💢 👀❤️ 👍👎👌👊✊🙏👏
+          <PopoverBody pt={7}>
+            <Grid templateColumns="repeat(5, 1fr)" gap={4}>
+              {Emojis.map((emoji) => {
+                return <EmojiBtn emoji={emoji} key={emoji} onClick={close} />;
+              })}
+            </Grid>
           </PopoverBody>
         </PopoverContent>
       </Popover>
