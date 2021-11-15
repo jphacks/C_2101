@@ -1,15 +1,53 @@
-import { Box } from "@chakra-ui/react";
-import React from "react";
+import { Box, keyframes } from "@chakra-ui/react";
+import React, { useState } from "react";
 // import VolumeHighIcon from "mdi-react/VolumeHighIcon";
 import Twemoji from "./Twemoji";
-type ConfigBlockProps = {};
 
-const EmojiBtn: React.VFC<{
+const spin = keyframes`
+  0% {
+    transform: translateX(0);
+  }
+
+  6.5% {
+    transform: translateX(-6px) rotateY(-9deg) rotateZ(-9deg);
+  }
+
+  18.5% {
+    transform: translateX(5px) rotateY(7deg) rotateZ(7deg);
+  }
+
+  31.5% {
+    transform: translateX(-3px) rotateY(-5deg) rotateZ(-5deg);
+  }
+
+  43.5% {
+    transform: translateX(2px) rotateY(3deg) rotateZ(3deg);
+  }
+
+  50% {
+    transform: translateX(0);
+  }
+}
+`;
+
+type Props = {
   emoji: string;
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
-}> = ({ emoji, onClick = () => {} }) => {
+};
+const EmojiBtn: React.VFC<Props> = ({ emoji, onClick = () => {} }) => {
+  const [isAnime, setAnime] = useState<boolean>(false);
+
+  const animation = isAnime ? undefined : `${spin} 1 0.8s ease-in-out`;
+
+  const click = (e: React.MouseEvent<HTMLDivElement>, emoji: string) => {
+    // alert(emoji);
+    onClick(e);
+    setAnime(true);
+    setTimeout(() => setAnime(false), 0);
+  };
   return (
     <Box
+      animation={animation}
       fontSize="28px"
       cursor="pointer"
       rounded="full"
@@ -17,12 +55,7 @@ const EmojiBtn: React.VFC<{
       //   _hover={{ bg: "#CBD5E0" }}
       //   transitionDuration=".5s"
       textAlign="center"
-      onClick={(e) => {
-        {
-          alert(emoji);
-          onClick(e);
-        }
-      }}
+      onClick={(e) => click(e, emoji)}
     >
       <Twemoji emoji={emoji} />
     </Box>
