@@ -20,6 +20,7 @@
     "@emotion/styled": "^11.3.0",
     "axios": "^0.23.0",
     "framer-motion": "^4.1.17",
+    "immer": "^9.0.6",
     "mdi-react": "^8.1.0",
     "moment": "^2.29.1",
     "next": "11.1.2",

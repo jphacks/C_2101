@@ -30,7 +30,9 @@ type FetchCredentialParam = {
   authHeader: AuthHeader;
 };
 
-export const useSkywayCredential = (param: Partial<FetchCredentialParam>) => {
+export const useLegacySkywayCredential = (
+  param: Partial<FetchCredentialParam>
+) => {
   const { userId, index, roomId, authHeader } = param;
 
   const ref = useRef<number>(Math.floor(Math.random() * 1000));

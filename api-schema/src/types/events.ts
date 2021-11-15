@@ -90,14 +90,7 @@ export interface ClientToServerEventsMap {
   /**
    * 各種状態を全て取得
    */
-  getInitialStatus: (
-    res: EmitResponse<{
-      comments: CommentItem[];
-      timetable: TimetableState;
-      timer: TimerState;
-      roomState: RoomState;
-    }>
-  ) => void;
+  getInitialStates: (res: EmitResponse<InitialStateParams>) => void;
 }
 
 export interface ServerToClientsEventsMap {
@@ -133,3 +126,10 @@ export interface ServerToClientsEventsMap {
 }
 
 type EmitResponse<T> = (res: T) => void;
+
+export type InitialStateParams = {
+  comments: CommentItem[];
+  timetable: TimetableState;
+  timer: TimerState;
+  roomState: RoomState;
+};

@@ -64,7 +64,7 @@ const timerStateReducer = (state: TimerState, action: Action): TimerState => {
   }
 };
 
-export const useSyncTimer = ({
+export const useLegacySyncTimer = ({
   isOwner,
   roomRef,
   memberFetcher,

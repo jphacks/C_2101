@@ -1,7 +1,7 @@
 import { TimerBlock } from "./TimerBlock";
 import React, { useState } from "react";
 import { useInterval } from "react-use";
-import { Timetable } from "../../../types/timetable";
+import { Timetable } from "../../../../types/timetable";
 
 type TimerBlockContainerProps = {
   isOwner: boolean;

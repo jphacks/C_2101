@@ -1,10 +1,11 @@
-import { TimetableCardProps } from "./TimetableCard";
+import { TimetableCardProps } from "./timetableBlock/TimetableCard";
 import Layout from "../../Layout";
 import { Box, Button, chakra, Stack, VStack } from "@chakra-ui/react";
-import { MemberBlock } from "./MemberBlock";
-import { TimetableBlock } from "./TimetableBlock";
-import { ConfigBlock } from "./ConfigBlock";
-import { CommentBlock } from "./CommentBlock";
+
+import { MemberBlock } from "./memberBlock/MemberBlock";
+import { TimetableBlock } from "./timetableBlock/TimetableBlock";
+import { ConfigBlock } from "./configBlock/ConfigBlock";
+import { CommentBlock } from "./commentBlock/CommentBlock";
 import { ReactionBlock } from "./ReactionBlock";
 
 import {
@@ -12,8 +13,8 @@ import {
   SkywayCredentialsModel,
   UserResponse,
 } from "@api-schema/api/@types";
-import { useSkywayRoom } from "../../../hooks/useSkywayRoom";
-import { TimerBlockContainer } from "./TimerBlockContainer";
+import { useLegacySkywayRoom } from "../../../hooks/useLegacySkywayRoom";
+import { TimerBlockContainer } from "./timerBlock/TimerBlockContainer";
 import { Member } from "../../../hooks/useRoom";
 import React, { useRef } from "react";
 
@@ -52,7 +53,7 @@ export const SpacePageMain: React.VFC<LTPageProps> = ({
     memberStatusMap,
     isOwner,
     startScreenShare,
-  } = useSkywayRoom({
+  } = useLegacySkywayRoom({
     roomInfo: room,
     memberMap: memberMap,
     memberList: memberList,
