@@ -130,7 +130,6 @@ export const SpacePageMain: React.VFC<LTPageProps> = ({
               rounded={8}
             />
           </Box>
-          <ReactionBlock />
           <ConfigBlock />
           <TimerBlockContainer
             isOwner={isOwner}
@@ -139,6 +138,7 @@ export const SpacePageMain: React.VFC<LTPageProps> = ({
             timetableAction={timetableAction}
             calcRemainTimerSec={calcRemainTimerSec}
           />
+          <ReactionBlock />
           <CommentBlock comments={commentList} onSubmit={handleSubmit} />
         </VStack>
       </Stack>
