@@ -1,6 +1,5 @@
 import { Box, HStack } from "@chakra-ui/react";
 import React from "react";
-// import VolumeHighIcon from "mdi-react/VolumeHighIcon";
 import EmojiBtn from "./EmojiBtn";
 import EmojiMoreBtn from "./EmojiMoreBtn";
 

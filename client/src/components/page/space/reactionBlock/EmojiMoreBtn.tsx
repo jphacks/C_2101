@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import {
-  Box,
   IconButton,
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverHeader,
   PopoverBody,
-  PopoverFooter,
   PopoverArrow,
   PopoverCloseButton,
-  Button,
   Grid,
 } from "@chakra-ui/react";
 import { FiMoreHorizontal } from "react-icons/fi";
