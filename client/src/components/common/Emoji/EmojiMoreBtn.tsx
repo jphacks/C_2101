@@ -43,7 +43,15 @@ const EmojiMoreBtn: React.VFC = () => {
           <PopoverBody pt={7}>
             <Grid templateColumns="repeat(5, 1fr)" gap={4}>
               {Emojis.map((emoji) => {
-                return <EmojiBtn emoji={emoji} key={emoji} onClick={close} />;
+                return (
+                  <EmojiBtn
+                    emoji={emoji}
+                    key={emoji}
+                    onClick={() => {
+                      setTimeout(() => close(), 10);
+                    }}
+                  />
+                );
               })}
             </Grid>
           </PopoverBody>

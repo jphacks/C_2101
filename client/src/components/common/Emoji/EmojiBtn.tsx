@@ -1,5 +1,5 @@
 import { Box, keyframes } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import VolumeHighIcon from "mdi-react/VolumeHighIcon";
 import Twemoji from "./Twemoji";
 
@@ -35,15 +35,14 @@ type Props = {
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 const EmojiBtn: React.VFC<Props> = ({ emoji, onClick = () => {} }) => {
-  const [isAnime, setAnime] = useState<boolean>(false);
+  const [isAnime, setAnime] = useState<boolean>(true);
 
   const animation = isAnime ? undefined : `${spin} 1 0.8s ease-in-out`;
-
   const click = (e: React.MouseEvent<HTMLDivElement>, emoji: string) => {
     // alert(emoji);
     onClick(e);
     setAnime(true);
-    setTimeout(() => setAnime(false), 0);
+    setTimeout(() => setAnime(false));
   };
   return (
     <Box
