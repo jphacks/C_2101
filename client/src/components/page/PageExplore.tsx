@@ -5,6 +5,7 @@ import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import RoomCard from "./explore/RoomCard";
 import React from "react";
+import { RoomResponse } from "@api-schema/api/@types";
 export const PageExplore: React.VFC = () => {
   const { user } = useLogin();
   const { rooms } = useAllRoom();
@@ -15,7 +16,7 @@ export const PageExplore: React.VFC = () => {
 
   // 参加登録したスペース
   const now = new Date();
-  const joinRooms = rooms.filter((room) => {
+  const joinRooms = rooms.filter((room: RoomResponse) => {
     if (now > new Date(room.finishAt)) {
       return false;
     }
