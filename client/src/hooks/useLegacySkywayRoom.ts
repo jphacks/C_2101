@@ -8,7 +8,7 @@ import {
 } from "@api-schema/api/@types";
 import { useLegacySyncTimer } from "./useLegacySyncTimer";
 import { useLegacySyncTimetable } from "./useLegacySyncTimetable";
-import { Member } from "./useRoom";
+import { Member } from "./useLegacyRoom";
 import { useLegacySyncMemberStatus } from "./useLegacySyncMemberStatus";
 import { useLegacySyncComment } from "./useLegacySyncComment";
 

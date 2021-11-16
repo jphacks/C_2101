@@ -2,7 +2,7 @@ import React from "react";
 import { Avatar, Text, VStack } from "@chakra-ui/react";
 import { AvatarReactionBadge } from "../../../common/AvatarReactionBadge";
 import { MemberStatus } from "../../../../hooks/useLegacySyncMemberStatus";
-import { Member } from "../../../../hooks/useRoom";
+import { Member } from "../../../../hooks/useLegacyRoom";
 
 //別のとこに書いたほうがよさそう
 

@@ -1,8 +1,9 @@
-import { atom, useRecoilValue, useSetRecoilState } from "recoil";
+import { atom, selector, useRecoilValue, useSetRecoilState } from "recoil";
 import { useCallback, useEffect } from "react";
 import { socket } from "../hooks/socket";
 import { InitialStateParams } from "@api-schema/types/events";
 import { RoomMember } from "@api-schema/types/member";
+import { UserId } from "@api-schema/types/user";
 
 //default微妙かも
 
@@ -30,7 +31,7 @@ export const useSetRoomStateHandler = () => {
   }, [setState]);
 };
 
-export const useMembersStateValue = () => {
+export const useMembersValue = () => {
   return useRecoilValue(membersState);
 };
 
@@ -43,3 +44,16 @@ export const useSetInitialRoomState = () => {
     [setState]
   );
 };
+
+export const memberMapState = selector({
+  key: "useSyncMembers-memberMapState",
+  get: ({ get }) => {
+    const members = get(membersState);
+    return members.reduce((acc, next) => {
+      return {
+        ...acc,
+        [next.user.id]: next,
+      };
+    }, {} as Record<UserId, RoomMember>);
+  },
+});

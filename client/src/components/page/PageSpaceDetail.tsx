@@ -25,7 +25,7 @@ import {
 } from "@chakra-ui/react";
 import { transform } from "../../utils/datetime";
 import React, { useState } from "react";
-import { useRoom } from "../../hooks/useRoom";
+import { useLegacyRoom } from "../../hooks/useLegacyRoom";
 import { useJoinRoom } from "../../hooks/useJoinRoom";
 import { useUnJoinRoom } from "../../hooks/useUnJoinRoom";
 import { useRouter } from "next/router";
@@ -36,7 +36,7 @@ import { ShareBtns } from "./explore/ShareButton";
 export const PageSpaceDetail: React.VFC<{
   roomId: number;
 }> = ({ roomId }) => {
-  const { room, mutate } = useRoom(roomId);
+  const { room, mutate } = useLegacyRoom(roomId);
 
   const fetchJoin = useJoinRoom(roomId);
   const fetchUnJoin = useUnJoinRoom(roomId);

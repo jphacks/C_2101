@@ -13,7 +13,7 @@ export type Member = Omit<UserResponse, "email"> & {
   type: UserType;
   isOwner: boolean;
 };
-export const useRoom = (roomId: number | undefined) => {
+export const useLegacyRoom = (roomId: number | undefined) => {
   const {
     data: room,
     error: roomError,

@@ -25,7 +25,7 @@ type SocketRootProps = {
   userParam: UserParam;
 };
 
-type UserParam =
+export type UserParam =
   | {
       type: "user";
       authHeader: string;

@@ -1,7 +1,7 @@
 import React from "react";
 import { useLogin } from "../../../../hooks/useLogin";
 import { useLegacySkywayCredential } from "../../../../hooks/useLegacySkywayCredential";
-import { useRoom } from "../../../../hooks/useRoom";
+import { useLegacyRoom } from "../../../../hooks/useLegacyRoom";
 import Layout from "../../../Layout";
 import { Text } from "@chakra-ui/react";
 import { SpacePageMain } from "./SpacePageMainComment";
@@ -25,7 +25,7 @@ export const Space: React.VFC<{
     authHeader,
   });
 
-  const { room, roomError, userMap, userList } = useRoom(roomId);
+  const { room, roomError, userMap, userList } = useLegacyRoom(roomId);
 
   // console.log({
   //   roomId: roomId,

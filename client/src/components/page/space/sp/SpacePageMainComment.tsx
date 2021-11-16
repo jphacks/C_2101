@@ -3,7 +3,7 @@ import { chakra } from "@chakra-ui/react";
 import { CommentBlock } from "./CommentBlockSP";
 import React, { useRef } from "react";
 import { useLegacySkywayRoom } from "../../../../hooks/useLegacySkywayRoom";
-import { Member } from "../../../../hooks/useRoom";
+import { Member } from "../../../../hooks/useLegacyRoom";
 import {
   RoomResponse,
   SkywayCredentialsModel,

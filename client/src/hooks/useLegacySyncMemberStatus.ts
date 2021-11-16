@@ -1,6 +1,6 @@
 import { MutableRefObject, useCallback, useEffect } from "react";
 import Peer, { RoomData, SfuRoom } from "skyway-js";
-import { Member } from "./useRoom";
+import { Member } from "./useLegacyRoom";
 import { useMap } from "react-use";
 import { SkywayData } from "../types/skywayData";
 
