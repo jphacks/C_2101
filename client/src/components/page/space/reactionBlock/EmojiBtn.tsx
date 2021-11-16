@@ -30,7 +30,7 @@ const shake = keyframes`
 
 type Props = {
   emoji: string;
-  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 const EmojiBtn: React.VFC<Props> = ({ emoji, onClick = () => {} }) => {
   const [isAnime, setAnime] = useState<boolean>(true);
