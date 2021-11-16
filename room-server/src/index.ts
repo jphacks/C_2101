@@ -1,20 +1,25 @@
-import api from "@api-schema/api/$api";
-import aspida from "@aspida/axios";
 import {
   ClientToServerEventsMap,
   ServerToClientsEventsMap,
 } from "api-schema/src/types/events";
-import axios from "axios";
 import { Server } from "socket.io";
 
-import {
-  getAuthedUser,
-  getRoomInfo,
-  issueSkywayCredential,
-} from "./fetchApiService";
-import { joinUser } from "./roomService";
+import { RoomMemberFactory } from "./factory/RoomMemberFactory";
+import { RoomSessionFactory } from "./factory/RoomSessionFactory";
+import { InMemoryRoomSessionRepository } from "./repository/InMemoryRoomSessionRepository";
+import { InMemoryUserSessionRepository } from "./repository/InMemoryUserSessionRepository";
+import { UserService } from "./service/UserService";
+import { RoomService } from "./service/RoomService";
+import { RoomSessionService } from "./service/RoomSessionService";
 
-export const client = api(aspida(axios, {}));
+const userService = new UserService();
+const roomService = new RoomService();
+const roomSessionService = new RoomSessionService(
+  new InMemoryRoomSessionRepository(),
+  new InMemoryUserSessionRepository(),
+  new RoomMemberFactory(),
+  new RoomSessionFactory()
+);
 
 const io = new Server<ClientToServerEventsMap, ServerToClientsEventsMap>({
   /* options */
@@ -23,7 +28,7 @@ const io = new Server<ClientToServerEventsMap, ServerToClientsEventsMap>({
 io.on("connection", (socket) => {
   socket.on("joinRoomAsUser", async ({ roomId, userId, auth }, res) => {
     console.log("joinRoomAsUser");
-    const user = await getAuthedUser(auth);
+    const user = await userService.getLoginUser(auth);
 
     if (!user) {
       res({
@@ -33,7 +38,7 @@ io.on("connection", (socket) => {
       return;
     }
 
-    const roomInfo = await getRoomInfo(roomId, auth);
+    const roomInfo = await roomService.getRoom(roomId, auth);
     if (!roomInfo) {
       res({
         status: "failure",
@@ -42,7 +47,11 @@ io.on("connection", (socket) => {
       return;
     }
 
-    const videoCredential = await issueSkywayCredential(roomId, userId, auth);
+    const videoCredential = await roomService.authenticateRoom(
+      roomId,
+      userId,
+      auth
+    );
     if (!videoCredential) {
       res({
         status: "failure",
@@ -51,7 +60,12 @@ io.on("connection", (socket) => {
       return;
     }
 
-    await joinUser(user, socket.id, roomInfo, videoCredential);
+    await roomSessionService.userJoinRoom(
+      user,
+      socket.id,
+      roomInfo,
+      videoCredential
+    );
 
     await socket.join(String(roomId));
 
