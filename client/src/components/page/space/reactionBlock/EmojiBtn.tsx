@@ -1,6 +1,6 @@
 import { Box, keyframes } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
-import Twemoji from "../../../common/Emoji/Twemoji";
+import React, { useState, useCallback } from "react";
+import { Twemoji } from "../../../common/Emoji/Twemoji";
 
 const shake = keyframes`
   0% {
@@ -26,23 +26,27 @@ const shake = keyframes`
   50% {
     transform: translateX(0);
   }
-}
 `;
 
 type Props = {
   emoji: string;
-  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 const EmojiBtn: React.VFC<Props> = ({ emoji, onClick = () => {} }) => {
   const [isAnime, setAnime] = useState<boolean>(true);
 
   const animation = isAnime ? undefined : `${shake} 1 0.8s ease-in-out`;
-  const click = (e: React.MouseEvent<HTMLDivElement>, emoji: string) => {
-    console.log(emoji);
-    onClick(e);
-    setAnime(true);
-    setTimeout(() => setAnime(false));
-  };
+
+  const handleClick = useCallback(
+    () => (e: React.MouseEvent<HTMLDivElement>) => {
+      console.log(emoji);
+      onClick(e);
+      setAnime(true);
+      setTimeout(() => setAnime(false));
+    },
+    [emoji, onClick]
+  );
+
   return (
     <Box
       animation={animation}
@@ -53,7 +57,7 @@ const EmojiBtn: React.VFC<Props> = ({ emoji, onClick = () => {} }) => {
       //   _hover={{ bg: "#CBD5E0" }}
       //   transitionDuration=".5s"
       textAlign="center"
-      onClick={(e) => click(e, emoji)}
+      onClick={handleClick}
     >
       <Twemoji emoji={emoji} />
     </Box>

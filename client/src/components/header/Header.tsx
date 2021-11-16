@@ -2,14 +2,15 @@ import { Box, Flex, Heading, HStack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React from "react";
 import UserMenu from "./UserMenu";
-import { useLogin } from "../../hooks/useLogin";
+import { useUser } from "../../lib/hooks/useUser";
+
 type Props = {
   contentTitle?: string;
 };
+
 const HeaderLogo = () => {
-  const { user } = useLogin();
-  let topUrl = "/";
-  if (user) topUrl = "/explore";
+  const user = useUser();
+  const topUrl = user ? "/explore" : "/";
 
   return (
     <Heading as={"h1"} size={"lg"} color={"gray.100"}>
@@ -17,6 +18,7 @@ const HeaderLogo = () => {
     </Heading>
   );
 };
+
 const Header: React.FC<Props> = ({ contentTitle }) => {
   return (
     <Flex

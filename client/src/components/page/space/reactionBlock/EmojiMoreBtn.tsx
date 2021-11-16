@@ -15,10 +15,12 @@ import EmojiBtn from "./EmojiBtn";
 const Emojis = Array.from(
   "😄😍😘😂😭😱😎🥺😇😺😸😻😽😼🙀😿😹😾👎👌👊✊🙏👏💩🔥✨💢👀❤️❌⭕❗❓🔰🎉🍣💯"
 ).filter((c) => c.charCodeAt(0) !== 65039); //ハートマークの後に処理しきれない謎Unicodeが入るため除外
+
 const EmojiMoreBtn: React.VFC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const open = () => setIsOpen(!isOpen);
   const close = () => setIsOpen(false);
+
   return (
     <>
       <Popover isLazy isOpen={isOpen} onClose={close}>

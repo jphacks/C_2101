@@ -8,42 +8,41 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { Token } from "@chakra-ui/styled-system/dist/types/utils";
-import * as CSS from "csstype";
-import { UserResponse } from "@api-schema/api/@types";
+import {
+  CommentCommonInfo,
+  CommentTypeSystem,
+  CommentTypeUser,
+} from "@api-schema/types/comment";
+import { UserInfo } from "@api-schema/types/user";
 
-export type CommentProps = {
-  user: Omit<UserResponse, "email">;
-  text: string;
-  timestamp: Date;
-  textColor?: Token<CSS.Property.Color, "colors">;
-};
+export type CommentProps = CommentCommonInfo &
+  ((CommentTypeUser & { user: UserInfo }) | CommentTypeSystem);
 
 export const CommentItem: React.VFC<CommentProps> = ({
-  user,
   text,
   timestamp,
-  textColor,
+  ...props
 }) => {
+  const name = props.type === "user" ? props.user.name : "Guest";
+  const src = props.type === "user" ? props.user.iconUrl : undefined;
+
+  const timeStr = new Date(timestamp).toLocaleTimeString();
+  const textColor = props.type === "user" ? "gray.800" : "gray.500";
+
   return (
     <HStack width={"full"} p={1}>
-      <Avatar
-        size={"md"}
-        name={user?.name ?? ""}
-        src={user?.iconUrl}
-        alignSelf={"self-start"}
-      />
+      <Avatar size={"md"} name={name} src={src} alignSelf={"self-start"} />
       <Stack width={"full"}>
         <Flex>
           <Heading size={"sm"} textColor={"gray.600"}>
-            {user?.name ?? ""}
+            {name}
           </Heading>
           <Spacer />
           <Heading size={"sm"} textColor={"gray.600"}>
-            {timestamp.toLocaleTimeString()}
+            {timeStr}
           </Heading>
         </Flex>
-        <Text textColor={textColor ?? "gray.800"}>{text}</Text>
+        <Text textColor={textColor}>{text}</Text>
       </Stack>
     </HStack>
   );

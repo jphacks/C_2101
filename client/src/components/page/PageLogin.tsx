@@ -1,4 +1,3 @@
-import { useLogin } from "../../hooks/useLogin";
 import { useRouter } from "next/router";
 import {
   Button,
@@ -15,6 +14,8 @@ import { useForm } from "react-hook-form";
 import Layout from "../Layout";
 import NextLink from "next/link";
 import React, { useEffect } from "react";
+import { useUser } from "../../lib/hooks/useUser";
+import { useLoginAction } from "../../lib/hooks/useAuth";
 
 type FormData = {
   email: string;
@@ -22,9 +23,12 @@ type FormData = {
 };
 
 export const PageLogin = () => {
-  const { fetchLogin, user } = useLogin();
   const router = useRouter();
   const toast = useToast();
+
+  const user = useUser();
+  const login = useLoginAction();
+
   const spaceId = router.query.next?.toString();
   const {
     handleSubmit,
@@ -34,7 +38,7 @@ export const PageLogin = () => {
 
   const handleClickLogin = async (values: FormData) => {
     //ここの値はフォームからとる
-    fetchLogin({
+    login({
       email: values.email,
       password: values.password,
     })
@@ -45,8 +49,13 @@ export const PageLogin = () => {
           duration: 5000,
           isClosable: true,
         });
-        if (!!spaceId) router.push(`/${spaceId}`);
-        else router.push("/explore");
+
+        const nextQuery = router.query.next;
+        if (nextQuery && typeof nextQuery === "string") {
+          router.push(nextQuery);
+        } else {
+          router.push("/explore");
+        }
       })
       .catch((error: string) => {
         toast({
@@ -85,7 +94,7 @@ export const PageLogin = () => {
                 required: "メールアドレスは必須です。",
                 pattern: {
                   value:
-                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                   message: "メールアドレス形式で入力してください。",
                 },
               })}

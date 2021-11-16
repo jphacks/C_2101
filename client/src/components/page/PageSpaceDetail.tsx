@@ -25,19 +25,19 @@ import {
 } from "@chakra-ui/react";
 import { transform } from "../../utils/datetime";
 import React, { useState } from "react";
-import { useRoom } from "../../hooks/useRoom";
-import { useJoinRoom } from "../../hooks/useJoinRoom";
-import { useUnJoinRoom } from "../../hooks/useUnJoinRoom";
+import { useJoinRoom } from "../../lib/hooks/useJoinRoom";
+import { useUnJoinRoom } from "../../lib/hooks/useUnJoinRoom";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
 import { UserType } from "./space/memberBlock/MemberItem";
 import { ShareBtns } from "./explore/ShareButton";
-import { SpeakerResponse, UserResponse } from "@api-schema/api/@types";
+import { useRefreshRoom, useRoomById } from "../../lib/hooks/useRoom";
 
 export const PageSpaceDetail: React.VFC<{
   roomId: number;
 }> = ({ roomId }) => {
-  const { room, mutate } = useRoom(roomId);
+  const room = useRoomById(roomId);
+  const refreshRoom = useRefreshRoom(roomId);
 
   const fetchJoin = useJoinRoom(roomId);
   const fetchUnJoin = useUnJoinRoom(roomId);
@@ -61,12 +61,14 @@ export const PageSpaceDetail: React.VFC<{
     await fetchJoin({
       title: titleFormValue,
       type: userType,
-    }).then(() => mutate());
-    //最後にmutateを叩かないと画面に表示されてる状態が更新されない
+    });
+    refreshRoom();
+    //TODO 最後にmutateを叩かないと画面に表示されてる状態が更新されない
   };
 
   const handleClickUnJoin = async () => {
-    await fetchUnJoin().then(() => mutate());
+    await fetchUnJoin();
+    refreshRoom();
   };
   const Thumbnail: React.VFC<{ imageUrl: string }> = ({ imageUrl }) => {
     const Img = () => (
@@ -186,7 +188,7 @@ export const PageSpaceDetail: React.VFC<{
             <Text>
               {room.speakers.length === 0 ? "まだ参加情報がありません。" : ""}
             </Text>
-            {room.speakers.map((speaker: SpeakerResponse) => (
+            {room.speakers.map((speaker) => (
               <Flex align={"center"} key={speaker.id}>
                 <Avatar size={"xs"} src={speaker.iconUrl} />
                 <Text fontSize={"0.8rem"} marginLeft="10px" fontWeight="bold">
@@ -205,7 +207,7 @@ export const PageSpaceDetail: React.VFC<{
             <Text>
               {room.viewers.length === 0 ? "まだ参加情報がありません。" : ""}
             </Text>
-            {room.viewers.map((viewer: UserResponse) => (
+            {room.viewers.map((viewer) => (
               <Flex align={"center"} key={viewer.id}>
                 <Avatar size={"xs"} src={viewer.iconUrl} />
                 <Text fontSize={"0.8rem"} marginLeft="10px" fontWeight="bold">

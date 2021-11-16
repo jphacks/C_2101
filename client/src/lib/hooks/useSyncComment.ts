@@ -1,8 +1,10 @@
-import { atom, useRecoilValue, useSetRecoilState } from "recoil";
+import { atom, selector, useRecoilValue, useSetRecoilState } from "recoil";
 import { CommentItem } from "@api-schema/types/comment";
-import { socket } from "../hooks/socket";
+import { socket } from "./socket";
 import { useCallback, useEffect } from "react";
 import { InitialStateParams } from "@api-schema/types/events";
+import { memberMapState } from "./useSyncMembers";
+import { CommentProps } from "../../components/page/space/commentBlock/CommentItem";
 
 /**
  * 直接コンポーネントから参照しない
@@ -52,4 +54,27 @@ export const useSetInitialCommentsState = () => {
     },
     [setState]
   );
+};
+
+const commentsPropsState = selector<CommentProps[]>({
+  key: "useSyncComment-commentsPropsState",
+  get: ({ get }) => {
+    const memberMap = get(memberMapState);
+    const commentsRaw = get(commentsState);
+    return commentsRaw.map((item) => {
+      if (item.type === "user") {
+        return {
+          ...item,
+          type: "user",
+          user: memberMap[item.userId].user,
+        };
+      } else {
+        return item;
+      }
+    });
+  },
+});
+
+export const useCommentsPropsValue = () => {
+  return useRecoilValue(commentsPropsState);
 };

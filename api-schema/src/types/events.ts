@@ -1,7 +1,8 @@
 import { SkywayCredentialsModel } from "@api-schema/api/@types";
 import { CommentItem } from "@api-schema/types/comment";
+import { RoomMember } from "@api-schema/types/member";
 import { ReactionItem } from "@api-schema/types/reaction";
-import { RoomState } from "@api-schema/types/roomState";
+import { StreamState } from "@api-schema/types/streamState";
 import { TimerState } from "@api-schema/types/timerState";
 import { TimetableState } from "@api-schema/types/timetableState";
 import { UserId } from "@api-schema/types/user";
@@ -119,10 +120,16 @@ export interface ServerToClientsEventsMap {
   updateTimer: (timerState: TimerState) => void;
 
   /**
-   * ルームステートの更新
+   * 画面共有などの状態更新
    * @param roomState
    */
-  updateRoomState: (roomState: RoomState) => void;
+  updateStreamState: (streamState: StreamState) => void;
+
+  /**
+   * メンバーの状態更新
+   * @param roomState
+   */
+  updateMembersState: (members: RoomMember[]) => void;
 }
 
 type EmitResponse<T> = (res: T) => void;
@@ -131,5 +138,6 @@ export type InitialStateParams = {
   comments: CommentItem[];
   timetable: TimetableState;
   timer: TimerState;
-  roomState: RoomState;
+  streamState: StreamState;
+  members: RoomMember[];
 };

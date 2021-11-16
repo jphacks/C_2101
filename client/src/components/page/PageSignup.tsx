@@ -11,11 +11,11 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useSignup } from "../../hooks/useSignup";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
 import Layout from "../Layout";
 import NextLink from "next/link";
+import { useSignupAction } from "../../lib/hooks/useAuth";
 
 type FormData = {
   email: string;
@@ -26,7 +26,7 @@ type FormData = {
 export const PageSignup = () => {
   const router = useRouter();
   const toast = useToast();
-  const { fetchSignup } = useSignup();
+  const fetchSignup = useSignupAction();
   const {
     handleSubmit,
     register,
@@ -97,7 +97,7 @@ export const PageSignup = () => {
                 required: "メールアドレスは必須です。",
                 pattern: {
                   value:
-                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                   message: "メールアドレス形式で入力してください。",
                 },
               })}

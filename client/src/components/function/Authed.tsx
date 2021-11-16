@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
-import { useLogin } from "../../hooks/useLogin";
 import { useRouter } from "next/router";
+import { useUser } from "../../lib/hooks/useUser";
 
 type AuthedProps = {
   // linkTo:
 };
 
 export const Authed: React.FC = ({ children }) => {
-  const { user } = useLogin();
+  const user = useUser();
   const router = useRouter();
 
   useEffect(() => {
