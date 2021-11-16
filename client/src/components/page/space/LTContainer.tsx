@@ -8,6 +8,9 @@ import { CommentBlock } from "./commentBlock/CommentBlock";
 import { TimerBlockContainer } from "./timerBlock/TimerBlockContainer";
 import React from "react";
 import { useRoom } from "../../../states/useRoom";
+import { MemberBlockContainer } from "./memberBlock/MemberBlockContainer";
+import { TimetableBlockContainer } from "./timetableBlock/TimetableBlockContainer";
+import { CommentBlockContainer } from "./commentBlock/CommentBlockContainer";
 
 const Video = chakra("video");
 
@@ -38,28 +41,22 @@ export const LTContainer: React.VFC<LTPageProps> = () => {
             {/*  画面共有を開始する*/}
             {/*</Button>*/}
           </Box>
-          <MemberBlock members={memberList} memberStateMap={memberStatusMap} />
-          <TimetableBlock cards={timetableProp} />
+          <MemberBlockContainer />
+          <TimetableBlockContainer />
         </VStack>
         <VStack flex={1} maxW={"384px"}>
           <Box bg={"gray.200"} w={"100%"} h={64} rounded={8} p={2}>
-            <Video
-              w={"full"}
-              h={"full"}
-              ref={cameraVideoRef}
-              muted
-              rounded={8}
-            />
+            {/*<Video*/}
+            {/*  w={"full"}*/}
+            {/*  h={"full"}*/}
+            {/*  ref={cameraVideoRef}*/}
+            {/*  muted*/}
+            {/*  rounded={8}*/}
+            {/*/>*/}
           </Box>
           <ConfigBlock />
-          <TimerBlockContainer
-            isOwner={isOwner}
-            timetable={timetable}
-            timerAction={timerAction}
-            timetableAction={timetableAction}
-            calcRemainTimerSec={calcRemainTimerSec}
-          />
-          <CommentBlock comments={commentList} onSubmit={handleSubmit} />
+          <TimerBlockContainer />
+          <CommentBlockContainer />
         </VStack>
       </Stack>
     </Layout>

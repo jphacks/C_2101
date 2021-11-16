@@ -5,8 +5,7 @@ type TimerBlockProps = {
   remainSec: number;
   fullSec: number;
   sectionTitle: string;
-  showOwnerButton: boolean;
-  onClickNextSection: React.MouseEventHandler<HTMLButtonElement>;
+  adminController?: React.ReactChildren;
 };
 
 const secToMMSS = (sec: number) => {
@@ -30,8 +29,7 @@ export const TimerBlock: React.VFC<TimerBlockProps> = ({
   remainSec,
   fullSec,
   sectionTitle,
-  showOwnerButton,
-  onClickNextSection,
+  adminController,
 }) => {
   const remainTimeText =
     fullSec < 60 * 60 ? secToMMSS(remainSec) : secToHHMMSS(remainSec);
@@ -55,13 +53,7 @@ export const TimerBlock: React.VFC<TimerBlockProps> = ({
           colorScheme={"teal"}
           value={Math.max(remainSec / fullSec, 0) * 100}
         />
-        {showOwnerButton && (
-          <Box>
-            <Button onClick={onClickNextSection} colorScheme={"teal"}>
-              Next Section
-            </Button>
-          </Box>
-        )}
+        {adminController}
       </VStack>
     </Box>
   );

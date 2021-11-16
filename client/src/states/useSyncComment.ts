@@ -11,6 +11,7 @@ import { useCallback, useEffect } from "react";
 import { InitialStateParams } from "@api-schema/types/events";
 import { roomState } from "./useRoom";
 import { memberMapState, membersState } from "./useSyncMembers";
+import { CommentProps } from "../components/page/space/commentBlock/CommentItem";
 
 /**
  * 直接コンポーネントから参照しない
@@ -62,7 +63,7 @@ export const useSetInitialCommentsState = () => {
   );
 };
 
-const commentsPropsState = selector({
+const commentsPropsState = selector<CommentProps[]>({
   key: "useSyncComment-commentsPropsState",
   get: ({ get }) => {
     const memberMap = get(memberMapState);
@@ -72,7 +73,7 @@ const commentsPropsState = selector({
         return {
           ...item,
           type: "user",
-          user: memberMap[item.userId],
+          user: memberMap[item.userId].user,
         };
       } else {
         return item;
@@ -81,6 +82,6 @@ const commentsPropsState = selector({
   },
 });
 
-const useCommentsPropsValue = () => {
+export const useCommentsPropsValue = () => {
   return useRecoilValue(commentsPropsState);
 };

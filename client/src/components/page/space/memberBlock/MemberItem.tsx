@@ -3,6 +3,7 @@ import { Avatar, Text, VStack } from "@chakra-ui/react";
 import { AvatarReactionBadge } from "../../../common/AvatarReactionBadge";
 import { MemberStatus } from "../../../../hooks/useLegacySyncMemberStatus";
 import { Member } from "../../../../hooks/useLegacyRoom";
+import { ReactionItem } from "@api-schema/types/reaction";
 
 //別のとこに書いたほうがよさそう
 
@@ -12,7 +13,12 @@ export const UserType = {
 } as const;
 export type UserType = typeof UserType[keyof typeof UserType];
 
-export type UserWithStatus = Member & MemberStatus;
+export type UserWithStatus = {
+  iconUrl: string;
+  name: string;
+  isOnline: boolean;
+  reaction: ReactionItem;
+};
 
 export const MemberItem: React.VFC<UserWithStatus> = ({
   iconUrl,

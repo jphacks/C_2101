@@ -57,3 +57,7 @@ export const memberMapState = selector({
     }, {} as Record<UserId, RoomMember>);
   },
 });
+
+export const useMemberMap = () => {
+  return useRecoilValue(memberMapState);
+};
