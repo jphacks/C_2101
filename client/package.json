@@ -33,7 +33,8 @@
     "recoil": "^0.4.1",
     "skyway-js": "^4.4.2",
     "socket.io-client": "^4.3.2",
-    "swr": "^1.0.1"
+    "swr": "^1.0.1",
+    "twemoji": "^13.1.0"
   },
   "devDependencies": {
     "@types/react": "17.0.31",
@@ -46,7 +47,8 @@
     "eslint-import-resolver-typescript": "^2.5.0",
     "prettier": "^2.4.1",
     "tsconfig-paths": "^3.11.0",
-    "typescript": "4.4.4"
+    "typescript": "4.4.4",
+    "@types/twemoji": "^12.1.2"
   },
   "eslintIgnore": [
     "/.eslintrc.js",

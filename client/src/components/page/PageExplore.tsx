@@ -5,6 +5,7 @@ import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import RoomCard from "./explore/RoomCard";
 import React from "react";
+import { RoomResponse } from "@api-schema/api/@types";
 export const PageExplore: React.VFC = () => {
   const { user } = useLogin();
   const { rooms } = useAllRoom();
@@ -15,7 +16,7 @@ export const PageExplore: React.VFC = () => {
 
   // 参加登録したスペース
   const now = new Date();
-  const joinRooms = rooms.filter((room) => {
+  const joinRooms = rooms.filter((room: RoomResponse) => {
     if (now > new Date(room.finishAt)) {
       return false;
     }
@@ -27,7 +28,7 @@ export const PageExplore: React.VFC = () => {
   });
 
   // 新しいもの順にソート
-  rooms.sort((a, b) => {
+  rooms.sort((a: RoomResponse, b: RoomResponse) => {
     return a.startAt < b.startAt ? 1 : -1;
   });
 
@@ -98,7 +99,7 @@ export const PageExplore: React.VFC = () => {
               ? "参加登録しているスペースはありません。"
               : ""}
           </Text>
-          {joinRooms.map((room) => (
+          {joinRooms.map((room: RoomResponse) => (
             <Box key={room.id} w="100%">
               <RoomCard room={room} key={room.id + "xx"} />
               <br />
@@ -112,7 +113,7 @@ export const PageExplore: React.VFC = () => {
             </Heading>
           </Box>
 
-          {rooms.map((room) => (
+          {rooms.map((room: RoomResponse) => (
             <Box key={room.id} w="100%">
               <RoomCard room={room} />
               <br />

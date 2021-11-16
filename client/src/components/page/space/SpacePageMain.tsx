@@ -5,6 +5,7 @@ import { MemberBlock } from "./memberBlock/MemberBlock";
 import { TimetableBlock } from "./timetableBlock/TimetableBlock";
 import { ConfigBlock } from "./configBlock/ConfigBlock";
 import { CommentBlock } from "./commentBlock/CommentBlock";
+import { ReactionBlock } from "./reactionBlock/ReactionBlock";
 
 import {
   RoomResponse,
@@ -137,6 +138,7 @@ export const SpacePageMain: React.VFC<LTPageProps> = ({
             timetableAction={timetableAction}
             calcRemainTimerSec={calcRemainTimerSec}
           />
+          <ReactionBlock />
           <CommentBlock comments={commentList} onSubmit={handleSubmit} />
         </VStack>
       </Stack>
