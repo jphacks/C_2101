@@ -10,6 +10,7 @@ import { AiFillSetting, AiOutlineLogout } from "react-icons/ai";
 import React, { useCallback } from "react";
 import { useUser } from "../../hooks/useUser";
 import { useLogoutAction } from "../../hooks/useAuth";
+import { useRouter } from "next/router";
 
 type Props = {
   contentTitle?: string;
@@ -18,10 +19,12 @@ type Props = {
 const UserMenu: React.FC<Props> = ({ contentTitle }) => {
   const user = useUser();
   const logout = useLogoutAction();
+  const router = useRouter();
 
-  const handleClickLogout = useCallback(() => {
-    void logout();
-  }, [logout]);
+  const handleClickLogout = useCallback(async () => {
+    await logout();
+    await router.push("/");
+  }, [logout, router]);
 
   if (!user) {
     return <Avatar size={"sm"} />;
