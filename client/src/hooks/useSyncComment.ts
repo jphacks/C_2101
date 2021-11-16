@@ -1,16 +1,9 @@
-import {
-  atom,
-  selector,
-  selectorFamily,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { atom, selector, useRecoilValue, useSetRecoilState } from "recoil";
 import { CommentItem } from "@api-schema/types/comment";
-import { socket } from "../hooks/socket";
+import { socket } from "./socket";
 import { useCallback, useEffect } from "react";
 import { InitialStateParams } from "@api-schema/types/events";
-import { roomState } from "./useRoom";
-import { memberMapState, membersState } from "./useSyncMembers";
+import { memberMapState } from "./useSyncMembers";
 import { CommentProps } from "../components/page/space/commentBlock/CommentItem";
 
 /**

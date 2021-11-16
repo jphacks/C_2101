@@ -1,15 +1,21 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, Spinner } from "@chakra-ui/react";
 import { RecoilRoot } from "recoil";
+import React, { Suspense } from "react";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <ChakraProvider>
-      <RecoilRoot>
-        <Component {...pageProps} />
-      </RecoilRoot>
-    </ChakraProvider>
-  );
-}
+const MyApp = ({ Component, pageProps }: AppProps) => (
+  <div suppressHydrationWarning>
+    {typeof window === "undefined" ? null : (
+      <Suspense fallback={<Spinner />}>
+        <ChakraProvider>
+          <RecoilRoot>
+            <Component {...pageProps} />
+          </RecoilRoot>
+        </ChakraProvider>
+      </Suspense>
+    )}
+  </div>
+);
+
 export default MyApp;

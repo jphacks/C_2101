@@ -8,7 +8,7 @@ const isOwnerInRoomState = selector({
     const room = get(roomState);
     const me = get(userState);
 
-    return room.owner.id === me.id;
+    return room && me && room.owner.id === me.id;
   },
 });
 

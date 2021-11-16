@@ -1,6 +1,6 @@
 import { atom, selector, useRecoilValue, useSetRecoilState } from "recoil";
 import { useCallback, useEffect } from "react";
-import { socket } from "../hooks/socket";
+import { socket } from "./socket";
 import { InitialStateParams } from "@api-schema/types/events";
 import { RoomMember } from "@api-schema/types/member";
 import { UserId } from "@api-schema/types/user";

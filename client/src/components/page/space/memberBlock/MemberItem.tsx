@@ -1,8 +1,6 @@
 import React from "react";
 import { Avatar, Text, VStack } from "@chakra-ui/react";
 import { AvatarReactionBadge } from "../../../common/AvatarReactionBadge";
-import { MemberStatus } from "../../../../hooks/useLegacySyncMemberStatus";
-import { Member } from "../../../../hooks/useLegacyRoom";
 import { ReactionItem } from "@api-schema/types/reaction";
 
 //別のとこに書いたほうがよさそう

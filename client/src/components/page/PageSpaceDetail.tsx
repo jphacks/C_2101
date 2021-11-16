@@ -25,18 +25,19 @@ import {
 } from "@chakra-ui/react";
 import { transform } from "../../utils/datetime";
 import React, { useState } from "react";
-import { useLegacyRoom } from "../../hooks/useLegacyRoom";
 import { useJoinRoom } from "../../hooks/useJoinRoom";
 import { useUnJoinRoom } from "../../hooks/useUnJoinRoom";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
 import { UserType } from "./space/memberBlock/MemberItem";
 import { ShareBtns } from "./explore/ShareButton";
+import { useRefreshRoom, useRoomById } from "../../hooks/useRoom";
 
 export const PageSpaceDetail: React.VFC<{
   roomId: number;
 }> = ({ roomId }) => {
-  const { room, mutate } = useLegacyRoom(roomId);
+  const room = useRoomById(roomId);
+  const refreshRoom = useRefreshRoom(roomId);
 
   const fetchJoin = useJoinRoom(roomId);
   const fetchUnJoin = useUnJoinRoom(roomId);
@@ -60,12 +61,14 @@ export const PageSpaceDetail: React.VFC<{
     await fetchJoin({
       title: titleFormValue,
       type: userType,
-    }).then(() => mutate());
-    //最後にmutateを叩かないと画面に表示されてる状態が更新されない
+    });
+    refreshRoom();
+    //TODO 最後にmutateを叩かないと画面に表示されてる状態が更新されない
   };
 
   const handleClickUnJoin = async () => {
-    await fetchUnJoin().then(() => mutate());
+    await fetchUnJoin();
+    refreshRoom();
   };
   const Thumbnail: React.VFC<{ imageUrl: string }> = ({ imageUrl }) => {
     const Img = () => (

@@ -1,7 +1,7 @@
 import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 import { TimerState } from "@api-schema/types/timerState";
 import { useCallback, useEffect, useState } from "react";
-import { socket } from "../hooks/socket";
+import { socket } from "./socket";
 import { calcTimerSec, timerStateReducer } from "@api-schema/lib/timer";
 import { InitialStateParams } from "@api-schema/types/events";
 

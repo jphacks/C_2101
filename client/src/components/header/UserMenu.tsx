@@ -7,15 +7,21 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { AiFillSetting, AiOutlineLogout } from "react-icons/ai";
-import React from "react";
-import { useLogin } from "../../hooks/useLogin";
+import React, { useCallback } from "react";
+import { useUser } from "../../hooks/useUser";
+import { useLogoutAction } from "../../hooks/useAuth";
 
 type Props = {
   contentTitle?: string;
 };
 
 const UserMenu: React.FC<Props> = ({ contentTitle }) => {
-  const { user, logout } = useLogin();
+  const user = useUser();
+  const logout = useLogoutAction();
+
+  const handleClickLogout = useCallback(() => {
+    void logout();
+  }, [logout]);
 
   if (!user) {
     return <Avatar size={"sm"} />;
@@ -32,7 +38,7 @@ const UserMenu: React.FC<Props> = ({ contentTitle }) => {
             <AiFillSetting size="20px" />
             <Text marginLeft="10px">アカウント設定</Text>
           </MenuItem>
-          <MenuItem color="#364862" onClick={logout}>
+          <MenuItem color="#364862" onClick={handleClickLogout}>
             <AiOutlineLogout size="20px" />
             <Text marginLeft="10px">ログアウト</Text>
           </MenuItem>

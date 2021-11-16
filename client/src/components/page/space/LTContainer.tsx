@@ -1,13 +1,10 @@
 import Layout from "../../Layout";
-import { Box, Button, chakra, Stack, VStack } from "@chakra-ui/react";
-import { MemberBlock } from "./memberBlock/MemberBlock";
-import { TimetableBlock } from "./timetableBlock/TimetableBlock";
+import { Box, chakra, Spinner, Stack, VStack } from "@chakra-ui/react";
 import { ConfigBlock } from "./configBlock/ConfigBlock";
-import { CommentBlock } from "./commentBlock/CommentBlock";
 
 import { TimerBlockContainer } from "./timerBlock/TimerBlockContainer";
 import React from "react";
-import { useRoom } from "../../../states/useRoom";
+import { useRoom } from "../../../hooks/useRoom";
 import { MemberBlockContainer } from "./memberBlock/MemberBlockContainer";
 import { TimetableBlockContainer } from "./timetableBlock/TimetableBlockContainer";
 import { CommentBlockContainer } from "./commentBlock/CommentBlockContainer";
@@ -18,6 +15,13 @@ type LTPageProps = {};
 
 export const LTContainer: React.VFC<LTPageProps> = () => {
   const room = useRoom();
+  if (!room)
+    return (
+      <div>
+        Loading room?
+        <Spinner />
+      </div>
+    );
 
   return (
     <Layout contentTitle={room.title}>

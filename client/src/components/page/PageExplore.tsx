@@ -1,13 +1,13 @@
-import { useLogin } from "../../hooks/useLogin";
-import { useAllRoom } from "../../hooks/useAllRoom";
 import Layout from "../Layout";
 import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import RoomCard from "./explore/RoomCard";
 import React from "react";
+import { useUser } from "../../hooks/useUser";
+import { useRoomList } from "../../hooks/useRoomList";
 export const PageExplore: React.VFC = () => {
-  const { user } = useLogin();
-  const { rooms } = useAllRoom();
+  const user = useUser();
+  const rooms = useRoomList();
 
   if (!rooms || !user) {
     return <></>;
@@ -27,7 +27,7 @@ export const PageExplore: React.VFC = () => {
   });
 
   // 新しいもの順にソート
-  rooms.sort((a, b) => {
+  const sortedRooms = [...rooms].sort((a, b) => {
     return a.startAt < b.startAt ? 1 : -1;
   });
 
@@ -112,7 +112,7 @@ export const PageExplore: React.VFC = () => {
             </Heading>
           </Box>
 
-          {rooms.map((room) => (
+          {sortedRooms.map((room) => (
             <Box key={room.id} w="100%">
               <RoomCard room={room} />
               <br />

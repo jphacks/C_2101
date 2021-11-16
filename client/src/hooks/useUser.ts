@@ -6,6 +6,8 @@ export const userState = selector({
   key: "useUser-userState",
   get: async ({ get }) => {
     const authHeader = get(authJWTState);
+    if (!authHeader) return null;
+
     return await client.api.users.me.$get({
       config: {
         headers: authHeader,

@@ -1,12 +1,7 @@
-import React, { Suspense, useEffect, useMemo } from "react";
-import { useLogin } from "../../../hooks/useLogin";
-import { useLegacySkywayCredential } from "../../../hooks/useLegacySkywayCredential";
-import { useLegacyRoom } from "../../../hooks/useLegacyRoom";
-import Layout from "../../Layout";
-import { Spinner, Text } from "@chakra-ui/react";
+import React, { Suspense, useEffect } from "react";
+import { Spinner } from "@chakra-ui/react";
 import { LTContainer } from "./LTContainer";
-import { SocketRoot, UserParam } from "../../function/SocketRoot";
-import { useSetRoomId } from "../../../states/useRoom";
+import { useSetRoomId } from "../../../hooks/useRoom";
 
 export const Space: React.VFC<{
   roomId: number;

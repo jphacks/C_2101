@@ -3,17 +3,17 @@ import React from "react";
 import {
   useTimetableAction,
   useTimetableCurrentSection,
-} from "../../../../states/useSyncTimetable";
+} from "../../../../hooks/useSyncTimetable";
 import {
   useTimerAction,
   useTimerRemainSec,
-} from "../../../../states/useSyncTimer";
-import { useIsOwner } from "../../../../states/useUserInRoom";
+} from "../../../../hooks/useSyncTimer";
+import { useIsOwner } from "../../../../hooks/useUserInRoom";
 
 export const TimerBlockContainer: React.VFC = () => {
   const currentSection = useTimetableCurrentSection();
   const fullSec =
-    currentSection.type === "speaking" ? currentSection.estimateTimeSec : 0;
+    currentSection?.type === "speaking" ? currentSection.estimateTimeSec : 0;
   const remainSec = useTimerRemainSec(fullSec);
 
   const isOwner = useIsOwner();
@@ -26,7 +26,7 @@ export const TimerBlockContainer: React.VFC = () => {
     // timerAction.reset(true);
   };
 
-  if (currentSection.type === "speaking") {
+  if (currentSection?.type === "speaking") {
     return (
       <TimerBlock
         remainSec={remainSec}

@@ -4,14 +4,10 @@ import {
 } from "@api-schema/types/timetableState";
 import { atom, selector, useRecoilValue, useSetRecoilState } from "recoil";
 import { useCallback, useEffect } from "react";
-import { socket } from "../hooks/socket";
+import { socket } from "./socket";
 import { InitialStateParams } from "@api-schema/types/events";
 import { TimetableCardProps } from "../components/page/space/timetableBlock/TimetableCard";
-import {
-  memberMapState,
-  useMemberMap,
-  useMembersValue,
-} from "./useSyncMembers";
+import { memberMapState } from "./useSyncMembers";
 
 /**
  * 直接コンポーネントから参照しない
@@ -112,7 +108,7 @@ export const useTimetableCardsProps = (): TimetableCardProps[] => {
   return useRecoilValue(timetableCardsPropsState);
 };
 
-const timetableCurrentSectionState = selector({
+const timetableCurrentSectionState = selector<TimetableSection | null>({
   key: "timetableCurrentSectionState-useSyncTimetable",
   get: ({ get }) => {
     const timetable = get(timetableState);
