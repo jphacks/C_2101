@@ -28,7 +28,7 @@ export const PageExplore: React.VFC = () => {
   });
 
   // 新しいもの順にソート
-  rooms.sort((a, b) => {
+  rooms.sort((a: RoomResponse, b: RoomResponse) => {
     return a.startAt < b.startAt ? 1 : -1;
   });
 
