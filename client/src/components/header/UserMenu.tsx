@@ -8,8 +8,8 @@ import {
 } from "@chakra-ui/react";
 import { AiFillSetting, AiOutlineLogout } from "react-icons/ai";
 import React, { useCallback } from "react";
-import { useUser } from "../../hooks/useUser";
-import { useLogoutAction } from "../../hooks/useAuth";
+import { useUser } from "../../lib/hooks/useUser";
+import { useLogoutAction } from "../../lib/hooks/useAuth";
 import { useRouter } from "next/router";
 
 type Props = {

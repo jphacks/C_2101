@@ -2,10 +2,10 @@ import { CommentBlock } from "./CommentBlock";
 import {
   useCommentsAction,
   useCommentsPropsValue,
-} from "../../../../hooks/useSyncComment";
+} from "../../../../lib/hooks/useSyncComment";
 import React, { useCallback } from "react";
 import { CommentItem } from "@api-schema/types/comment";
-import { useUser } from "../../../../hooks/useUser";
+import { useUser } from "../../../../lib/hooks/useUser";
 
 export const CommentBlockContainer: React.VFC = () => {
   const { postComment } = useCommentsAction();

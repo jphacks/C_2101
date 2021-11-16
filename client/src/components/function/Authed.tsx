@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useUser } from "../../hooks/useUser";
+import { useUser } from "../../lib/hooks/useUser";
 
 type AuthedProps = {
   // linkTo:

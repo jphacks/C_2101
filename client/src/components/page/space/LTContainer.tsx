@@ -4,7 +4,7 @@ import { ConfigBlock } from "./configBlock/ConfigBlock";
 
 import { TimerBlockContainer } from "./timerBlock/TimerBlockContainer";
 import React from "react";
-import { useRoom } from "../../../hooks/useRoom";
+import { useRoom } from "../../../lib/hooks/useRoom";
 import { MemberBlockContainer } from "./memberBlock/MemberBlockContainer";
 import { TimetableBlockContainer } from "./timetableBlock/TimetableBlockContainer";
 import { CommentBlockContainer } from "./commentBlock/CommentBlockContainer";

@@ -2,20 +2,20 @@ import React, { useCallback, useEffect } from "react";
 import {
   useSetCommentsHandler,
   useSetInitialCommentsState,
-} from "../../hooks/useSyncComment";
+} from "../../lib/hooks/useSyncComment";
 import {
   useSetInitialTimerState,
   useSetTimerHandler,
-} from "../../hooks/useSyncTimer";
+} from "../../lib/hooks/useSyncTimer";
 import {
   useSetInitialTimetableState,
   useSetTimetableHandler,
-} from "../../hooks/useSyncTimetable";
+} from "../../lib/hooks/useSyncTimetable";
 import {
   useSetInitialRoomState,
   useSetRoomStateHandler,
-} from "../../hooks/useSyncMembers";
-import { socket } from "../../hooks/socket";
+} from "../../lib/hooks/useSyncMembers";
+import { socket } from "../../lib/hooks/socket";
 import { UserInfo } from "@api-schema/types/user";
 import { InitialStateParams } from "@api-schema/types/events";
 

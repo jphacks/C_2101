@@ -1,6 +1,6 @@
 import { selector, useRecoilValue } from "recoil";
 import { authJWTState } from "./useAuth";
-import client from "../utils/api-client.factory";
+import client from "../../utils/api-client.factory";
 
 const roomListState = selector({
   key: "useRoomList-roomListState",

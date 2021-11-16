@@ -1,5 +1,5 @@
 import { selector, useRecoilValue, useRecoilValueLoadable } from "recoil";
-import client from "../utils/api-client.factory";
+import client from "../../utils/api-client.factory";
 import { authJWTState } from "./useAuth";
 
 export const userState = selector({

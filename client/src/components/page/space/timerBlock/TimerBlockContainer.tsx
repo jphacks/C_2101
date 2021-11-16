@@ -3,12 +3,12 @@ import React from "react";
 import {
   useTimetableAction,
   useTimetableCurrentSection,
-} from "../../../../hooks/useSyncTimetable";
+} from "../../../../lib/hooks/useSyncTimetable";
 import {
   useTimerAction,
   useTimerRemainSec,
-} from "../../../../hooks/useSyncTimer";
-import { useIsOwner } from "../../../../hooks/useUserInRoom";
+} from "../../../../lib/hooks/useSyncTimer";
+import { useIsOwner } from "../../../../lib/hooks/useUserInRoom";
 
 export const TimerBlockContainer: React.VFC = () => {
   const currentSection = useTimetableCurrentSection();

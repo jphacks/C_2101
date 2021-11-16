@@ -4,7 +4,7 @@ import { socket } from "./socket";
 import { useCallback, useEffect } from "react";
 import { InitialStateParams } from "@api-schema/types/events";
 import { memberMapState } from "./useSyncMembers";
-import { CommentProps } from "../components/page/space/commentBlock/CommentItem";
+import { CommentProps } from "../../components/page/space/commentBlock/CommentItem";
 
 /**
  * 直接コンポーネントから参照しない

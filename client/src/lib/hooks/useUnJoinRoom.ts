@@ -1,4 +1,4 @@
-import client from "../utils/api-client.factory";
+import client from "../../utils/api-client.factory";
 import { useToast } from "@chakra-ui/react";
 import { useAuthHeader } from "./useAuth";
 

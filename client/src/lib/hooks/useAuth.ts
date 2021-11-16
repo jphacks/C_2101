@@ -6,7 +6,7 @@ import {
 } from "recoil";
 import { recoilPersist } from "recoil-persist";
 import { useCallback } from "react";
-import client from "../utils/api-client.factory";
+import client from "../../utils/api-client.factory";
 
 const { persistAtom } = recoilPersist();
 

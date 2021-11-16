@@ -25,13 +25,13 @@ import {
 } from "@chakra-ui/react";
 import { transform } from "../../utils/datetime";
 import React, { useState } from "react";
-import { useJoinRoom } from "../../hooks/useJoinRoom";
-import { useUnJoinRoom } from "../../hooks/useUnJoinRoom";
+import { useJoinRoom } from "../../lib/hooks/useJoinRoom";
+import { useUnJoinRoom } from "../../lib/hooks/useUnJoinRoom";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
 import { UserType } from "./space/memberBlock/MemberItem";
 import { ShareBtns } from "./explore/ShareButton";
-import { useRefreshRoom, useRoomById } from "../../hooks/useRoom";
+import { useRefreshRoom, useRoomById } from "../../lib/hooks/useRoom";
 
 export const PageSpaceDetail: React.VFC<{
   roomId: number;

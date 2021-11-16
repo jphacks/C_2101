@@ -8,7 +8,7 @@ import {
   useSetRecoilState,
 } from "recoil";
 import { authJWTState } from "./useAuth";
-import client from "../utils/api-client.factory";
+import client from "../../utils/api-client.factory";
 import { RoomResponse } from "@api-schema/api/@types";
 
 export const roomIdState = atom<number | null>({

@@ -2,7 +2,7 @@ import { Box, Flex, Heading, HStack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React from "react";
 import UserMenu from "./UserMenu";
-import { useUser } from "../../hooks/useUser";
+import { useUser } from "../../lib/hooks/useUser";
 
 type Props = {
   contentTitle?: string;

@@ -3,8 +3,8 @@ import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import RoomCard from "./explore/RoomCard";
 import React from "react";
-import { useUser } from "../../hooks/useUser";
-import { useRoomList } from "../../hooks/useRoomList";
+import { useUser } from "../../lib/hooks/useUser";
+import { useRoomList } from "../../lib/hooks/useRoomList";
 export const PageExplore: React.VFC = () => {
   const user = useUser();
   const rooms = useRoomList();

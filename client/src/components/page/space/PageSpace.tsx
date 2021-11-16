@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect } from "react";
 import { Spinner } from "@chakra-ui/react";
 import { LTContainer } from "./LTContainer";
-import { useSetRoomId } from "../../../hooks/useRoom";
+import { useSetRoomId } from "../../../lib/hooks/useRoom";
 
 export const Space: React.VFC<{
   roomId: number;

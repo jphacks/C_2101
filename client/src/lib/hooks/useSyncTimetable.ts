@@ -6,7 +6,7 @@ import { atom, selector, useRecoilValue, useSetRecoilState } from "recoil";
 import { useCallback, useEffect } from "react";
 import { socket } from "./socket";
 import { InitialStateParams } from "@api-schema/types/events";
-import { TimetableCardProps } from "../components/page/space/timetableBlock/TimetableCard";
+import { TimetableCardProps } from "../../components/page/space/timetableBlock/TimetableCard";
 import { memberMapState } from "./useSyncMembers";
 
 /**

@@ -14,8 +14,8 @@ import { useForm } from "react-hook-form";
 import Layout from "../Layout";
 import NextLink from "next/link";
 import React, { useEffect } from "react";
-import { useUser } from "../../hooks/useUser";
-import { useLoginAction } from "../../hooks/useAuth";
+import { useUser } from "../../lib/hooks/useUser";
+import { useLoginAction } from "../../lib/hooks/useAuth";
 
 type FormData = {
   email: string;
