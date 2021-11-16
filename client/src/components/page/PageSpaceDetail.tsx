@@ -32,6 +32,7 @@ import { useRouter } from "next/router";
 import NextLink from "next/link";
 import { UserType } from "./space/memberBlock/MemberItem";
 import { ShareBtns } from "./explore/ShareButton";
+import { SpeakerResponse, UserResponse } from "@api-schema/api/@types";
 
 export const PageSpaceDetail: React.VFC<{
   roomId: number;
@@ -185,7 +186,7 @@ export const PageSpaceDetail: React.VFC<{
             <Text>
               {room.speakers.length === 0 ? "まだ参加情報がありません。" : ""}
             </Text>
-            {room.speakers.map((speaker) => (
+            {room.speakers.map((speaker: SpeakerResponse) => (
               <Flex align={"center"} key={speaker.id}>
                 <Avatar size={"xs"} src={speaker.iconUrl} />
                 <Text fontSize={"0.8rem"} marginLeft="10px" fontWeight="bold">
@@ -204,7 +205,7 @@ export const PageSpaceDetail: React.VFC<{
             <Text>
               {room.viewers.length === 0 ? "まだ参加情報がありません。" : ""}
             </Text>
-            {room.viewers.map((viewer) => (
+            {room.viewers.map((viewer: UserResponse) => (
               <Flex align={"center"} key={viewer.id}>
                 <Avatar size={"xs"} src={viewer.iconUrl} />
                 <Text fontSize={"0.8rem"} marginLeft="10px" fontWeight="bold">
