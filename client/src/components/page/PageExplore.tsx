@@ -99,7 +99,7 @@ export const PageExplore: React.VFC = () => {
               ? "参加登録しているスペースはありません。"
               : ""}
           </Text>
-          {joinRooms.map((room) => (
+          {joinRooms.map((room: RoomResponse) => (
             <Box key={room.id} w="100%">
               <RoomCard room={room} key={room.id + "xx"} />
               <br />
@@ -113,7 +113,7 @@ export const PageExplore: React.VFC = () => {
             </Heading>
           </Box>
 
-          {rooms.map((room) => (
+          {rooms.map((room: RoomResponse) => (
             <Box key={room.id} w="100%">
               <RoomCard room={room} />
               <br />
