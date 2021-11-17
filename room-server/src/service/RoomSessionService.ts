@@ -92,6 +92,15 @@ export class RoomSessionService {
   }
 
   /**
+   * ルームから退出する
+   *
+   * @param {string} socketId
+   */
+  async leaveRoom(socketId: string): Promise<void> {
+    await this.userSessionRepository.delete(socketId);
+  }
+
+  /**
    * ルームのタイマーをセットする
    *
    * @param {TimetableState} timetable

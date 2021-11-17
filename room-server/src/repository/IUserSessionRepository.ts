@@ -17,4 +17,11 @@ export interface IUserSessionRepository {
    * @param {UserSessionModel} userSession
    */
   insert(socketId: string, userSession: UserSessionModel): Promise<void>;
+
+  /**
+   * ユーザセッションを削除
+   *
+   * @param {string} socketId
+   */
+  delete(socketId: string): Promise<void>;
 }

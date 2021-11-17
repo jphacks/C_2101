@@ -11,4 +11,8 @@ export class InMemoryUserSessionRepository implements IUserSessionRepository {
   async insert(socketId: string, userSession: UserSessionModel): Promise<void> {
     this.store[socketId] = userSession;
   }
+
+  async delete(socketId: string): Promise<void> {
+    delete this.store[socketId];
+  }
 }

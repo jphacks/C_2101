@@ -76,26 +76,33 @@ io.on("connection", (socket) => {
     });
   });
 
+  // NOTE: ゲスト機能はとりあえずパス
   socket.on("joinRoomAsGuest", () => {
     console.log("[joinRoomAsGuest] is called");
   });
 
-  socket.on("leaveRoom", () => {
+  socket.on("leaveRoom", async () => {
     console.log("[leaveRoom] is called");
+
+    await roomSessionService.leaveRoom(socket.id);
   });
 
+  // TODO
   socket.on("getScreenCredential", (res) => {
     console.log("[getScreenCredential] is called");
   });
 
+  // TODO
   socket.on("postComment", (comment) => {
     console.log("[postComment] is called");
   });
 
+  // TODO
   socket.on("postReaction", (reaction) => {
     console.log("[postReaction] is called");
   });
 
+  // TODO
   socket.on("startScreenShare", (mediaScreenId) => {
     console.log("[startScreenShare] is called");
   });
