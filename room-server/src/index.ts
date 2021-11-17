@@ -81,6 +81,26 @@ io.on("connection", (socket) => {
       status: "success",
       credential: videoCredential,
     });
+
+    // ユーザ情報を取得
+    const userSession = await userSessionService.getUserSession(socket.id);
+    if (!userSession || userSession.isGuest) {
+      return;
+    }
+
+    // ルーム情報を取得
+    const roomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!roomSession) {
+      return;
+    }
+
+    // メンバー情報の更新を配信
+    io.to(String(userSession.roomId)).emit(
+      "updateMembersState",
+      roomSession.members
+    );
   });
 
   // NOTE: ゲスト機能はとりあえずパス
