@@ -17,4 +17,12 @@ export interface IRoomSessionRepository {
    * @param {RoomSessionModel} roomSession
    */
   insert(roomId: number, roomSession: RoomSessionModel): Promise<void>;
+
+  /**
+   * ルームセッションを更新
+   *
+   * @param {number} roomId
+   * @param {RoomSessionModel} roomSession
+   */
+  update(roomId: number, roomSession: RoomSessionModel): Promise<void>;
 }

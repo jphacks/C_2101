@@ -2,6 +2,7 @@ import {
   RoomResponse,
   SkywayCredentialsModel,
 } from "api-schema/src/api/@types";
+import { TimerState } from "api-schema/src/types/timerState";
 import { UserInfo } from "api-schema/src/types/user";
 import produce from "immer";
 
@@ -86,5 +87,33 @@ export class RoomSessionService {
       roomId: room.id,
       socketId: socketId,
     });
+  }
+
+  /**
+   * ルームのタイマーをセットする
+   *
+   * @param {TimerState} timer
+   * @param {string} socketId
+   */
+  async setTimer(timer: TimerState, socketId: string): Promise<void> {
+    // ユーザセッションを取得
+    const userSession = await this.userSessionRepository.getBySocketId(
+      socketId
+    );
+    if (userSession === null) {
+      return;
+    }
+
+    // ルームセッションを取得
+    const roomSession = await this.roomSessionRepository.getByRoomId(
+      userSession.roomId
+    );
+    if (roomSession === null) {
+      return;
+    }
+
+    // タイマーを更新
+    roomSession.timer = timer;
+    await this.roomSessionRepository.update(userSession.roomId, roomSession);
   }
 }

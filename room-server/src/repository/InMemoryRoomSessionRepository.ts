@@ -11,4 +11,8 @@ export class InMemoryRoomSessionRepository implements IRoomSessionRepository {
   async insert(roomId: number, roomSession: RoomSessionModel): Promise<void> {
     this.store[roomId] = roomSession;
   }
+
+  async update(roomId: number, roomSession: RoomSessionModel): Promise<void> {
+    this.store[roomId] = roomSession;
+  }
 }

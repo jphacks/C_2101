@@ -103,8 +103,10 @@ io.on("connection", (socket) => {
     console.log("setTimetable");
   });
 
-  socket.on("setTimer", (timer) => {
+  socket.on("setTimer", async (timer) => {
     console.log("setTimer");
+
+    await roomSessionService.setTimer(timer, socket.id);
   });
 
   socket.on("getInitialStates", (res) => {
