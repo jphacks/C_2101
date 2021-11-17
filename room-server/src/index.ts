@@ -131,10 +131,16 @@ io.on("connection", (socket) => {
   });
 
   // TODO
-  socket.on("postReaction", (reaction) => {
+  socket.on("postReaction", async (reaction) => {
     console.log("[postReaction] is called");
 
-    socket.broadcast.to("").emit("broadcastReaction", reaction);
+    // ユーザ情報を取得
+    const userSession = await userSessionService.getUserSession(socket.id);
+    if (!userSession || userSession.isGuest) {
+      return;
+    }
+
+    io.to(String(userSession.roomId)).emit("broadcastReaction", reaction);
   });
 
   // TODO
