@@ -1,5 +1,5 @@
-import { RoomResponse } from "@api-schema/api/@types";
-import { TimetableSection } from "@api-schema/types/timetableState";
+import { RoomResponse } from "api-schema/src/api/@types";
+import { TimetableSection } from "api-schema/src/types/timetableState";
 
 import { RoomSessionModel } from "../model/RoomSessionModel";
 

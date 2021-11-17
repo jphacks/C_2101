@@ -1,6 +1,9 @@
-import { RoomResponse, SkywayCredentialsModel } from "@api-schema/api/@types";
-import { MemberType, RoomMember } from "@api-schema/types/member";
-import { UserId, UserInfo } from "@api-schema/types/user";
+import {
+  RoomResponse,
+  SkywayCredentialsModel,
+} from "api-schema/src/api/@types";
+import { MemberType, RoomMember } from "api-schema/src/types/member";
+import { UserId, UserInfo } from "api-schema/src/types/user";
 
 export class RoomMemberFactory {
   /**

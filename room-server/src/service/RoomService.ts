@@ -1,8 +1,11 @@
-import api from "@api-schema/api/$api";
+import api from "api-schema/src/api/$api";
 import aspida from "@aspida/axios";
 import axios from "axios";
-import { UserId } from "@api-schema/types/user";
-import { RoomResponse, SkywayCredentialsModel } from "@api-schema/api/@types";
+import { UserId } from "api-schema/src/types/user";
+import {
+  RoomResponse,
+  SkywayCredentialsModel,
+} from "api-schema/src/api/@types";
 
 export class RoomService {
   private apiClient = api(aspida(axios, {}));

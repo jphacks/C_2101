@@ -1,5 +1,8 @@
-import { RoomResponse, SkywayCredentialsModel } from "@api-schema/api/@types";
-import { UserInfo } from "@api-schema/types/user";
+import {
+  RoomResponse,
+  SkywayCredentialsModel,
+} from "api-schema/src/api/@types";
+import { UserInfo } from "api-schema/src/types/user";
 import produce from "immer";
 
 import { RoomMemberFactory } from "../factory/RoomMemberFactory";

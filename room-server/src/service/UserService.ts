@@ -1,7 +1,7 @@
-import api from "@api-schema/api/$api";
+import api from "api-schema/src/api/$api";
 import aspida from "@aspida/axios";
 import axios from "axios";
-import { UserInfo } from "@api-schema/types/user";
+import { UserInfo } from "api-schema/src/types/user";
 
 export class UserService {
   private apiClient = api(aspida(axios, {}));

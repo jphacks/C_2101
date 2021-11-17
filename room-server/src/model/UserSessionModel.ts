@@ -1,4 +1,4 @@
-import { UserId } from "@api-schema/types/user";
+import { UserId } from "api-schema/src/types/user";
 
 export type UserSessionModel = {
   roomId: number;
