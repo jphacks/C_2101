@@ -179,9 +179,29 @@ io.on("connection", (socket) => {
     io.to(String(userSession.roomId)).emit("broadcastReaction", reaction);
   });
 
-  // TODO
-  socket.on("startScreenShare", (mediaScreenId) => {
+  socket.on("startScreenShare", async (mediaScreenId) => {
     console.log("[startScreenShare] is called");
+
+    // ユーザ情報を取得
+    const userSession = await userSessionService.getUserSession(socket.id);
+    if (!userSession || userSession.isGuest) {
+      return;
+    }
+
+    // ルーム情報を取得
+    const roomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!roomSession) {
+      return;
+    }
+
+    // 画面共有状態を更新
+    await roomSessionService.startScreenShare(mediaScreenId, socket.id);
+    io.to(String(userSession.roomId)).emit(
+      "updateStreamState",
+      roomSession.streamState
+    );
   });
 
   socket.on("setTimetable", async (timetable) => {

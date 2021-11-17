@@ -102,6 +102,28 @@ export class RoomSessionService {
   }
 
   /**
+   * ルームの画面共有を開始する
+   *
+   * @param {string} focusScreenStreamId
+   * @param {string} socketId
+   */
+  async startScreenShare(
+    focusScreenStreamId: string,
+    socketId: string
+  ): Promise<void> {
+    // ルーム情報を取得
+    const roomId = await this.getRoomIdBySocketId(socketId);
+    const roomSession = await this.getRoomSessionBySocketId(socketId);
+    if (!roomId || !roomSession) {
+      return;
+    }
+
+    // 画面共有状態を更新
+    roomSession.streamState.focusScreenStreamId = focusScreenStreamId;
+    await this.roomSessionRepository.update(roomId, roomSession);
+  }
+
+  /**
    * ルームのタイマーをセットする
    *
    * @param {TimetableState} timetable
