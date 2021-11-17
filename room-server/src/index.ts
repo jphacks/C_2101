@@ -125,9 +125,10 @@ io.on("connection", (socket) => {
     res(screenCredential);
   });
 
-  // TODO
-  socket.on("postComment", (comment) => {
+  socket.on("postComment", async (comment) => {
     console.log("[postComment] is called");
+
+    await roomSessionService.postComment(comment, socket.id);
   });
 
   // TODO

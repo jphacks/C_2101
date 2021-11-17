@@ -5,6 +5,7 @@ import {
 import { TimerState } from "api-schema/src/types/timerState";
 import { TimetableState } from "api-schema/src/types/timetableState";
 import { UserInfo } from "api-schema/src/types/user";
+import { CommentItem } from "api-schema/src/types/comment";
 import produce from "immer";
 
 import { RoomSessionModel } from "../model/RoomSessionModel";
@@ -152,6 +153,25 @@ export class RoomSessionService {
     socketId: string
   ): Promise<RoomSessionModel | null> {
     return this.getRoomSessionBySocketId(socketId);
+  }
+
+  /**
+   * コメントを投稿する
+   *
+   * @param {CommentItem} comment
+   * @param {string} socketId
+   */
+  async postComment(comment: CommentItem, socketId: string): Promise<void> {
+    // ルーム情報を取得
+    const roomId = await this.getRoomIdBySocketId(socketId);
+    const roomSession = await this.getRoomSessionBySocketId(socketId);
+    if (!roomId || !roomSession) {
+      return;
+    }
+
+    // コメント情報を追加
+    roomSession.comments.push(comment);
+    await this.roomSessionRepository.update(roomId, roomSession);
   }
 
   /**
