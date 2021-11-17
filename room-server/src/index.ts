@@ -27,7 +27,8 @@ const io = new Server<ClientToServerEventsMap, ServerToClientsEventsMap>({
 
 io.on("connection", (socket) => {
   socket.on("joinRoomAsUser", async ({ roomId, userId, auth }, res) => {
-    console.log("joinRoomAsUser");
+    console.log("[joinRoomAsUser] is called");
+
     const user = await userService.getLoginUser(auth);
 
     if (!user) {
@@ -76,43 +77,43 @@ io.on("connection", (socket) => {
   });
 
   socket.on("joinRoomAsGuest", () => {
-    console.log("joinRoomAsGuest");
+    console.log("[joinRoomAsGuest] is called");
   });
 
   socket.on("leaveRoom", () => {
-    console.log("leaveRoom");
+    console.log("[leaveRoom] is called");
   });
 
   socket.on("getScreenCredential", (res) => {
-    console.log("leaveRoom");
+    console.log("[getScreenCredential] is called");
   });
 
   socket.on("postComment", (comment) => {
-    console.log("postComment");
+    console.log("[postComment] is called");
   });
 
   socket.on("postReaction", (reaction) => {
-    console.log("postReaction");
+    console.log("[postReaction] is called");
   });
 
   socket.on("startScreenShare", (mediaScreenId) => {
-    console.log("startScreenShare");
+    console.log("[startScreenShare] is called");
   });
 
   socket.on("setTimetable", async (timetable) => {
-    console.log("setTimetable");
+    console.log("[setTimetable] is called");
 
     await roomSessionService.setTimetable(timetable, socket.id);
   });
 
   socket.on("setTimer", async (timer) => {
-    console.log("setTimer");
+    console.log("[setTimer] is called");
 
     await roomSessionService.setTimer(timer, socket.id);
   });
 
   socket.on("getInitialStates", (res) => {
-    console.log("getInitialStates");
+    console.log("[getInitialStates] is called");
   });
 });
 
