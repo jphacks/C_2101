@@ -10,13 +10,20 @@ import { InMemoryRoomSessionRepository } from "./repository/InMemoryRoomSessionR
 import { InMemoryUserSessionRepository } from "./repository/InMemoryUserSessionRepository";
 import { UserService } from "./service/UserService";
 import { RoomService } from "./service/RoomService";
+import { UserSessionService } from "./service/UserSessionService";
 import { RoomSessionService } from "./service/RoomSessionService";
 
+// repository
+const userSessionRepository = new InMemoryUserSessionRepository();
+const roomSessionRepository = new InMemoryRoomSessionRepository();
+
+// service
 const userService = new UserService();
 const roomService = new RoomService();
+const userSessionService = new UserSessionService(userSessionRepository);
 const roomSessionService = new RoomSessionService(
-  new InMemoryRoomSessionRepository(),
-  new InMemoryUserSessionRepository(),
+  roomSessionRepository,
+  userSessionRepository,
   new RoomMemberFactory(),
   new RoomSessionFactory()
 );
@@ -87,9 +94,35 @@ io.on("connection", (socket) => {
     await roomSessionService.leaveRoom(socket.id);
   });
 
-  // TODO
-  socket.on("getScreenCredential", (res) => {
+  socket.on("getScreenCredential", async (res) => {
     console.log("[getScreenCredential] is called");
+
+    // ユーザ情報を取得
+    const userSession = await userSessionService.getUserSession(socket.id);
+    if (!userSession || userSession.isGuest) {
+      return;
+    }
+
+    // ルーム情報を取得
+    const roomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!roomSession) {
+      return;
+    }
+
+    // クレデンシャルを発行
+    const screenCredential = await roomService.authenticateRoom(
+      userSession.roomId,
+      userSession.userId,
+      // FIXME: JWTを入れる
+      ""
+    );
+    if (!screenCredential) {
+      return;
+    }
+
+    res(screenCredential);
   });
 
   // TODO
