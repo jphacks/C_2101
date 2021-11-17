@@ -34,7 +34,7 @@ const Header: React.FC<Props> = ({ contentTitle }) => {
         <HeaderLogo />
       </Flex>
       <HStack
-        width={{ base: "full", md: "auto" }}
+        // width={{ base: "full", md: "auto" }}
         alignItems="center"
         flexGrow={1}
         mt={{ base: 4, md: 0 }}
