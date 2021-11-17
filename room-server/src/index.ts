@@ -191,6 +191,77 @@ io.on("connection", (socket) => {
     await roomSessionService.setTimer(timer, socket.id);
     io.to(String(userSession.roomId)).emit("updateTimer", timer);
   });
+
+  socket.on("getCommentsState", async (res) => {
+    console.log("[getCommentsState] is called");
+
+    // ルーム情報を取得
+    const roomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!roomSession) {
+      return;
+    }
+
+    res(roomSession.comments);
+  });
+
+  socket.on("getTimerState", async (res) => {
+    console.log("[getTimerState] is called");
+
+    // ルーム情報を取得
+    const roomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!roomSession) {
+      return;
+    }
+
+    res(roomSession.timer);
+  });
+
+  // TODO
+  socket.on("getTimetableState", async (res) => {
+    console.log("[] is called");
+
+    // ルーム情報を取得
+    const roomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!roomSession) {
+      return;
+    }
+
+    res(roomSession.timetable);
+  });
+
+  socket.on("getScreenState", async (res) => {
+    console.log("[getScreenState] is called");
+
+    // ルーム情報を取得
+    const roomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!roomSession) {
+      return;
+    }
+
+    res(roomSession.streamState);
+  });
+
+  socket.on("getMemberState", async (res) => {
+    console.log("[getMemberState] is called");
+
+    // ルーム情報を取得
+    const roomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!roomSession) {
+      return;
+    }
+
+    res(roomSession.members);
+  });
 });
 
 io.listen(process.env.PORT ? Number(process.env.PORT) : 3001);
