@@ -53,7 +53,8 @@ export interface ClientToServerEventsMap {
    * @param res
    */
   getScreenCredential: (
-    credential: EmitResponse<SkywayCredentialsModel>
+    auth: string,
+    credential: EmitResponse<SkywayCredentialsModel>,
   ) => void;
 
   /**
@@ -89,9 +90,38 @@ export interface ClientToServerEventsMap {
   setTimer: (timer: TimerState) => void;
 
   /**
-   * 各種状態を全て取得
+   * 現在のCommentsを取得
+   * @param res
    */
-  getInitialStates: (res: EmitResponse<InitialStateParams>) => void;
+  getCommentsState: (res: EmitResponse<CommentItem[]>) => void;
+
+
+  /**
+   * 現在のTimerStateを取得
+   * @param res
+   */
+  getTimerState: (res: EmitResponse<TimerState>) => void;
+
+
+  /**
+   * 現在のTimetableStateを取得
+   * @param res
+   */
+  getTimetableState: (res: EmitResponse<TimetableState>) => void;
+
+
+  /**
+   * 現在のScreenStateを取得
+   * @param res
+   */
+  getScreenState: (res: EmitResponse<StreamState>) => void;
+
+
+  /**
+   * 現在のMembersを取得
+   * @param res
+   */
+  getMemberState: (res: EmitResponse<RoomMember[]>) => void;
 }
 
 export interface ServerToClientsEventsMap {
