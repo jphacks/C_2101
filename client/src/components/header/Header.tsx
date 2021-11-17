@@ -26,22 +26,29 @@ const Header: React.FC<Props> = ({ contentTitle }) => {
       bg="#012D45"
       align="center"
       justify="space-between"
-      wrap="wrap"
       padding={4}
       color={"gray.100"}
+      w={"full"}
     >
-      <Flex align={"center"} mr={5}>
-        <HeaderLogo />
-      </Flex>
-      <HStack
-        // width={{ base: "full", md: "auto" }}
-        alignItems="center"
-        flexGrow={1}
-        mt={{ base: 4, md: 0 }}
-      >
-        <Text fontSize={"2xl"}>{contentTitle}</Text>
-      </HStack>
-      <Box display={"block"} mt={{ base: 4, md: 0 }}>
+      <Box flex={1} minWidth={"0px"}>
+        <Flex
+          // width={{ base: "full", md: "auto" }}
+          alignItems="center"
+        >
+          <HeaderLogo />
+          <Box pl={3} flex={1} overflow="hidden">
+            <Text
+              fontSize={"2xl"}
+              overflow="hidden"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
+            >
+              {contentTitle}
+            </Text>
+          </Box>
+        </Flex>
+      </Box>
+      <Box display={"block"} w={"40px"}>
         <UserMenu />
       </Box>
     </Flex>
