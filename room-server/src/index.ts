@@ -94,7 +94,7 @@ io.on("connection", (socket) => {
     await roomSessionService.leaveRoom(socket.id);
   });
 
-  socket.on("getScreenCredential", async (res) => {
+  socket.on("getScreenCredential", async (auth, res) => {
     console.log("[getScreenCredential] is called");
 
     // ユーザ情報を取得
@@ -115,8 +115,7 @@ io.on("connection", (socket) => {
     const screenCredential = await roomService.authenticateRoom(
       userSession.roomId,
       userSession.userId,
-      // FIXME: JWTを入れる
-      ""
+      auth
     );
     if (!screenCredential) {
       return;
@@ -134,6 +133,8 @@ io.on("connection", (socket) => {
   // TODO
   socket.on("postReaction", (reaction) => {
     console.log("[postReaction] is called");
+
+    socket.broadcast.to("").emit("broadcastReaction", reaction);
   });
 
   // TODO
