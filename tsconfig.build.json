@@ -1,0 +1,4 @@
+{
+  "files": [],
+  "references": [{ "path": "api-schema" }, { "path": "client" }, { "path": "room-server" }]
+}

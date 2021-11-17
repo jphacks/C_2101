@@ -4,6 +4,8 @@ import {
 } from "api-schema/src/types/events";
 import { Server } from "socket.io";
 
+console.log("start room server");
+
 const io = new Server<ClientToServerEventsMap, ServerToClientsEventsMap>({
   /* options */
 });

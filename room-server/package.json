@@ -1,6 +1,7 @@
 {
   "name": "room-server",
   "version": "1.0.0",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node --files src/index.ts",
     "test": "jest",
