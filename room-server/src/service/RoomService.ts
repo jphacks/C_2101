@@ -47,7 +47,7 @@ export class RoomService {
     auth: string
   ): Promise<SkywayCredentialsModel | null> {
     try {
-      const timestamp = new Date().getTime();
+      const timestamp = Date.now();
 
       const res = await this.apiClient.api.rooms
         ._room_id(roomId)

@@ -99,8 +99,10 @@ io.on("connection", (socket) => {
     console.log("startScreenShare");
   });
 
-  socket.on("setTimetable", (timetable) => {
+  socket.on("setTimetable", async (timetable) => {
     console.log("setTimetable");
+
+    await roomSessionService.setTimetable(timetable, socket.id);
   });
 
   socket.on("setTimer", async (timer) => {
