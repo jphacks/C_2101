@@ -133,6 +133,19 @@ export class RoomSessionService {
   }
 
   /**
+   * 参加中のルームセッションを取得する
+   *
+   * @param {string} socketId
+   *
+   * @returns ルームセッション
+   */
+  async getActiveRoomSession(
+    socketId: string
+  ): Promise<RoomSessionModel | null> {
+    return this.getRoomSessionBySocketId(socketId);
+  }
+
+  /**
    * ソケットIDから参加してるルームIDを取得
    *
    * @param {string} socketId

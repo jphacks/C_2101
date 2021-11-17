@@ -112,8 +112,15 @@ io.on("connection", (socket) => {
     await roomSessionService.setTimer(timer, socket.id);
   });
 
-  socket.on("getInitialStates", (res) => {
-    console.log("[getInitialStates] is called");
+  socket.on("getInitialStates", async (res) => {
+    const roomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!roomSession) {
+      return;
+    }
+
+    res(roomSession);
   });
 });
 
