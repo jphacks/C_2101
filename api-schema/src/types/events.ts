@@ -1,6 +1,6 @@
 import { SkywayCredentialsModel } from "@api-schema/api/@types";
 import { CommentItem } from "@api-schema/types/comment";
-import { RoomMember } from "@api-schema/types/member";
+import { MemberStreamIds, RoomMember } from "@api-schema/types/member";
 import { ReactionItem } from "@api-schema/types/reaction";
 import { StreamState } from "@api-schema/types/streamState";
 import { TimerState } from "@api-schema/types/timerState";
@@ -54,7 +54,7 @@ export interface ClientToServerEventsMap {
    */
   getScreenCredential: (
     auth: string,
-    credential: EmitResponse<SkywayCredentialsModel>,
+    credential: EmitResponse<SkywayCredentialsModel>
   ) => void;
 
   /**
@@ -70,11 +70,10 @@ export interface ClientToServerEventsMap {
   postReaction: (reaction: ReactionItem) => void;
 
   /**
-   * 画面共有を開始する
-   * ownerとspeakerのみ
+   * ユーザの画面共有mediaIdをセット
    * @param mediaScreenId
    */
-  startScreenShare: (mediaScreenId: string) => void;
+  setUserMediaStream: (streams: MemberStreamIds) => void;
 
   /**
    * タイムテーブルをセット
@@ -95,13 +94,11 @@ export interface ClientToServerEventsMap {
    */
   getCommentsState: (res: EmitResponse<CommentItem[]>) => void;
 
-
   /**
    * 現在のTimerStateを取得
    * @param res
    */
   getTimerState: (res: EmitResponse<TimerState>) => void;
-
 
   /**
    * 現在のTimetableStateを取得
@@ -109,13 +106,11 @@ export interface ClientToServerEventsMap {
    */
   getTimetableState: (res: EmitResponse<TimetableState>) => void;
 
-
   /**
    * 現在のScreenStateを取得
    * @param res
    */
   getScreenState: (res: EmitResponse<StreamState>) => void;
-
 
   /**
    * 現在のMembersを取得

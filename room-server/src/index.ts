@@ -179,8 +179,8 @@ io.on("connection", (socket) => {
     io.to(String(userSession.roomId)).emit("broadcastReaction", reaction);
   });
 
-  socket.on("startScreenShare", async (mediaScreenId) => {
-    console.log("[startScreenShare] is called");
+  socket.on("setUserMediaStream", async (streams) => {
+    console.log("[setUserMediaStream] is called");
 
     // ユーザ情報を取得
     const userSession = await userSessionService.getUserSession(socket.id);
@@ -196,11 +196,28 @@ io.on("connection", (socket) => {
       return;
     }
 
-    // 画面共有状態を更新
-    await roomSessionService.startScreenShare(mediaScreenId, socket.id);
-    io.to(String(userSession.roomId)).emit(
+    await roomSessionService.setMemberStream(
+      streams,
+      socket.id,
+      userSession.userId
+    );
+    await roomSessionService.mutateRoomStream(socket.id);
+
+    // 更新したルーム情報を再取得
+    const updatedRoomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!updatedRoomSession) {
+      return;
+    }
+
+    const socketRoomId = String(userSession.roomId);
+    io.to(socketRoomId).emit("updateMembersState", updatedRoomSession.members);
+
+    //本当は変化があるときだけ配信した方がよい
+    io.to(socketRoomId).emit(
       "updateStreamState",
-      roomSession.streamState
+      updatedRoomSession.streamState
     );
   });
 
@@ -213,9 +230,31 @@ io.on("connection", (socket) => {
       return;
     }
 
+    const roomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!roomSession) return;
+
     // タイムテーブルを更新
     await roomSessionService.setTimetable(timetable, socket.id);
-    io.to(String(userSession.roomId)).emit("updateTimetable", timetable);
+    await roomSessionService.mutateRoomStream(socket.id);
+
+    // 更新したルーム情報を再取得
+    const updatedRoomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!updatedRoomSession) {
+      return;
+    }
+
+    const socketRoomId = String(userSession.roomId);
+    io.to(socketRoomId).emit("updateTimetable", updatedRoomSession.timetable);
+
+    //本当は変化があるときだけ配信した方がよい
+    io.to(socketRoomId).emit(
+      "updateStreamState",
+      updatedRoomSession.streamState
+    );
   });
 
   socket.on("setTimer", async (timer) => {
@@ -262,7 +301,7 @@ io.on("connection", (socket) => {
 
   // TODO
   socket.on("getTimetableState", async (res) => {
-    console.log("[] is called");
+    console.log("[getTimetableState] is called");
 
     // ルーム情報を取得
     const roomSession = await roomSessionService.getActiveRoomSession(

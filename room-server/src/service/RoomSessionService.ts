@@ -13,6 +13,8 @@ import { RoomMemberFactory } from "../factory/RoomMemberFactory";
 import { RoomSessionFactory } from "../factory/RoomSessionFactory";
 import { IRoomSessionRepository } from "../repository/IRoomSessionRepository";
 import { IUserSessionRepository } from "../repository/IUserSessionRepository";
+import { UserId } from "api-schema/dist/types/user";
+import { MemberStreamIds } from "@api-schema/types/member";
 
 export class RoomSessionService {
   private roomSessionRepository: IRoomSessionRepository;
@@ -102,25 +104,77 @@ export class RoomSessionService {
   }
 
   /**
-   * ルームの画面共有を開始する
-   *
-   * @param {string} focusScreenStreamId
-   * @param {string} socketId
+   * ユーザのstreamIdをセット
+   * @param streams
+   * @param socketId
+   * @param userId
    */
-  async startScreenShare(
-    focusScreenStreamId: string,
-    socketId: string
+  async setMemberStream(
+    streams: MemberStreamIds,
+    socketId: string,
+    userId: UserId
   ): Promise<void> {
-    // ルーム情報を取得
     const roomId = await this.getRoomIdBySocketId(socketId);
     const roomSession = await this.getRoomSessionBySocketId(socketId);
     if (!roomId || !roomSession) {
       return;
     }
 
-    // 画面共有状態を更新
-    roomSession.streamState.focusScreenStreamId = focusScreenStreamId;
-    await this.roomSessionRepository.update(roomId, roomSession);
+    const roomSessionMembers = roomSession.members.map((member) =>
+      produce(member, (draft) => {
+        if (member.user.id !== userId) return;
+        if (draft.type !== "Speaker" || !draft.connection.isOnline) return;
+        draft.connection.streamIds = streams;
+      })
+    );
+
+    await this.roomSessionRepository.update(roomId, {
+      ...roomSession,
+      members: roomSessionMembers,
+    });
+  }
+
+  /**
+   * 現在の発表者のstreamIdをRoomのStreamStateにセットする
+   * @param socketId
+   */
+  async mutateRoomStream(socketId: string): Promise<void> {
+    const roomId = await this.getRoomIdBySocketId(socketId);
+    const roomSession = await this.getRoomSessionBySocketId(socketId);
+    if (!roomId || !roomSession) {
+      return;
+    }
+
+    const updatedRoomSession = produce(roomSession, (draft) => {
+      const currentSection = draft.timetable.sections[draft.timetable.cursor];
+      if (!currentSection || currentSection.type !== "speaking") {
+        draft.streamState = {
+          focusVideoStreamId: null,
+          focusScreenStreamId: null,
+        };
+        return;
+      }
+
+      const currentSectionMember = draft.members.find(
+        (member) => member.user.id === currentSection.userId
+      );
+      if (!currentSectionMember || !currentSectionMember.connection.isOnline) {
+        draft.streamState = {
+          focusVideoStreamId: null,
+          focusScreenStreamId: null,
+        };
+        return;
+      }
+
+      draft.streamState = {
+        focusVideoStreamId:
+          currentSectionMember.connection.streamIds.videoStreamId,
+        focusScreenStreamId:
+          currentSectionMember.connection.streamIds.screenStreamId,
+      };
+    });
+
+    await this.roomSessionRepository.update(roomId, updatedRoomSession);
   }
 
   /**
@@ -234,9 +288,6 @@ export class RoomSessionService {
     }
 
     // ルームセッションを取得
-    const roomSession = await this.roomSessionRepository.getByRoomId(
-      userSession.roomId
-    );
-    return roomSession;
+    return await this.roomSessionRepository.getByRoomId(userSession.roomId);
   }
 }

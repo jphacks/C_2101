@@ -30,12 +30,12 @@ export class RoomMemberFactory {
         isOnline: true,
         socketId: socketId,
         streamIds: {
-          videotelephony: null,
-          screenShare: null,
+          videoStreamId: null,
+          screenStreamId: null,
         },
         skywayPeerIds: {
-          videotelephony: credential.peerId,
-          screenShare: null,
+          videoPeerId: credential.peerId,
+          screenPeerId: null,
         },
       },
     };
