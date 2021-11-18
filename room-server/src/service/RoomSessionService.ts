@@ -15,7 +15,6 @@ import { IRoomSessionRepository } from "../repository/IRoomSessionRepository";
 import { IUserSessionRepository } from "../repository/IUserSessionRepository";
 import { UserId } from "@api-schema/types/user";
 import { MemberStreamIds } from "@api-schema/types/member";
-import { ReadonlyDeep } from "type-fest";
 
 export class RoomSessionService {
   private roomSessionRepository: IRoomSessionRepository;
@@ -70,21 +69,16 @@ export class RoomSessionService {
       credential
     );
 
+    const newRoom = produce(roomSession, (draft) => {
+      draft.members = draft.members.filter(
+        (item) =>
+          !(item.connection.isOnline && item.connection.socketId === socketId)
+      );
+      draft.members.push(roomMember);
+    });
+
     // ルームセッションを作成
-    await this.roomSessionRepository.insert(
-      room.id,
-      produce(roomSession, (draft) => {
-        draft.members
-          .filter(
-            (item) =>
-              !(
-                item.connection.isOnline &&
-                item.connection.socketId === socketId
-              )
-          )
-          .push(roomMember);
-      })
-    );
+    await this.roomSessionRepository.insert(room.id, newRoom);
 
     // ユーザセッションを作成
     await this.userSessionRepository.insert(socketId, {

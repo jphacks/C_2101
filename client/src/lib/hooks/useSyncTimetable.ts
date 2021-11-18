@@ -93,7 +93,7 @@ const timetableCardsPropsState = selector<TimetableCardProps[]>({
         if (item.type !== "speaking") {
           return acc;
         }
-        console.log(item);
+        // console.log(item);
 
         //TODO tag
         const last: TimetableCardProps | undefined = acc[acc.length - 1];

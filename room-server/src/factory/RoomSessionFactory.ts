@@ -2,6 +2,7 @@ import { RoomResponse } from "api-schema/src/api/@types";
 import { TimetableSection } from "api-schema/src/types/timetableState";
 
 import { RoomSessionModel } from "../model/RoomSessionModel";
+import { RoomMember } from "@api-schema/types/member";
 
 export class RoomSessionFactory {
   /**
@@ -12,7 +13,7 @@ export class RoomSessionFactory {
    * @return {RoomSessionModel} 初期化したルームセッション
    */
   create(room: RoomResponse): RoomSessionModel {
-    const sections = room.speakers.reduce((acc, item, i, self) => {
+    const innerSections = room.speakers.reduce((acc, item, i, self) => {
       const additionalSection: TimetableSection[] = [];
 
       additionalSection.push({
@@ -42,6 +43,24 @@ export class RoomSessionFactory {
       return [...acc, ...additionalSection];
     }, [] as TimetableSection[]);
 
+    const speakerMembers = room.speakers.map<RoomMember>((speaker) => ({
+      type: "Speaker",
+      user: speaker,
+      authority: room.owner.id === speaker.id ? "Owner" : "General",
+      connection: {
+        isOnline: false,
+      },
+    }));
+
+    const viewerMembers = room.viewers.map<RoomMember>((viewer) => ({
+      type: "Viewer",
+      user: viewer,
+      authority: room.owner.id === viewer.id ? "Owner" : "General",
+      connection: {
+        isOnline: false,
+      },
+    }));
+
     return {
       comments: [],
       timer: {
@@ -50,9 +69,17 @@ export class RoomSessionFactory {
       },
       timetable: {
         cursor: 0,
-        sections: sections,
+        sections: [
+          {
+            type: "startPreparation",
+          },
+          ...innerSections,
+          {
+            type: "closed",
+          },
+        ],
       },
-      members: [],
+      members: [...speakerMembers, ...viewerMembers],
       streamState: {
         focusScreenStreamId: null,
         focusVideoStreamId: null,

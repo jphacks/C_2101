@@ -64,6 +64,8 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
         (res) => {
           if (res.status === "success") {
             console.log("joined room");
+          } else {
+            console.warn(`join room rejected: ${res.reason}`);
           }
         }
       );
@@ -76,6 +78,8 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
         (res) => {
           if (res.status === "success") {
             console.log("joined room");
+          } else {
+            console.warn(`join room rejected: ${res.reason}`);
           }
         }
       );
