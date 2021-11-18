@@ -26,8 +26,8 @@ export const useCreateRoom = () => {
         description: param.description,
         startAt: parseAsMoment(param.startDate).add(9, "h").toISOString(),
         finishAt: parseAsMoment(param.startDate).add(9, "h").toISOString(),
-        presentationTimeLimit: param.presentationTimeMinute,
-        questionTimeLimit: param.questionTimeMinute,
+        presentationTimeLimit: param.presentationTimeMinute * 60,
+        questionTimeLimit: param.questionTimeMinute * 60,
         image: param.imageBase64,
       };
 
