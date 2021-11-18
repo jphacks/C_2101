@@ -24,8 +24,13 @@ export const LTContainer: React.VFC<LTPageProps> = () => {
     );
 
   return (
-    <Layout contentTitle={room.title}>
-      <Stack direction={"row"} p={4} bg={"gray.50"}>
+    <Layout contentTitle={room.title} footer={false}>
+      <Stack
+        direction={"row"}
+        p={4}
+        bg={"gray.50"}
+        css={{ height: "calc(100vh - 68px)" }}
+      >
         <VStack flex={3}>
           <Box
             rounded={8}
