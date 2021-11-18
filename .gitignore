@@ -101,3 +101,5 @@ mysql/log
 
 
 /node_modules/
+
+.node-version
