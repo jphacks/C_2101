@@ -97,7 +97,7 @@ const timetableCardsPropsState = selector<TimetableCardProps[]>({
 
         //TODO tag
         const last: TimetableCardProps | undefined = acc[acc.length - 1];
-        if (last && last.title !== item.sessionTitle) {
+        if (!last || last.title !== item.sessionTitle) {
           acc.push({
             title: item.sessionTitle,
             user: memberMap[item.userId].user,
