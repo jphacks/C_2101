@@ -19,6 +19,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.modelmapper.ModelMapper;
+import mockit.Expectations;
+import mockit.Mocked;
 
 import dev.abelab.jphacks.api.request.LoginUserUpdateRequest;
 import dev.abelab.jphacks.api.request.LoginUserPasswordUpdateRequest;
@@ -27,6 +29,7 @@ import dev.abelab.jphacks.api.response.UsersResponse;
 import dev.abelab.jphacks.db.entity.User;
 import dev.abelab.jphacks.db.entity.UserExample;
 import dev.abelab.jphacks.db.mapper.UserMapper;
+import dev.abelab.jphacks.util.CloudStorageUtil;
 import dev.abelab.jphacks.helper.sample.UserSample;
 import dev.abelab.jphacks.helper.util.RandomUtil;
 import dev.abelab.jphacks.exception.ErrorCode;
@@ -57,6 +60,9 @@ public class UserRestController_IT extends AbstractRestController_IT {
 
 	@Autowired
 	UserMapper userMapper;
+
+	@Mocked
+	CloudStorageUtil cloudStorageUtil;
 
 	/**
 	 * ログインユーザ詳細取得APIのテスト

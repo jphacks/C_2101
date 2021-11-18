@@ -2,10 +2,15 @@ import {
   TimetableSection,
   TimetableState,
 } from "@api-schema/types/timetableState";
-import { atom, selector, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  atom,
+  selector,
+  useRecoilCallback,
+  useRecoilValue,
+  useSetRecoilState,
+} from "recoil";
 import { useCallback, useEffect } from "react";
 import { socket } from "./socket";
-import { InitialStateParams } from "@api-schema/types/events";
 import { TimetableCardProps } from "../../components/page/space/timetableBlock/TimetableCard";
 import { memberMapState } from "./useSyncMembers";
 
@@ -15,10 +20,14 @@ import { memberMapState } from "./useSyncMembers";
  */
 export const timetableState = atom<TimetableState>({
   key: "useStateTimetable-timetableState",
-  default: {
-    cursor: 0,
-    sections: [],
-  },
+  default: new Promise((resolve) => {
+    socket.once("joinedRoom", () => {
+      socket.emit("getTimetableState", (res) => {
+        console.log("set default timetable state", res);
+        resolve(res);
+      });
+    });
+  }),
 });
 
 export const useSetTimetableHandler = () => {
@@ -63,14 +72,12 @@ export const useTimetableValue = () => {
   return useRecoilValue(timetableState);
 };
 
-export const useSetInitialTimetableState = () => {
-  const setState = useSetRecoilState(timetableState);
-  return useCallback(
-    (initialStateParams: InitialStateParams) => {
-      setState(initialStateParams.timetable);
-    },
-    [setState]
-  );
+export const useRefreshTimetable = () => {
+  return useRecoilCallback(({ set }) => () => {
+    socket.emit("getTimetableState", (res) => {
+      set(timetableState, res);
+    });
+  });
 };
 
 const timetableCardsPropsState = selector<TimetableCardProps[]>({
@@ -86,11 +93,11 @@ const timetableCardsPropsState = selector<TimetableCardProps[]>({
         if (item.type !== "speaking") {
           return acc;
         }
+        // console.log(item);
 
         //TODO tag
-
-        const last = acc[acc.length - 1];
-        if (last.title !== item.sessionTitle) {
+        const last: TimetableCardProps | undefined = acc[acc.length - 1];
+        if (!last || last.title !== item.sessionTitle) {
           acc.push({
             title: item.sessionTitle,
             user: memberMap[item.userId].user,

@@ -1,8 +1,13 @@
-import { atom, selector, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  atom,
+  selector,
+  useRecoilCallback,
+  useRecoilValue,
+  useSetRecoilState,
+} from "recoil";
 import { CommentItem } from "@api-schema/types/comment";
 import { socket } from "./socket";
 import { useCallback, useEffect } from "react";
-import { InitialStateParams } from "@api-schema/types/events";
 import { memberMapState } from "./useSyncMembers";
 import { CommentProps } from "../../components/page/space/commentBlock/CommentItem";
 
@@ -12,7 +17,14 @@ import { CommentProps } from "../../components/page/space/commentBlock/CommentIt
  */
 export const commentsState = atom<CommentItem[]>({
   key: "useSyncComment-commentsState",
-  default: [],
+  default: new Promise((resolve) => {
+    socket.once("joinedRoom", () => {
+      socket.emit("getCommentsState", (res) => {
+        console.log("set default comments state", res);
+        resolve(res);
+      });
+    });
+  }),
 });
 
 export const useSetCommentsHandler = () => {
@@ -46,14 +58,12 @@ export const useCommentsValue = () => {
   return useRecoilValue(commentsState);
 };
 
-export const useSetInitialCommentsState = () => {
-  const setState = useSetRecoilState(commentsState);
-  return useCallback(
-    (initialStateParams: InitialStateParams) => {
-      setState(initialStateParams.comments);
-    },
-    [setState]
-  );
+export const useRefreshComments = () => {
+  return useRecoilCallback(({ set }) => () => {
+    socket.emit("getCommentsState", (res) => {
+      set(commentsState, res);
+    });
+  });
 };
 
 const commentsPropsState = selector<CommentProps[]>({

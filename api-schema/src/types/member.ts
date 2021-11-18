@@ -18,12 +18,14 @@ export type RoomMember = {
         isOnline: true;
         socketId: string;
         skywayPeerIds: {
-          videotelephony: string;
-          screenShare: string | null;
+          videoPeerId: string;
+          screenPeerId: string | null;
         };
-        streamIds: {
-          videotelephony: string | null;
-          screenShare: string | null;
-        };
+        streamIds: MemberStreamIds;
       };
+};
+
+export type MemberStreamIds = {
+  videoStreamId: string | null;
+  screenStreamId: string | null;
 };

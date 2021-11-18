@@ -37,6 +37,9 @@ jobs:
           npm install
           npm run build
           cd ../
+          cd room-server
+          npm install
+          cd ../
 
       - name: Run back-end build
         run: |
