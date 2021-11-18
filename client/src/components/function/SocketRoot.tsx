@@ -1,8 +1,20 @@
 import React, { useEffect } from "react";
-import { useSetCommentsHandler } from "../../lib/hooks/useSyncComment";
-import { useSetTimerHandler } from "../../lib/hooks/useSyncTimer";
-import { useSetTimetableHandler } from "../../lib/hooks/useSyncTimetable";
-import { useSetRoomStateHandler } from "../../lib/hooks/useSyncMembers";
+import {
+  useRefreshComments,
+  useSetCommentsHandler,
+} from "../../lib/hooks/useSyncComment";
+import {
+  useRefreshTimer,
+  useSetTimerHandler,
+} from "../../lib/hooks/useSyncTimer";
+import {
+  useRefreshTimetable,
+  useSetTimetableHandler,
+} from "../../lib/hooks/useSyncTimetable";
+import {
+  useRefreshMembers,
+  useSetRoomStateHandler,
+} from "../../lib/hooks/useSyncMembers";
 import { socket } from "../../lib/hooks/socket";
 import { UserInfo } from "@api-schema/types/user";
 
@@ -32,6 +44,8 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
   useSetTimetableHandler();
   useSetRoomStateHandler();
 
+  const allRefresher = useStatesRefresher();
+
   useEffect(() => {
     if (userParam.type === "user") {
       socket.emit(
@@ -44,6 +58,7 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
         (res) => {
           if (res.status === "success") {
             console.log("joined room");
+            allRefresher();
           }
         }
       );
@@ -56,6 +71,7 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
         (res) => {
           if (res.status === "success") {
             console.log("joined room");
+            allRefresher();
           }
         }
       );
@@ -64,7 +80,21 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
     return () => {
       socket.emit("leaveRoom");
     };
-  }, [roomId, userParam]);
+  }, [allRefresher, roomId, userParam]);
 
   return <>{children}</>;
+};
+
+const useStatesRefresher = () => {
+  const refreshComments = useRefreshComments();
+  const refreshTimer = useRefreshTimer();
+  const refreshTimetable = useRefreshTimetable();
+  const refreshMembers = useRefreshMembers();
+
+  return () => {
+    refreshComments();
+    refreshTimer();
+    refreshTimetable();
+    refreshMembers();
+  }
 };
