@@ -72,6 +72,7 @@ export class RoomSessionService {
     const newRoom = produce(roomSession, (draft) => {
       draft.members = draft.members.filter(
         (item) =>
+          !(item.user.id === user.id) &&
           !(item.connection.isOnline && item.connection.socketId === socketId)
       );
       draft.members.push(roomMember);
