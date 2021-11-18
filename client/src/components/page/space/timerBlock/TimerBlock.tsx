@@ -6,7 +6,7 @@ type TimerBlockProps = {
   remainSec: number;
   fullSec: number;
   sectionTitle: string;
-  adminController?: React.ReactChildren;
+  adminController?: React.ReactElement;
 };
 
 export const TimerBlock: React.VFC<TimerBlockProps> = ({
@@ -19,7 +19,7 @@ export const TimerBlock: React.VFC<TimerBlockProps> = ({
     fullSec < 60 * 60 ? secToMMSS(remainSec) : secToHHMMSS(remainSec);
 
   return (
-    <Box bg={"gray.200"} w={"full"} minH={48} rounded={8}>
+    <Box bg={"gray.200"} w={"full"} minH={48} rounded={8} py={2}>
       <VStack>
         <Text
           fontSize={"6xl"}

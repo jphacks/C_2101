@@ -282,6 +282,7 @@ io.on("connection", (socket) => {
 
   socket.on("setTimer", async (timer) => {
     console.log("[setTimer] is called");
+    console.log(timer);
 
     // ユーザ情報を取得
     const userSession = await userSessionService.getUserSession(socket.id);

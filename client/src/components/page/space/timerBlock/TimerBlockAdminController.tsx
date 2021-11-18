@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button } from "@chakra-ui/react";
+import { Button, HStack } from "@chakra-ui/react";
 
 export type TimerBlockAdminControllerProps = {
   isTimerEnable: boolean;
@@ -19,23 +19,23 @@ export const TimerBlockAdminController: React.VFC<TimerBlockAdminControllerProps
     isTimerEnable,
   }) => {
     return (
-      <Box>
-        <Button colorScheme={"teal"} onClick={onClickNextSection}>
-          Next Section
-        </Button>
-        <Button colorScheme={"teal"} onClick={onClickPrevSection}>
+      <HStack>
+        <Button colorScheme={"blue"} onClick={onClickPrevSection}>
           Prev Section
         </Button>
+        <Button colorScheme={"blue"} onClick={onClickNextSection}>
+          Next Section
+        </Button>
         {isTimerEnable && (
-          <Button colorScheme={"teal"} onClick={onClickPauseTimer}>
+          <Button colorScheme={"blue"} onClick={onClickPauseTimer}>
             Pause
           </Button>
         )}
         {!isTimerEnable && (
-          <Button colorScheme={"teal"} onClick={onClickResumeTimer}>
+          <Button colorScheme={"blue"} onClick={onClickResumeTimer}>
             Resume
           </Button>
         )}
-      </Box>
+      </HStack>
     );
   };

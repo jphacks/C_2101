@@ -6,6 +6,7 @@ import {
   atom,
   selector,
   useRecoilCallback,
+  useRecoilState,
   useRecoilValue,
   useSetRecoilState,
 } from "recoil";
@@ -46,21 +47,31 @@ export const useSetTimetableHandler = () => {
 };
 
 export const useTimetableAction = () => {
-  const setState = useSetRecoilState(timetableState);
+  const [state, setState] = useRecoilState(timetableState);
 
   const moveNextSection = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      cursor: Math.max(0, Math.min(prev.cursor + 1, prev.sections.length - 1)),
-    }));
-  }, [setState]);
+    const nextState = {
+      ...state,
+      cursor: Math.max(
+        0,
+        Math.min(state.cursor + 1, state.sections.length - 1)
+      ),
+    };
+    setState(nextState);
+    socket.emit("setTimetable", nextState);
+  }, [setState, state]);
 
   const movePrevSection = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      cursor: Math.max(0, Math.min(prev.cursor - 1, prev.sections.length - 1)),
-    }));
-  }, [setState]);
+    const nextState = {
+      ...state,
+      cursor: Math.max(
+        0,
+        Math.min(state.cursor - 1, state.sections.length - 1)
+      ),
+    };
+    setState(nextState);
+    socket.emit("setTimetable", nextState);
+  }, [setState, state]);
 
   return {
     moveNextSection,
