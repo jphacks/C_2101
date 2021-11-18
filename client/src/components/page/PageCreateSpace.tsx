@@ -14,7 +14,6 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { parseAsMoment } from "../../utils/datetime";
 import Layout from "../Layout";
 import DatePicker, { registerLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
@@ -252,7 +251,7 @@ const CommonDatePicker: React.VFC<{
     locale="ja"
     //   inline
     customInput={
-      <Button>{parseAsMoment(selectedDate).format("YYYY/MM/DD HH:mm")}</Button>
+      <Button>{moment(selectedDate).format("YYYY/MM/DD HH:mm")}</Button>
     }
   />
 );
