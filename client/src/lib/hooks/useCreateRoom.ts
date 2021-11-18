@@ -1,8 +1,8 @@
 import { useAuthHeader } from "./useAuth";
 import { useCallback } from "react";
 import client from "../../utils/api-client.factory";
-import { parseAsMoment } from "../../utils/datetime";
 import { RoomCreateRequest } from "@api-schema/api/@types";
+import moment from "moment-timezone";
 
 export const useCreateRoom = () => {
   const auth = useAuthHeader();
@@ -24,10 +24,10 @@ export const useCreateRoom = () => {
       const apiParam: RoomCreateRequest = {
         title: param.title,
         description: param.description,
-        startAt: parseAsMoment(param.startDate).add(9, "h").toISOString(),
-        finishAt: parseAsMoment(param.startDate).add(9, "h").toISOString(),
-        presentationTimeLimit: param.presentationTimeMinute,
-        questionTimeLimit: param.questionTimeMinute,
+        startAt: moment(param.startDate).tz("Asia/Tokyo").format(),
+        finishAt: moment(param.endDate).tz("Asia/Tokyo").format(),
+        presentationTimeLimit: param.presentationTimeMinute * 60,
+        questionTimeLimit: param.questionTimeMinute * 60,
         image: param.imageBase64,
       };
 

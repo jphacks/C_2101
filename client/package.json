@@ -23,6 +23,7 @@
     "immer": "^9.0.6",
     "mdi-react": "^8.1.0",
     "moment": "^2.29.1",
+    "moment-timezone": "^0.5.34",
     "next": "11.1.2",
     "react": "17.0.2",
     "react-datepicker": "^4.3.0",
@@ -39,6 +40,7 @@
   "devDependencies": {
     "@types/react": "17.0.31",
     "@types/react-datepicker": "^4.1.7",
+    "@types/twemoji": "^12.1.2",
     "@typescript-eslint/eslint-plugin": "^4.30.0",
     "@typescript-eslint/parser": "^4.30.0",
     "eslint": "^7.32.0",
@@ -47,8 +49,7 @@
     "eslint-import-resolver-typescript": "^2.5.0",
     "prettier": "^2.4.1",
     "tsconfig-paths": "^3.11.0",
-    "typescript": "4.4.4",
-    "@types/twemoji": "^12.1.2"
+    "typescript": "4.4.4"
   },
   "eslintIgnore": [
     "/.eslintrc.js",
