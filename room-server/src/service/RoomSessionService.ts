@@ -93,9 +93,34 @@ export class RoomSessionService {
   /**
    * ルームから退出する
    *
+   * @param userId
    * @param {string} socketId
    */
-  async leaveRoom(socketId: string): Promise<void> {
+  async leaveRoom(userId: UserId, socketId: string): Promise<void> {
+    const roomId = await this.getRoomIdBySocketId(socketId);
+    if (!roomId) return;
+    const roomSession = await this.roomSessionRepository.getByRoomId(roomId);
+    if (!roomSession) return;
+
+    const newRoom = produce(roomSession, (draft) => {
+      draft.members = draft.members.map((member) => {
+        if (member.user.id !== userId) {
+          return member;
+        } else {
+          return {
+            ...member,
+            connection: {
+              isOnline: false,
+            },
+          };
+        }
+      });
+    });
+
+    console.log(newRoom.members);
+
+    await this.roomSessionRepository.update(roomId, newRoom);
+
     await this.userSessionRepository.delete(socketId);
   }
 
@@ -233,6 +258,17 @@ export class RoomSessionService {
     socketId: string
   ): Promise<Readonly<RoomSessionModel> | null> {
     return this.getRoomSessionBySocketId(socketId);
+  }
+
+  /**
+   * 該当roomIdのルームセッションを取得する
+   *
+   * @param roomId
+   */
+  async getRoomSession(
+    roomId: number
+  ): Promise<Readonly<RoomSessionModel> | null> {
+    return await this.roomSessionRepository.getByRoomId(roomId);
   }
 
   /**

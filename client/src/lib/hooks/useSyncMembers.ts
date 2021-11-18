@@ -33,6 +33,7 @@ export const useSetRoomStateHandler = () => {
 
   useEffect(() => {
     const listener = (members: RoomMember[]) => {
+      console.log("handle updateMembersState", members);
       setState(members);
     };
 
