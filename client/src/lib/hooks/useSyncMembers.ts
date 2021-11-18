@@ -1,7 +1,7 @@
 import {
   atom,
   selector,
-  useRecoilRefresher_UNSTABLE,
+  useRecoilCallback,
   useRecoilValue,
   useSetRecoilState,
 } from "recoil";
@@ -19,8 +19,11 @@ import { UserId } from "@api-schema/types/user";
 export const membersState = atom<RoomMember[]>({
   key: "useSyncMember-membersState",
   default: new Promise((resolve) => {
-    socket.emit("getMemberState", (res) => {
-      resolve(res);
+    socket.once("joinedRoom", () => {
+      socket.emit("getMemberState", (res) => {
+        console.log("set default member state", res);
+        resolve(res);
+      });
     });
   }),
 });
@@ -30,6 +33,7 @@ export const useSetRoomStateHandler = () => {
 
   useEffect(() => {
     const listener = (members: RoomMember[]) => {
+      console.log("handle updateMembersState", members);
       setState(members);
     };
 
@@ -45,7 +49,11 @@ export const useMembersValue = () => {
 };
 
 export const useRefreshMembers = () => {
-  return useRecoilRefresher_UNSTABLE(membersState);
+  return useRecoilCallback(({ set }) => () => {
+    socket.emit("getMemberState", (res) => {
+      set(membersState, res);
+    });
+  });
 };
 
 export const memberMapState = selector({

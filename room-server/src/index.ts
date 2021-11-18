@@ -28,11 +28,17 @@ const roomSessionService = new RoomSessionService(
   new RoomSessionFactory()
 );
 
+console.log("start room server");
+
 const io = new Server<ClientToServerEventsMap, ServerToClientsEventsMap>({
-  /* options */
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
 });
 
 io.on("connection", (socket) => {
+  console.log(`connection: ${socket.id}`);
   socket.on("joinRoomAsUser", async ({ roomId, userId, auth }, res) => {
     console.log("[joinRoomAsUser] is called");
 
@@ -82,6 +88,8 @@ io.on("connection", (socket) => {
       credential: videoCredential,
     });
 
+    socket.emit("joinedRoom", roomId);
+
     // ユーザ情報を取得
     const userSession = await userSessionService.getUserSession(socket.id);
     if (!userSession || userSession.isGuest) {
@@ -118,8 +126,23 @@ io.on("connection", (socket) => {
     }
 
     // ルームから退出
-    await roomSessionService.leaveRoom(socket.id);
+    await roomSessionService.leaveRoom(userSession.userId, socket.id);
     await socket.leave(String(userSession.roomId));
+
+    // ルーム情報を取得
+    // 退室ずみなので、getActiveRoomSessionでは取れない
+    const roomSession = await roomSessionService.getRoomSession(
+      userSession.roomId
+    );
+    if (!roomSession) {
+      return;
+    }
+
+    // メンバー情報の更新を配信
+    io.to(String(userSession.roomId)).emit(
+      "updateMembersState",
+      roomSession.members
+    );
   });
 
   socket.on("getScreenCredential", async (auth, res) => {
@@ -279,6 +302,7 @@ io.on("connection", (socket) => {
       socket.id
     );
     if (!roomSession) {
+      console.log("[getCommentsState] user not in room");
       return;
     }
 

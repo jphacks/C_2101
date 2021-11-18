@@ -5,7 +5,7 @@ import {
 import {
   atom,
   selector,
-  useRecoilRefresher_UNSTABLE,
+  useRecoilCallback,
   useRecoilValue,
   useSetRecoilState,
 } from "recoil";
@@ -21,8 +21,11 @@ import { memberMapState } from "./useSyncMembers";
 export const timetableState = atom<TimetableState>({
   key: "useStateTimetable-timetableState",
   default: new Promise((resolve) => {
-    socket.emit("getTimetableState", (res) => {
-      resolve(res);
+    socket.once("joinedRoom", () => {
+      socket.emit("getTimetableState", (res) => {
+        console.log("set default timetable state", res);
+        resolve(res);
+      });
     });
   }),
 });
@@ -70,7 +73,11 @@ export const useTimetableValue = () => {
 };
 
 export const useRefreshTimetable = () => {
-  return useRecoilRefresher_UNSTABLE(timetableState);
+  return useRecoilCallback(({ set }) => () => {
+    socket.emit("getTimetableState", (res) => {
+      set(timetableState, res);
+    });
+  });
 };
 
 const timetableCardsPropsState = selector<TimetableCardProps[]>({
@@ -86,11 +93,11 @@ const timetableCardsPropsState = selector<TimetableCardProps[]>({
         if (item.type !== "speaking") {
           return acc;
         }
+        // console.log(item);
 
         //TODO tag
-
-        const last = acc[acc.length - 1];
-        if (last.title !== item.sessionTitle) {
+        const last: TimetableCardProps | undefined = acc[acc.length - 1];
+        if (!last || last.title !== item.sessionTitle) {
           acc.push({
             title: item.sessionTitle,
             user: memberMap[item.userId].user,

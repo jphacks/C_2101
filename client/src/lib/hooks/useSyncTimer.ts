@@ -1,6 +1,6 @@
 import {
   atom,
-  useRecoilRefresher_UNSTABLE,
+  useRecoilCallback,
   useRecoilValue,
   useSetRecoilState,
 } from "recoil";
@@ -16,8 +16,11 @@ import { calcTimerSec, timerStateReducer } from "@api-schema/lib/timer";
 export const timerState = atom<TimerState>({
   key: "useSyncTimer-timerState",
   default: new Promise((resolve) => {
-    socket.emit("getTimerState", (res) => {
-      resolve(res);
+    socket.once("joinedRoom", () => {
+      socket.emit("getTimerState", (res) => {
+        console.log("set default timer state", res);
+        resolve(res);
+      });
     });
   }),
 });
@@ -100,5 +103,9 @@ export const useTimerRemainSec = (fullSec: number) => {
 };
 
 export const useRefreshTimer = () => {
-  return useRecoilRefresher_UNSTABLE(timerState);
+  return useRecoilCallback(({ set }) => () => {
+    socket.emit("getTimerState", (res) => {
+      set(timerState, res);
+    });
+  });
 };

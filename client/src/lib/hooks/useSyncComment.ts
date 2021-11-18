@@ -1,7 +1,7 @@
 import {
   atom,
   selector,
-  useRecoilRefresher_UNSTABLE,
+  useRecoilCallback,
   useRecoilValue,
   useSetRecoilState,
 } from "recoil";
@@ -18,8 +18,11 @@ import { CommentProps } from "../../components/page/space/commentBlock/CommentIt
 export const commentsState = atom<CommentItem[]>({
   key: "useSyncComment-commentsState",
   default: new Promise((resolve) => {
-    socket.emit("getCommentsState", (res) => {
-      resolve(res);
+    socket.once("joinedRoom", () => {
+      socket.emit("getCommentsState", (res) => {
+        console.log("set default comments state", res);
+        resolve(res);
+      });
     });
   }),
 });
@@ -56,7 +59,11 @@ export const useCommentsValue = () => {
 };
 
 export const useRefreshComments = () => {
-  return useRecoilRefresher_UNSTABLE(commentsState);
+  return useRecoilCallback(({ set }) => () => {
+    socket.emit("getCommentsState", (res) => {
+      set(commentsState, res);
+    });
+  });
 };
 
 const commentsPropsState = selector<CommentProps[]>({
