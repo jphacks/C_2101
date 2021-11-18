@@ -1,9 +1,13 @@
-import { atom, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  atom,
+  useRecoilRefresher_UNSTABLE,
+  useRecoilValue,
+  useSetRecoilState,
+} from "recoil";
 import { TimerState } from "@api-schema/types/timerState";
 import { useCallback, useEffect, useState } from "react";
 import { socket } from "./socket";
 import { calcTimerSec, timerStateReducer } from "@api-schema/lib/timer";
-import { InitialStateParams } from "@api-schema/types/events";
 
 /**
  * 直接コンポーネントから参照しない
@@ -11,10 +15,11 @@ import { InitialStateParams } from "@api-schema/types/events";
  */
 export const timerState = atom<TimerState>({
   key: "useSyncTimer-timerState",
-  default: {
-    timerEnabled: false,
-    accTime: 0,
-  },
+  default: new Promise((resolve) => {
+    socket.emit("getTimerState", (res) => {
+      resolve(res);
+    });
+  }),
 });
 
 export const useSetTimerHandler = () => {
@@ -94,12 +99,6 @@ export const useTimerRemainSec = (fullSec: number) => {
   return fullSec - elapsedSec;
 };
 
-export const useSetInitialTimerState = () => {
-  const setState = useSetRecoilState(timerState);
-  return useCallback(
-    (initialStateParams: InitialStateParams) => {
-      setState(initialStateParams.timer);
-    },
-    [setState]
-  );
+export const useRefreshTimer = () => {
+  return useRecoilRefresher_UNSTABLE(timerState);
 };

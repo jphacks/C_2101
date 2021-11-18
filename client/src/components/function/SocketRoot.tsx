@@ -1,23 +1,22 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
+  useRefreshComments,
   useSetCommentsHandler,
-  useSetInitialCommentsState,
 } from "../../lib/hooks/useSyncComment";
 import {
-  useSetInitialTimerState,
+  useRefreshTimer,
   useSetTimerHandler,
 } from "../../lib/hooks/useSyncTimer";
 import {
-  useSetInitialTimetableState,
+  useRefreshTimetable,
   useSetTimetableHandler,
 } from "../../lib/hooks/useSyncTimetable";
 import {
-  useSetInitialRoomState,
+  useRefreshMembers,
   useSetRoomStateHandler,
 } from "../../lib/hooks/useSyncMembers";
 import { socket } from "../../lib/hooks/socket";
 import { UserInfo } from "@api-schema/types/user";
-import { InitialStateParams } from "@api-schema/types/events";
 
 type SocketRootProps = {
   children: React.ReactNode;
@@ -45,7 +44,7 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
   useSetTimetableHandler();
   useSetRoomStateHandler();
 
-  const setInitialStates = useInitialStates();
+  const allRefresher = useStatesRefresher();
 
   useEffect(() => {
     if (userParam.type === "user") {
@@ -58,10 +57,8 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
         },
         (res) => {
           if (res.status === "success") {
-            //TODO credentialをどこかに記録する
-            socket.emit("getInitialStates", (res) => {
-              setInitialStates(res);
-            });
+            console.log("joined room");
+            allRefresher();
           }
         }
       );
@@ -73,10 +70,8 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
         },
         (res) => {
           if (res.status === "success") {
-            //TODO credentialをどこかに記録する
-            socket.emit("getInitialStates", (res) => {
-              setInitialStates(res);
-            });
+            console.log("joined room");
+            allRefresher();
           }
         }
       );
@@ -85,29 +80,21 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
     return () => {
       socket.emit("leaveRoom");
     };
-  }, [roomId, setInitialStates, userParam]);
+  }, [allRefresher, roomId, userParam]);
 
   return <>{children}</>;
 };
 
-const useInitialStates = () => {
-  const setInitialComments = useSetInitialCommentsState();
-  const setInitialRoomState = useSetInitialRoomState();
-  const setInitialTimetable = useSetInitialTimetableState();
-  const setInitialTimer = useSetInitialTimerState();
+const useStatesRefresher = () => {
+  const refreshComments = useRefreshComments();
+  const refreshTimer = useRefreshTimer();
+  const refreshTimetable = useRefreshTimetable();
+  const refreshMembers = useRefreshMembers();
 
-  return useCallback(
-    (initialStates: InitialStateParams) => {
-      setInitialComments(initialStates);
-      setInitialRoomState(initialStates);
-      setInitialTimetable(initialStates);
-      setInitialTimer(initialStates);
-    },
-    [
-      setInitialComments,
-      setInitialRoomState,
-      setInitialTimer,
-      setInitialTimetable,
-    ]
-  );
+  return () => {
+    refreshComments();
+    refreshTimer();
+    refreshTimetable();
+    refreshMembers();
+  }
 };
