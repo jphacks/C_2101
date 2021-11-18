@@ -62,6 +62,9 @@ export const useTimerAction = () => {
     const nextState = timerStateReducer(timer, {
       type: "pause",
     });
+    console.log("pause");
+    console.log(timer);
+    console.log(nextState);
     socket.emit("setTimer", nextState);
   }, [hasPermission, timer]);
 
@@ -70,6 +73,9 @@ export const useTimerAction = () => {
     const nextState = timerStateReducer(timer, {
       type: "resume",
     });
+    console.log("resume");
+    console.log(timer);
+    console.log(nextState);
     socket.emit("setTimer", nextState);
   }, [hasPermission, timer]);
 

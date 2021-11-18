@@ -1,5 +1,5 @@
 import { TimerBlock } from "./TimerBlock";
-import React from "react";
+import React, { useCallback } from "react";
 import {
   useTimetableAction,
   useTimetableCurrentSection,
@@ -23,12 +23,17 @@ export const TimerBlockContainer: React.VFC = () => {
   const isOwner = useIsOwner();
 
   const { moveNextSection, movePrevSection } = useTimetableAction();
-  const { pause, resume } = useTimerAction();
+  const { pause, resume, reset } = useTimerAction();
 
-  const handleNextSession = () => {
-    // timetableAction.setNextSection();
-    // timerAction.reset(true);
-  };
+  const handleNextSession = useCallback(() => {
+    moveNextSection();
+    reset(true);
+  }, [moveNextSection, reset]);
+
+  const handlePrevSession = useCallback(() => {
+    movePrevSection();
+    reset(false);
+  }, [movePrevSection, reset]);
 
   return (
     <TimerBlock
@@ -39,8 +44,8 @@ export const TimerBlockContainer: React.VFC = () => {
         isOwner ? (
           <TimerBlockAdminController
             isTimerEnable={timerIsEnabled}
-            onClickNextSection={moveNextSection}
-            onClickPrevSection={movePrevSection}
+            onClickNextSection={handleNextSession}
+            onClickPrevSection={handlePrevSession}
             onClickPauseTimer={pause}
             onClickResumeTimer={resume}
           />
