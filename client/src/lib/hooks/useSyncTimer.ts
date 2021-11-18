@@ -102,6 +102,11 @@ export const useTimerRemainSec = (fullSec: number) => {
   return fullSec - elapsedSec;
 };
 
+export const useTimerIsEnabled = () => {
+  const value = useRecoilValue(timerState);
+  return value.timerEnabled;
+};
+
 export const useRefreshTimer = () => {
   return useRecoilCallback(({ set }) => () => {
     socket.emit("getTimerState", (res) => {
