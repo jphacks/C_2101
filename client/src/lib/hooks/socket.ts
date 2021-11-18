@@ -9,7 +9,7 @@ export type ClientSocket = Socket<
   ClientToServerEventsMap
 >;
 
-const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL ?? "";
+const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL ?? "localhost:3001";
 export const socket: ClientSocket = io(socketUrl, {});
 
 socket.on("connect", () => {

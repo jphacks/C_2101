@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Button,
   Input,
@@ -14,31 +14,39 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import client from "../../utils/api-client.factory";
 import { parseAsMoment } from "../../utils/datetime";
 import Layout from "../Layout";
 import DatePicker, { registerLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
+import { useCreateRoom } from "../../lib/hooks/useCreateRoom";
 registerLocale("ja", ja);
 
 export const PageCreateSpace = () => {
-  const now = new Date();
-  const defaultDate = new Date();
-  defaultDate.setHours(now.getHours() + 2);
-  const defaultEndDate = new Date();
-  defaultEndDate.setHours(defaultDate.getHours() + 2);
+  const [startDate, setStartDate] = useState<Date>(() =>
+    moment().hours(2).toDate()
+  );
+  const [endDate, setEndDate] = useState<Date>(() =>
+    moment().hours(4).toDate()
+  );
+  const [isEndDateEdited, setIsEndDateEdited] = useState<boolean>(false);
 
-  const [startDate, setStartDate] = useState(defaultDate);
-  const [endDate, setEndDate] = useState(defaultEndDate);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [presentationTimeLimit, setPresentationTimeLimit] =
+  const [presentationLimitMinute, setPresentationLimitMinute] =
     useState<number>(10);
-  const [questionTimeLimit, setQuestionTimeLimit] = useState<number>(3);
+  const [questionLimitMinute, setQuestionLimitMinute] = useState<number>(3);
+
+  const [fileUrl, setFileUrl] = useState<string>("");
+  const [fileBase64, setFileBase64] = useState<string>();
+
   const toast = useToast();
   const router = useRouter();
-  const create = async () => {
+
+  const createRoom = useCreateRoom();
+
+  const handleSubmitCreate = useCallback(async () => {
     if (!title || !description) {
       toast({
         title: "タイトル・説明は必須です",
@@ -48,20 +56,16 @@ export const PageCreateSpace = () => {
       });
       return;
     }
-    const createRoom = async () => {
-      await client.api.rooms.$post({
-        body: {
-          description: description,
-          startAt: parseAsMoment(startDate).add(9, "h").toISOString(),
-          finishAt: parseAsMoment(endDate).add(9, "h").toISOString(),
-          presentationTimeLimit: presentationTimeLimit,
-          questionTimeLimit: questionTimeLimit,
-          title: title,
-          image: fileBase64,
-        },
-      });
-    };
-    await createRoom()
+
+    createRoom({
+      title: title,
+      description: description,
+      startDate: startDate,
+      endDate: endDate,
+      presentationTimeMinute: presentationLimitMinute,
+      questionTimeMinute: questionLimitMinute,
+      imageBase64: fileBase64,
+    })
       .then(() => {
         toast({
           title: "スペース予定を作成しました",
@@ -71,43 +75,67 @@ export const PageCreateSpace = () => {
         });
         router.push("/explore");
       })
-      .catch((error: string) => {
+      .catch((error) => {
         toast({
-          title: error as string,
+          title: error.toString(),
           status: "error",
           duration: 10000,
           isClosable: true,
         });
       });
-  };
+  }, [
+    createRoom,
+    description,
+    endDate,
+    fileBase64,
+    presentationLimitMinute,
+    questionLimitMinute,
+    router,
+    startDate,
+    title,
+    toast,
+  ]);
 
-  const changeStartDate = (date: Date) => {
+  const handleSetStartDate = (date: Date) => {
     //開催日時が変更された場合、終了日時を2時間後に設定する
-    const end = new Date(date.getTime());
-    end.setHours(end.getHours() + 2);
     setStartDate(date);
-    setEndDate(end);
+
+    if (!isEndDateEdited) {
+      setEndDate(moment(date).hours(2).toDate());
+    }
   };
 
-  const [fileUrl, setFileUrl] = useState("");
-  const [fileBase64, setFileBase64] = useState("");
-  const processImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.item(0);
-    const allowFileTypes = ["image/jpeg", "image/png"];
-    if (!file || !allowFileTypes.includes(file.type)) {
-      setFileUrl("");
-      return;
-    }
-    const imageUrl = URL.createObjectURL(file);
-    setFileUrl(imageUrl);
-    let fr = new FileReader();
-    fr.onload = function (evt) {
-      if (evt.target == null || evt.target.result == null) return;
-      const content = evt.target.result as string;
-      setFileBase64(content.slice(content.indexOf(",") + 1));
-    };
-    fr.readAsDataURL(file);
-  };
+  const handleSetEndDate = useCallback(
+    (date: Date) => {
+      setEndDate(date);
+      setIsEndDateEdited(true);
+    },
+    [setEndDate, setIsEndDateEdited]
+  );
+
+  const handleFileSelected = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.item(0);
+      const allowFileTypes = ["image/jpeg", "image/png"];
+
+      if (!file || !allowFileTypes.includes(file.type)) {
+        setFileUrl("");
+        return;
+      }
+
+      const imgUrl = URL.createObjectURL(file);
+      setFileUrl(imgUrl);
+
+      const fileReader = new FileReader();
+      fileReader.onload = (event) => {
+        if (!event.target || !event.target.result) return;
+        const content = event.target.result as string;
+        setFileBase64(content.slice(content.indexOf(",") + 1));
+      };
+      fileReader.readAsDataURL(file);
+    },
+    [setFileUrl, setFileBase64]
+  );
 
   return (
     <Layout>
@@ -136,36 +164,16 @@ export const PageCreateSpace = () => {
         <Text marginTop={24} paddingTop={2} fontWeight="bold">
           開始時間の選択
         </Text>
-        <DatePicker
-          selected={startDate}
-          onChange={changeStartDate}
-          showTimeSelect
-          timeFormat="p"
-          timeIntervals={15}
-          dateFormat="Pp"
-          locale="ja"
-          //   inline
-          customInput={
-            <Button>
-              {parseAsMoment(startDate).format("YYYY/MM/DD HH:mm")}
-            </Button>
-          }
+        <CommonDatePicker
+          selectedDate={startDate}
+          onChangeDate={handleSetStartDate}
         />
         <Text marginTop={24} paddingTop={2} fontWeight="bold">
           終了時間の選択
         </Text>
-        <DatePicker
-          selected={endDate}
-          onChange={(date: Date) => setEndDate(date)}
-          showTimeSelect
-          timeFormat="p"
-          timeIntervals={15}
-          dateFormat="Pp"
-          locale="ja"
-          //   inline
-          customInput={
-            <Button>{parseAsMoment(endDate).format("YYYY/MM/DD HH:mm")}</Button>
-          }
+        <CommonDatePicker
+          selectedDate={endDate}
+          onChangeDate={handleSetEndDate}
         />
         <Text marginTop={24} paddingTop={2} fontWeight="bold">
           発表時間
@@ -175,9 +183,9 @@ export const PageCreateSpace = () => {
             min={1}
             max={190}
             maxWidth={100}
-            value={presentationTimeLimit}
+            value={presentationLimitMinute}
             onChange={(value) => {
-              setPresentationTimeLimit(Number(value));
+              setPresentationLimitMinute(Number(value));
             }}
           >
             <NumberInputField />
@@ -196,8 +204,8 @@ export const PageCreateSpace = () => {
             min={0}
             max={60}
             maxWidth={100}
-            value={questionTimeLimit}
-            onChange={(value) => setQuestionTimeLimit(Number(value))}
+            value={questionLimitMinute}
+            onChange={(value) => setQuestionLimitMinute(Number(value))}
           >
             <NumberInputField />
             <NumberInputStepper>
@@ -210,13 +218,13 @@ export const PageCreateSpace = () => {
         <Text marginTop={24} paddingTop={2} fontWeight="bold">
           サムネイル画像
         </Text>
-        <input type="file" accept="image/*" onChange={processImage} />
+        <input type="file" accept="image/*" onChange={handleFileSelected} />
         {fileUrl && (
           <Image src={fileUrl} alt="preview" width={100} height={100} />
         )}
         <Button
           marginTop="42px"
-          onClick={create}
+          onClick={handleSubmitCreate}
           bg="teal.400"
           color="white"
           _hover={{
@@ -229,3 +237,22 @@ export const PageCreateSpace = () => {
     </Layout>
   );
 };
+
+const CommonDatePicker: React.VFC<{
+  selectedDate: Date;
+  onChangeDate: (date: Date) => void;
+}> = ({ selectedDate, onChangeDate }) => (
+  <DatePicker
+    selected={selectedDate}
+    onChange={onChangeDate}
+    showTimeSelect
+    timeFormat="p"
+    timeIntervals={15}
+    dateFormat="Pp"
+    locale="ja"
+    //   inline
+    customInput={
+      <Button>{parseAsMoment(selectedDate).format("YYYY/MM/DD HH:mm")}</Button>
+    }
+  />
+);
