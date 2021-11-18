@@ -1,4 +1,5 @@
 import { RoomSessionModel } from "../model/RoomSessionModel";
+import { ReadonlyDeep } from "type-fest";
 
 export interface IRoomSessionRepository {
   /**
@@ -8,7 +9,7 @@ export interface IRoomSessionRepository {
    *
    * @returns ルームセッション
    */
-  getByRoomId(roomId: number): Promise<RoomSessionModel | null>;
+  getByRoomId(roomId: number): Promise<Readonly<RoomSessionModel> | null>;
 
   /**
    * ルームセッションを作成
@@ -16,7 +17,10 @@ export interface IRoomSessionRepository {
    * @param {number} roomId
    * @param {RoomSessionModel} roomSession
    */
-  insert(roomId: number, roomSession: RoomSessionModel): Promise<void>;
+  insert(
+    roomId: number,
+    roomSession: Readonly<RoomSessionModel>
+  ): Promise<void>;
 
   /**
    * ルームセッションを更新
@@ -24,5 +28,8 @@ export interface IRoomSessionRepository {
    * @param {number} roomId
    * @param {RoomSessionModel} roomSession
    */
-  update(roomId: number, roomSession: RoomSessionModel): Promise<void>;
+  update(
+    roomId: number,
+    roomSession: Readonly<RoomSessionModel>
+  ): Promise<void>;
 }

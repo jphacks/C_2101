@@ -121,6 +121,11 @@ export interface ClientToServerEventsMap {
 
 export interface ServerToClientsEventsMap {
   /**
+   * ルームに入れたことを通知
+   */
+  joinedRoom: (roomId: number) => void;
+
+  /**
    * 投稿されたコメントを配信
    * @param comment
    */

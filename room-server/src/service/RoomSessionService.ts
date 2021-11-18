@@ -13,8 +13,9 @@ import { RoomMemberFactory } from "../factory/RoomMemberFactory";
 import { RoomSessionFactory } from "../factory/RoomSessionFactory";
 import { IRoomSessionRepository } from "../repository/IRoomSessionRepository";
 import { IUserSessionRepository } from "../repository/IUserSessionRepository";
-import { UserId } from "api-schema/dist/types/user";
+import { UserId } from "@api-schema/types/user";
 import { MemberStreamIds } from "@api-schema/types/member";
+import { ReadonlyDeep } from "type-fest";
 
 export class RoomSessionService {
   private roomSessionRepository: IRoomSessionRepository;
@@ -195,8 +196,12 @@ export class RoomSessionService {
     }
 
     // タイムテーブルを更新
-    roomSession.timetable = timetable;
-    await this.roomSessionRepository.update(roomId, roomSession);
+    await this.roomSessionRepository.update(
+      roomId,
+      produce(roomSession, (draft) => {
+        draft.timetable = timetable;
+      })
+    );
   }
 
   /**
@@ -214,8 +219,12 @@ export class RoomSessionService {
     }
 
     // タイマーを更新
-    roomSession.timer = timer;
-    await this.roomSessionRepository.update(roomId, roomSession);
+    await this.roomSessionRepository.update(
+      roomId,
+      produce(roomSession, (draft) => {
+        draft.timer = timer;
+      })
+    );
   }
 
   /**
@@ -227,7 +236,7 @@ export class RoomSessionService {
    */
   async getActiveRoomSession(
     socketId: string
-  ): Promise<RoomSessionModel | null> {
+  ): Promise<Readonly<RoomSessionModel> | null> {
     return this.getRoomSessionBySocketId(socketId);
   }
 
@@ -246,8 +255,12 @@ export class RoomSessionService {
     }
 
     // コメント情報を追加
-    roomSession.comments.push(comment);
-    await this.roomSessionRepository.update(roomId, roomSession);
+    await this.roomSessionRepository.update(
+      roomId,
+      produce(roomSession, (draft) => {
+        draft.comments.push(comment);
+      })
+    );
   }
 
   /**
@@ -278,12 +291,12 @@ export class RoomSessionService {
    */
   private async getRoomSessionBySocketId(
     socketId: string
-  ): Promise<RoomSessionModel | null> {
+  ): Promise<Readonly<RoomSessionModel> | null> {
     // ユーザセッションを取得
     const userSession = await this.userSessionRepository.getBySocketId(
       socketId
     );
-    if (userSession === null) {
+    if (!userSession) {
       return null;
     }
 

@@ -1,4 +1,5 @@
 import { UserSessionModel } from "../model/UserSessionModel";
+import { ReadonlyDeep } from "type-fest";
 
 export interface IUserSessionRepository {
   /**
@@ -8,7 +9,7 @@ export interface IUserSessionRepository {
    *
    * @returns ユーザセッション
    */
-  getBySocketId(socketId: string): Promise<UserSessionModel | null>;
+  getBySocketId(socketId: string): Promise<Readonly<UserSessionModel> | null>;
 
   /**
    * ユーザセッションを作成
@@ -16,7 +17,10 @@ export interface IUserSessionRepository {
    * @param {string} socketId
    * @param {UserSessionModel} userSession
    */
-  insert(socketId: string, userSession: UserSessionModel): Promise<void>;
+  insert(
+    socketId: string,
+    userSession: Readonly<UserSessionModel>
+  ): Promise<void>;
 
   /**
    * ユーザセッションを削除

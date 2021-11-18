@@ -17,6 +17,7 @@ import {
 } from "../../lib/hooks/useSyncMembers";
 import { socket } from "../../lib/hooks/socket";
 import { UserInfo } from "@api-schema/types/user";
+import { selector } from "recoil";
 
 type SocketRootProps = {
   children: React.ReactNode;
@@ -27,12 +28,17 @@ type SocketRootProps = {
 export type UserParam =
   | {
       type: "user";
-      authHeader: string;
+      auth: string;
       user: UserInfo;
     }
   | {
       type: "guest";
     };
+
+const socketIdState = selector({
+  key: "socketRoot-socketIdState",
+  get: ({ get }) => {},
+});
 
 export const SocketRoot: React.VFC<SocketRootProps> = ({
   children,
@@ -52,13 +58,12 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
         "joinRoomAsUser",
         {
           roomId: roomId,
-          auth: userParam.authHeader,
+          auth: userParam.auth,
           userId: userParam.user.id,
         },
         (res) => {
           if (res.status === "success") {
             console.log("joined room");
-            allRefresher();
           }
         }
       );
@@ -71,7 +76,6 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
         (res) => {
           if (res.status === "success") {
             console.log("joined room");
-            allRefresher();
           }
         }
       );
@@ -79,6 +83,7 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
 
     return () => {
       socket.emit("leaveRoom");
+      allRefresher();
     };
   }, [allRefresher, roomId, userParam]);
 
@@ -86,15 +91,15 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
 };
 
 const useStatesRefresher = () => {
-  const refreshComments = useRefreshComments();
-  const refreshTimer = useRefreshTimer();
-  const refreshTimetable = useRefreshTimetable();
-  const refreshMembers = useRefreshMembers();
+  // const refreshComments = useRefreshComments();
+  // const refreshTimer = useRefreshTimer();
+  // const refreshTimetable = useRefreshTimetable();
+  // const refreshMembers = useRefreshMembers();
 
   return () => {
-    refreshComments();
-    refreshTimer();
-    refreshTimetable();
-    refreshMembers();
-  }
+    // refreshComments();
+    // refreshTimer();
+    // refreshTimetable();
+    // refreshMembers();
+  };
 };
