@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Text } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import { Twemoji } from "./Emoji/Twemoji";
 
 type ReactionBadgeProps = {
   reactionEmoji: string;
@@ -15,10 +16,11 @@ export const AvatarReactionBadge: React.VFC<ReactionBadgeProps> = ({
       display={"flex"}
       alignItems={"center"}
       justifyContent={"center"}
+      boxSize={size}
       insetEnd={"-8px"}
       bottom={"-8px"}
     >
-      <Text fontSize={size}>{reactionEmoji}</Text>
+      <Twemoji emoji={reactionEmoji} />
     </Box>
   );
 };

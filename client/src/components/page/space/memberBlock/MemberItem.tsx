@@ -37,7 +37,7 @@ export const MemberItem: React.VFC<UserWithStatus> = ({
         opacity={isOnline ? "1" : "0.5"}
       >
         {reaction && (
-          <AvatarReactionBadge reactionEmoji={reaction.emoji} size={"4xl"} />
+          <AvatarReactionBadge reactionEmoji={reaction.emoji} size={"40px"} />
         )}
       </Avatar>
       <Text textColor={isOnline ? "gray.600" : "gray.400"} isTruncated>
