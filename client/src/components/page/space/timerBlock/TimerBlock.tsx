@@ -19,16 +19,20 @@ export const TimerBlock: React.VFC<TimerBlockProps> = ({
     fullSec < 60 * 60 ? secToMMSS(remainSec) : secToHHMMSS(remainSec);
 
   return (
-    <Box bg={"gray.200"} w={"full"} minH={48} rounded={8} py={2}>
+    <Box bg={"gray.200"} w={"full"} rounded={8} py={2} minWidth={0}>
       <VStack>
         <Text
-          fontSize={"6xl"}
+          fontSize={{ base: "3xl", lg: "5xl", xl: "6xl" }}
           fontWeight={"bold"}
           textColor={remainSec >= 0 ? "gray.800" : "red.600"}
         >
           {remainTimeText}
         </Text>
-        <Text fontSize={"2xl"} fontWeight={"bold"} noOfLines={1}>
+        <Text
+          fontSize={{ base: "1xl", xl: "2xl" }}
+          fontWeight={"bold"}
+          noOfLines={1}
+        >
           {sectionTitle}
         </Text>
         <Spacer />

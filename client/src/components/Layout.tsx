@@ -7,9 +7,14 @@ import { Box, Container } from "@chakra-ui/react";
 type LayoutProps = {
   children: React.ReactNode;
   contentTitle?: string;
+  footer?: boolean;
 };
 
-const Layout: React.FC<LayoutProps> = ({ children, contentTitle }) => {
+const Layout: React.FC<LayoutProps> = ({
+  children,
+  contentTitle,
+  footer = true,
+}) => {
   return (
     <Container
       minHeight="100vh"
@@ -25,9 +30,15 @@ const Layout: React.FC<LayoutProps> = ({ children, contentTitle }) => {
       <Box>{children}</Box>
 
       {/*  フッターを最下部に固定するため */}
-      <Box height="50px" />
 
-      <Footer />
+      {footer ? (
+        <>
+          <Box height="50px" />
+          <Footer />
+        </>
+      ) : (
+        <></>
+      )}
     </Container>
   );
 };

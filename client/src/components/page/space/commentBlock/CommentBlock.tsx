@@ -41,7 +41,7 @@ export const CommentBlock: React.VFC<CommentBlockProps> = ({
   };
 
   return (
-    <VStack w={"full"} minH={64} h={"512px"} bg={"gray.200"} rounded={8} p={2}>
+    <VStack w={"full"} minH={0} bg={"gray.200"} rounded={8} p={2}>
       <VStack
         w={"full"}
         h={"full"}

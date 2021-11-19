@@ -19,7 +19,7 @@ export const TimerBlockAdminController: React.VFC<TimerBlockAdminControllerProps
     isTimerEnable,
   }) => {
     return (
-      <HStack>
+      <HStack w={"full"} px={2} justify="space-between">
         <Button colorScheme={"blue"} width={28} onClick={onClickPrevSection}>
           Prev Section
         </Button>

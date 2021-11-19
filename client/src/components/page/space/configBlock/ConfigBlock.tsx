@@ -4,6 +4,7 @@ import {
   HStack,
   Switch,
   StackDivider,
+  useMediaQuery,
   Tooltip,
   IconButton,
 } from "@chakra-ui/react";
@@ -44,12 +45,17 @@ export const ConfigBlock: React.VFC<ConfigBlockProps> = ({
     },
     [onChangeCameraValue]
   );
+  const [MediaQuery] = useMediaQuery("(min-width: 1300px)");
+  const IconSize = MediaQuery ? 8 : 6;
+  const ToggleSize = MediaQuery ? "lg" : "md";
 
   return (
-    <Box bg={"gray.200"} w={"full"} rounded={8}>
+    <Box bg={"gray.200"} w={"full"} rounded={8} minWidth={0}>
       <HStack
-        p={4}
-        justify={"center"}
+        p={IconSize / 2}
+        minWidth={0}
+        w={"full"}
+        justify="space-around"
         divider={<StackDivider borderColor={"gray.400"} px={1} />}
       >
         <Tooltip
@@ -59,12 +65,16 @@ export const ConfigBlock: React.VFC<ConfigBlockProps> = ({
           isDisabled={!micDisabled}
         >
           <HStack rounded={4} py={2} bg={"gray.200"} gridGap={1}>
-            <Icon w={8} h={8} as={(props) => <MicrophoneIcon {...props} />} />
+            <Icon
+              w={IconSize}
+              h={IconSize}
+              as={(props) => <MicrophoneIcon {...props} />}
+            />
             <Switch
               isChecked={micValue}
               onChange={handleChangeMic}
               isDisabled={micDisabled}
-              size={"lg"}
+              size={ToggleSize}
               colorScheme={"teal"}
             />
           </HStack>
@@ -77,12 +87,16 @@ export const ConfigBlock: React.VFC<ConfigBlockProps> = ({
           isDisabled={!cameraDisabled}
         >
           <HStack rounded={4} p={2} bg={"gray.200"} gridGap={1}>
-            <Icon w={8} h={8} as={(props) => <VideocamIcon {...props} />} />
+            <Icon
+              w={IconSize}
+              h={IconSize}
+              as={(props) => <VideocamIcon {...props} />}
+            />
             <Switch
               isChecked={cameraValue}
               onChange={handleChangeCamera}
               isDisabled={cameraDisabled}
-              size={"lg"}
+              size={ToggleSize}
               colorScheme={"teal"}
             />
           </HStack>
@@ -96,7 +110,13 @@ export const ConfigBlock: React.VFC<ConfigBlockProps> = ({
           aria-label={"setting"}
           bg={"gray.200"}
           onClick={onClickPreference}
-          icon={<Icon w={8} h={8} as={(props) => <CogIcon {...props} />} />}
+          icon={
+            <Icon
+              w={IconSize}
+              h={IconSize}
+              as={(props) => <CogIcon {...props} />}
+            />
+          }
         />
       </HStack>
     </Box>
