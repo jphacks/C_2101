@@ -13,6 +13,7 @@ import {
   useSetScreenCredential,
 } from "../../lib/hooks/useCredential";
 import { useSetStreamHandler } from "../../lib/hooks/useSyncStream";
+import { useRouter } from "next/router";
 
 type SocketRootProps = {
   children: React.ReactNode;
@@ -49,6 +50,8 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
   const setScreenCredential = useSetScreenCredential();
 
   // const [roomJoined, setRoomJoined] = useState<boolean>(false);
+  const router = useRouter();
+  console.log(router.query);
 
   useEffect(() => {
     // if (roomJoined) return;
@@ -66,24 +69,23 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
               console.log("joined room");
               setListenCredential(res.credential);
               // setRoomJoined(true);
-
-              socket.emit(
-                "getScreenCredential",
-                userParam.auth,
-                (screenCredential) => {
-                  setScreenCredential(screenCredential);
-                }
-              );
-              socket.emit(
-                "getCameraCredential",
-                userParam.auth,
-                (cameraCredential) => {
-                  setCameraCredential(cameraCredential);
-                }
-              );
-            } else {
-              console.warn(`join room rejected: ${res.reason}`);
-            }
+            socket.emit(
+              "getScreenCredential",
+              userParam.auth,
+              (screenCredential) => {
+                setScreenCredential(screenCredential);
+              }
+            );
+            socket.emit(
+              "getCameraCredential",
+              userParam.auth,
+              (cameraCredential) => {
+                setCameraCredential(cameraCredential);
+              }
+            );
+          } else {
+            console.warn(`join room rejected: ${res.reason}`);
+            void router.push(`/explore/${router.query.room_id}`);
           }
         );
       }, 500);
@@ -99,6 +101,7 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
               console.log("joined room");
             } else {
               console.warn(`join room rejected: ${res.reason}`);
+              void router.push(`/explore/${router.query.room_id}`);
             }
           }
         );
@@ -113,6 +116,7 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
   }, [
     allRefresher,
     roomId,
+    router,
     setCameraCredential,
     setListenCredential,
     setScreenCredential,
