@@ -15,24 +15,24 @@ import api from "../../../api-schema/src/api/$api";
 //   return config;
 // });
 //
-// axios.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   (error) => {
-//     const response = error.response.data;
-//     const message = response.message
-//       ? response.message
-//       : "予期せぬエラーが発生しました。";
-//
-//     // 401エラーでトークンを削除
-//     if (response.status === 401) {
-//       localStorage.removeItem("lt-space-auth-token");
-//     }
-//
-//     return Promise.reject(message);
-//   }
-// );
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    const response = error.response.data;
+    const message = response.message
+      ? response.message
+      : "予期せぬエラーが発生しました。";
+
+    // 401エラーでトークンを削除
+    if (response.status === 401) {
+      localStorage.removeItem("lt-space-auth-token");
+    }
+
+    return Promise.reject(message);
+  }
+);
 
 const client = api(aspida(axios, {}));
 export default client;
