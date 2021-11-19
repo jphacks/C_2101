@@ -15,6 +15,7 @@ import { socket } from "./socket";
 import { TimetableCardProps } from "../../components/page/space/timetableBlock/TimetableCard";
 import { memberMapState } from "./useSyncMembers";
 import { userState } from "./useUser";
+import { RoomMember } from "@api-schema/types/member";
 
 /**
  * 直接コンポーネントから参照しない
@@ -97,29 +98,49 @@ const timetableCardsPropsState = selector<TimetableCardProps[]>({
   get: ({ get }) => {
     const memberMap = get(memberMapState);
     const timetable = get(timetableState);
+    const user = get(userState);
+    const current = timetable.sections[timetable.cursor];
 
-    return timetable.sections.reduce(
-      (acc: TimetableCardProps[], item: TimetableSection) => {
+    return timetable.sections
+      .reduce((acc: TimetableCardProps[], item: TimetableSection, i) => {
         //TODO 推定開始時間を計算
 
         if (item.type !== "speaking") {
           return acc;
         }
-        // console.log(item);
 
-        //TODO tag
         const last: TimetableCardProps | undefined = acc[acc.length - 1];
         if (!last || last.title !== item.sessionTitle) {
           acc.push({
             title: item.sessionTitle,
             user: memberMap[item.userId].user,
             tags: [],
+            isCurrentSection:
+              current?.type === "speaking" &&
+              current.userId === item.userId &&
+              current.sessionTitle === item.sessionTitle,
           });
         }
         return acc;
-      },
-      [] as TimetableCardProps[]
-    );
+      }, [] as TimetableCardProps[])
+      .map((card, index, array) => {
+        const tags: string[] = [];
+        if (card.user.id === user?.id) {
+          tags.push("You");
+        }
+        const prev = array[index - 1];
+        //ちょっと強引ではある
+        if (
+          (prev && prev.isCurrentSection) ||
+          (timetable.cursor === 0 && index == 0)
+        ) {
+          tags.push("Next");
+        }
+        return {
+          ...card,
+          tags: tags,
+        };
+      });
   },
 });
 
@@ -137,6 +158,23 @@ const timetableCurrentSectionState = selector<TimetableSection | null>({
 
 export const useTimetableCurrentSection = () => {
   return useRecoilValue(timetableCurrentSectionState);
+};
+
+const speakingMemberState = selector<RoomMember | null>({
+  key: "useSyncTimetable-speakingMemberState",
+  get: ({ get }) => {
+    const currentSection = get(timetableCurrentSectionState);
+    const memberMap = get(memberMapState);
+    if (currentSection?.type === "speaking") {
+      return memberMap[currentSection.userId] ?? null;
+    } else {
+      return null;
+    }
+  },
+});
+
+export const useSpeakingMember = () => {
+  return useRecoilValue(speakingMemberState);
 };
 
 const isCurrentOwnSessionState = selector<boolean>({
