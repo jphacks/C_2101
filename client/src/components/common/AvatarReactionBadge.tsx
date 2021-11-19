@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box } from "@chakra-ui/react";
 import { Twemoji } from "./Emoji/Twemoji";
+import { shake } from "./Emoji/shakeCSSkyeframe";
 
 type ReactionBadgeProps = {
   reactionEmoji: string;
@@ -12,6 +13,8 @@ export const AvatarReactionBadge: React.VFC<ReactionBadgeProps> = ({
 }) => {
   return (
     <Box
+      animation={`${shake} 1 0.8s ease-in-out`}
+      key={reactionEmoji} //keyの変更でanimeが再度走る
       position={"absolute"}
       display={"flex"}
       alignItems={"center"}
