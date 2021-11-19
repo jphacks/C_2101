@@ -1,6 +1,6 @@
 // const
 
-import { atom, useRecoilValue, useSetRecoilState } from "recoil";
+import { atom, selector, useRecoilValue, useSetRecoilState } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
 const cameraEnableState = atom<boolean>({
@@ -66,4 +66,42 @@ export const useSetCameraDeviceId = () => {
 
 export const useSetAudioDeviceId = () => {
   return useSetRecoilState(audioDeviceIdState);
+};
+
+const audioDeviceParamState = selector({
+  key: "useStreamConfig-audioDeviceParamState",
+  get: ({ get }) => {
+    const deviceEnable = get(micEnableState);
+    const deviceId = get(audioDeviceIdState);
+    if (deviceEnable && deviceId) {
+      return {
+        deviceId: deviceId,
+      };
+    } else {
+      return deviceEnable;
+    }
+  },
+});
+
+export const useAudioDeviceParam = () => {
+  return useRecoilValue(audioDeviceParamState);
+};
+
+const cameraDeviceParamState = selector({
+  key: "useStreamConfig-cameraDeviceParamState",
+  get: ({ get }) => {
+    const deviceEnable = get(cameraEnableState);
+    const deviceId = get(cameraDeviceIdState);
+    if (deviceEnable && deviceId) {
+      return {
+        deviceId: deviceId,
+      };
+    } else {
+      return deviceEnable;
+    }
+  },
+});
+
+export const useCameraDeviceParam = () => {
+  return useRecoilValue(cameraDeviceParamState);
 };
