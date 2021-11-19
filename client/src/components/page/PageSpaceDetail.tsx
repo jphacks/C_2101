@@ -22,6 +22,8 @@ import {
   Radio,
   RadioGroup,
   Image,
+  ListItem,
+  UnorderedList,
 } from "@chakra-ui/react";
 import { transform } from "../../utils/datetime";
 import React, { useState } from "react";
@@ -48,7 +50,6 @@ export const PageSpaceDetail: React.VFC<{
   const [titleFormValue, setTitleFormValue] = useState<string>();
   const [userType, setUserType] = useState(1);
   const toast = useToast();
-
   if (!room || !roomId) {
     return (
       <Layout>
@@ -73,6 +74,10 @@ export const PageSpaceDetail: React.VFC<{
   const secToMinutes = (second: number) => {
     return Math.floor((second * 10) / 60) / 10;
   };
+
+  const startAt = new Date(room.startAt);
+  const finishAt = new Date(room.finishAt);
+
   const Thumbnail: React.VFC<{ imageUrl: string }> = ({ imageUrl }) => {
     const Img = () => (
       <Image
@@ -187,20 +192,24 @@ export const PageSpaceDetail: React.VFC<{
                 日程
               </Heading>
             </Box>
-            <Text align="left" pl={5}>
-              <ul>
-                <li>
-                  開催日：{transform(new Date(room.finishAt), "YYYY/MM/DD")}
-                </li>
-                <li>
-                  開催時間：{transform(new Date(room.startAt), "HH:mm")}
-                  {` ~ `}
-                  {transform(new Date(room.finishAt), "HH:mm")}
-                </li>
-                <li>発表時間：{secToMinutes(room.presentationTimeLimit)}分</li>
-                <li>質問時間：{secToMinutes(room.questionTimeLimit)}分</li>
-              </ul>
-            </Text>
+
+            <UnorderedList align="left" pl={5}>
+              <ListItem>開催日：{transform(startAt, "YYYY/MM/DD")}</ListItem>
+              <ListItem>
+                開催時間：{transform(startAt, "HH:mm")}
+                {` ~ `}
+                {startAt.getDate() !== finishAt.getDate()
+                  ? `${transform(finishAt, "DD")}日 `
+                  : ""}
+                {transform(finishAt, "HH:mm")}
+              </ListItem>
+              <ListItem>
+                発表時間：{secToMinutes(room.presentationTimeLimit)}分
+              </ListItem>
+              <ListItem>
+                質問時間：{secToMinutes(room.questionTimeLimit)}分
+              </ListItem>
+            </UnorderedList>
             <br />
             <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
               <Heading fontSize="1.5rem" textAlign={"start"}>
