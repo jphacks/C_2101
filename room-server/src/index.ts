@@ -12,6 +12,7 @@ import { UserService } from "./service/UserService";
 import { RoomService } from "./service/RoomService";
 import { UserSessionService } from "./service/UserSessionService";
 import { RoomSessionService } from "./service/RoomSessionService";
+import { CommentItem } from "@api-schema/types/comment";
 
 // repository
 const userSessionRepository = new InMemoryUserSessionRepository();
@@ -110,6 +111,15 @@ io.on("connection", (socket) => {
       "updateMembersState",
       roomSession.members
     );
+
+    // const comment: CommentItem = {
+    //   type: "system",
+    //   timestamp: Date.now(),
+    //   text: `${user.name}が入室しました`,
+    // };
+    // // コメントを配信
+    // await roomSessionService.postComment(comment, socket.id);
+    // io.to(String(userSession.roomId)).emit("broadcastComment", comment);
   });
 
   // NOTE: ゲスト機能はとりあえずパス
@@ -297,6 +307,9 @@ io.on("connection", (socket) => {
     );
     if (!roomSession) return;
 
+    const prevSection =
+      roomSession.timetable.sections[roomSession.timetable.cursor];
+
     // タイムテーブルを更新
     await roomSessionService.setTimetable(timetable, socket.id);
     await roomSessionService.mutateRoomStream(socket.id);
@@ -309,6 +322,11 @@ io.on("connection", (socket) => {
       return;
     }
 
+    const updatedSection =
+      updatedRoomSession.timetable.sections[
+        updatedRoomSession.timetable.cursor
+      ];
+
     const socketRoomId = String(userSession.roomId);
     io.to(socketRoomId).emit("updateTimetable", updatedRoomSession.timetable);
 
@@ -317,6 +335,20 @@ io.on("connection", (socket) => {
       "updateStreamState",
       updatedRoomSession.streamState
     );
+
+    if (prevSection.type !== "speaking" && updatedSection.type === "speaking") {
+      const user = updatedRoomSession.members.find(
+        (member) => member.user.id === updatedSection.userId
+      );
+      const comment: CommentItem = {
+        type: "system",
+        timestamp: Date.now(),
+        text: `${user?.user.name ?? "不明なユーザ"}が発表を開始しました`,
+      };
+      // コメントを配信
+      await roomSessionService.postComment(comment, socket.id);
+      io.to(socketRoomId).emit("broadcastComment", comment);
+    }
   });
 
   socket.on("setTimer", async (timer) => {
