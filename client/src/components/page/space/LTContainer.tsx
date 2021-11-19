@@ -35,17 +35,14 @@ export const LTContainer: React.VFC<LTPageProps> = () => {
         // m="auto"
         templateColumns={{
           base: "60% 40%",
-          // sm: "70% 30%",
-          // md: "70% 30%",
           lg: "70% 30%",
-          // xl: "75% 25%",
         }}
         bg={{
           base: "gray.50",
-          sm: "yellow.200",
-          md: "green.200",
-          lg: "blue.200",
-          xl: "red",
+          // sm: "yellow.200",
+          // md: "green.200",
+          // lg: "blue.200",
+          // xl: "red",
         }}
         gap={4}
         p={4}
@@ -64,10 +61,6 @@ export const LTContainer: React.VFC<LTPageProps> = () => {
           minWidth="0px"
           templateRows={{
             base: "auto auto auto auto 1fr",
-            // sm: "70% 30%",
-            // md: "70% 30%",
-            // lg: "40% 70px 25% 74px auto",
-            lg: "auto auto auto auto 1fr",
           }}
         >
           <CameraBlockContainer />
