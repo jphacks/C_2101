@@ -110,7 +110,7 @@ export const useScreenShareAction = () => {
   const roomId = useRoomId();
   const screenCredential = useScreenCredentialValue();
 
-  const end = useCallback(async () => {
+  const end = useCallback(async (reconnect: boolean = false) => {
     console.log("endScreenShare");
     const room = await getScreenRoom();
     if (room) {
@@ -125,6 +125,12 @@ export const useScreenShareAction = () => {
       room.close();
       await promise;
       skywayRooms.screenRoom = null;
+
+      if (!reconnect) {
+        socket.emit("setUserMediaStream", {
+          screenStreamId: null,
+        });
+      }
     }
     console.log("closed");
   }, []);
@@ -133,7 +139,7 @@ export const useScreenShareAction = () => {
     console.log("startScreenShare");
     if (!roomId || !screenCredential) return;
 
-    await end();
+    await end(true);
 
     const screenMedia = await navigator.mediaDevices
       .getDisplayMedia({
@@ -202,7 +208,7 @@ export const useCameraShareAction = (cameraMediaConfig: {
   const roomId = useRoomId();
   const cameraCredential = useCameraCredentialValue();
 
-  const end = useCallback(async () => {
+  const end = useCallback(async (reconnect: boolean = false) => {
     console.log("endCameraShare");
     const room = await getVideoRoom();
     if (room) {
@@ -217,6 +223,11 @@ export const useCameraShareAction = (cameraMediaConfig: {
       room.close();
       await promise;
       skywayRooms.videoRoom = null;
+      if (!reconnect) {
+        socket.emit("setUserMediaStream", {
+          videoStreamId: null,
+        });
+      }
     }
     console.log("closed");
   }, []);
@@ -225,7 +236,7 @@ export const useCameraShareAction = (cameraMediaConfig: {
     console.log("startVideoShare");
     if (!roomId || !cameraCredential) return;
 
-    await end();
+    await end(true);
 
     const cameraMedia = await navigator.mediaDevices
       .getUserMedia({

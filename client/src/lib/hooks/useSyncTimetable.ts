@@ -15,6 +15,7 @@ import { socket } from "./socket";
 import { TimetableCardProps } from "../../components/page/space/timetableBlock/TimetableCard";
 import { memberMapState } from "./useSyncMembers";
 import { userState } from "./useUser";
+import { RoomMember } from "@api-schema/types/member";
 
 /**
  * 直接コンポーネントから参照しない
@@ -137,6 +138,23 @@ const timetableCurrentSectionState = selector<TimetableSection | null>({
 
 export const useTimetableCurrentSection = () => {
   return useRecoilValue(timetableCurrentSectionState);
+};
+
+const speakingMemberState = selector<RoomMember | null>({
+  key: "useSyncTimetable-speakingMemberState",
+  get: ({ get }) => {
+    const currentSection = get(timetableCurrentSectionState);
+    const memberMap = get(memberMapState);
+    if (currentSection?.type === "speaking") {
+      return memberMap[currentSection.userId] ?? null;
+    } else {
+      return null;
+    }
+  },
+});
+
+export const useSpeakingMember = () => {
+  return useRecoilValue(speakingMemberState);
 };
 
 const isCurrentOwnSessionState = selector<boolean>({
