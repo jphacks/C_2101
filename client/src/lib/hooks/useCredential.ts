@@ -1,8 +1,13 @@
 import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 import { SkywayCredentialsModel } from "@api-schema/api/@types";
 
-const videotelephonyCredentialState = atom<SkywayCredentialsModel | null>({
-  key: "useSkywayCredential-videotelephonyCredentialState",
+const listenCredentialState = atom<SkywayCredentialsModel | null>({
+  key: "useSkywayCredential-listenCredentialState",
+  default: null,
+});
+
+const cameraCredentialState = atom<SkywayCredentialsModel | null>({
+  key: "useSkywayCredential-cameraCredentialState",
   default: null,
 });
 
@@ -11,16 +16,24 @@ const screenShareCredentialState = atom<SkywayCredentialsModel | null>({
   default: null,
 });
 
-export const useSetVideoCredential = () => {
-  return useSetRecoilState(videotelephonyCredentialState);
+export const useSetListenCredential = () => {
+  return useSetRecoilState(listenCredentialState);
+};
+
+export const useSetCameraCredential = () => {
+  return useSetRecoilState(cameraCredentialState);
 };
 
 export const useSetScreenCredential = () => {
   return useSetRecoilState(screenShareCredentialState);
 };
 
-export const useVideoCredentialValue = () => {
-  return useRecoilValue(videotelephonyCredentialState);
+export const useListenCredentialValue = () => {
+  return useRecoilValue(listenCredentialState);
+};
+
+export const useCameraCredentialValue = () => {
+  return useRecoilValue(cameraCredentialState);
 };
 
 export const useScreenCredentialValue = () => {

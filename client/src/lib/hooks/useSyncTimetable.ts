@@ -14,6 +14,7 @@ import { useCallback, useEffect } from "react";
 import { socket } from "./socket";
 import { TimetableCardProps } from "../../components/page/space/timetableBlock/TimetableCard";
 import { memberMapState } from "./useSyncMembers";
+import { userState } from "./useUser";
 
 /**
  * 直接コンポーネントから参照しない
@@ -43,7 +44,7 @@ export const useSetTimetableHandler = () => {
     return () => {
       socket.off("updateTimetable", listener);
     };
-  });
+  }, [setState]);
 };
 
 export const useTimetableAction = () => {
@@ -136,4 +137,20 @@ const timetableCurrentSectionState = selector<TimetableSection | null>({
 
 export const useTimetableCurrentSection = () => {
   return useRecoilValue(timetableCurrentSectionState);
+};
+
+const isCurrentOwnSessionState = selector<boolean>({
+  key: "timetableCurrentSectionState-isCurrentOwnSessionState",
+  get: ({ get }) => {
+    const currentSection = get(timetableCurrentSectionState);
+    const user = get(userState);
+    if (!currentSection || !user) return false;
+    return (
+      currentSection.type === "speaking" && currentSection.userId == user.id
+    );
+  },
+});
+
+export const useIsCurrentOwnSession = () => {
+  return useRecoilValue(isCurrentOwnSessionState);
 };

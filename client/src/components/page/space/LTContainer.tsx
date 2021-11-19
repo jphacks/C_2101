@@ -9,6 +9,9 @@ import { MemberBlockContainer } from "./memberBlock/MemberBlockContainer";
 import { TimetableBlockContainer } from "./timetableBlock/TimetableBlockContainer";
 import { CommentBlockContainer } from "./commentBlock/CommentBlockContainer";
 import { ReactionBlockContainer } from "./reactionBlock/ReactionBlockContainer";
+import { CameraBlockContainer } from "./cameraBlock/CameraBlockContainer";
+import { ConfigBlockContainer } from "./configBlock/ConfigBlockContainer";
+import { ScreenBlockContainer } from "./screenBlock/ScreenBlockContainer";
 
 const Video = chakra("video");
 
@@ -28,41 +31,15 @@ export const LTContainer: React.VFC<LTPageProps> = () => {
     <Layout contentTitle={room.title}>
       <Stack direction={"row"} p={4} bg={"gray.50"}>
         <VStack flex={3}>
-          <Box
-            rounded={8}
-            p={4}
-            bg={"gray.200"}
-            w={"full"}
-            h={"full"}
-            textAlign={"center"}
-          >
-            <Video src={"testMovie.mp4"} />
-            {/*<Video ref={screenVideoRef} muted />*/}
-            {/*<Button*/}
-            {/*  colorScheme={"teal"}*/}
-            {/*  onClick={handleClickStartScreenShare}*/}
-            {/*  alignSelf={"center"}*/}
-            {/*>*/}
-            {/*  画面共有を開始する*/}
-            {/*</Button>*/}
-          </Box>
+          <ScreenBlockContainer />
           <MemberBlockContainer />
           <TimetableBlockContainer />
         </VStack>
         <VStack flex={1} maxW={"384px"}>
-          <Box bg={"gray.200"} w={"100%"} h={64} rounded={8} p={2}>
-            {/*<Video*/}
-            {/*  w={"full"}*/}
-            {/*  h={"full"}*/}
-            {/*  ref={cameraVideoRef}*/}
-            {/*  muted*/}
-            {/*  rounded={8}*/}
-            {/*/>*/}
-          </Box>
-          <ConfigBlock />
+          <CameraBlockContainer />
+          <ConfigBlockContainer />
           <TimerBlockContainer />
           <ReactionBlockContainer />
-          あうあうあ
           <CommentBlockContainer />
         </VStack>
       </Stack>
