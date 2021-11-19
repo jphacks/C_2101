@@ -30,21 +30,22 @@ const shake = keyframes`
 
 type Props = {
   emoji: string;
-  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onClickEmoji: (emoji: string) => void;
 };
-const EmojiBtn: React.VFC<Props> = ({ emoji, onClick = () => {} }) => {
-  const [isAnime, setAnime] = useState<boolean>(true);
+const EmojiBtn: React.VFC<Props> = ({ emoji, onClickEmoji }) => {
+  const [isDuringAnime, setDuringAnime] = useState<boolean>(true);
 
-  const animation = isAnime ? undefined : `${shake} 1 0.8s ease-in-out`;
+  const animation = isDuringAnime ? undefined : `${shake} 1 0.8s ease-in-out`;
 
   const handleClick = useCallback(
-    () => (e: React.MouseEvent<HTMLDivElement>) => {
-      console.log(emoji);
-      onClick(e);
-      setAnime(true);
-      setTimeout(() => setAnime(false));
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      onClickEmoji(emoji);
+      setDuringAnime(true);
+      setTimeout(() => {
+        setDuringAnime(false);
+      });
     },
-    [emoji, onClick]
+    [emoji, onClickEmoji]
   );
 
   return (
