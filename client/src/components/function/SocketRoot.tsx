@@ -1,23 +1,12 @@
 import React, { useEffect } from "react";
-import {
-  useRefreshComments,
-  useSetCommentsHandler,
-} from "../../lib/hooks/useSyncComment";
-import {
-  useRefreshTimer,
-  useSetTimerHandler,
-} from "../../lib/hooks/useSyncTimer";
-import {
-  useRefreshTimetable,
-  useSetTimetableHandler,
-} from "../../lib/hooks/useSyncTimetable";
-import {
-  useRefreshMembers,
-  useSetRoomStateHandler,
-} from "../../lib/hooks/useSyncMembers";
+import { useSetCommentsHandler } from "../../lib/hooks/useSyncComment";
+import { useSetTimerHandler } from "../../lib/hooks/useSyncTimer";
+import { useSetTimetableHandler } from "../../lib/hooks/useSyncTimetable";
+import { useSetRoomStateHandler } from "../../lib/hooks/useSyncMembers";
 import { socket } from "../../lib/hooks/socket";
 import { UserInfo } from "@api-schema/types/user";
 import { selector } from "recoil";
+import { useSetReactionHandler } from "../../lib/hooks/useSyncReaction";
 
 type SocketRootProps = {
   children: React.ReactNode;
@@ -49,6 +38,7 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
   useSetTimerHandler();
   useSetTimetableHandler();
   useSetRoomStateHandler();
+  useSetReactionHandler();
 
   const allRefresher = useStatesRefresher();
 
