@@ -1,4 +1,4 @@
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import { useSetCommentsHandler } from "../../lib/hooks/useSyncComment";
 import { useSetTimerHandler } from "../../lib/hooks/useSyncTimer";
 import { useSetTimetableHandler } from "../../lib/hooks/useSyncTimetable";
@@ -53,52 +53,56 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
   useEffect(() => {
     // if (roomJoined) return;
     if (userParam.type === "user") {
-      socket.emit(
-        "joinRoomAsUser",
-        {
-          roomId: roomId,
-          auth: userParam.auth,
-          userId: userParam.user.id,
-        },
-        (res) => {
-          if (res.status === "success") {
-            console.log("joined room");
-            setListenCredential(res.credential);
-            // setRoomJoined(true);
+      setTimeout(() => {
+        socket.emit(
+          "joinRoomAsUser",
+          {
+            roomId: roomId,
+            auth: userParam.auth,
+            userId: userParam.user.id,
+          },
+          (res) => {
+            if (res.status === "success") {
+              console.log("joined room");
+              setListenCredential(res.credential);
+              // setRoomJoined(true);
 
-            socket.emit(
-              "getScreenCredential",
-              userParam.auth,
-              (screenCredential) => {
-                setScreenCredential(screenCredential);
-              }
-            );
-            socket.emit(
-              "getCameraCredential",
-              userParam.auth,
-              (cameraCredential) => {
-                setCameraCredential(cameraCredential);
-              }
-            );
-          } else {
-            console.warn(`join room rejected: ${res.reason}`);
+              socket.emit(
+                "getScreenCredential",
+                userParam.auth,
+                (screenCredential) => {
+                  setScreenCredential(screenCredential);
+                }
+              );
+              socket.emit(
+                "getCameraCredential",
+                userParam.auth,
+                (cameraCredential) => {
+                  setCameraCredential(cameraCredential);
+                }
+              );
+            } else {
+              console.warn(`join room rejected: ${res.reason}`);
+            }
           }
-        }
-      );
+        );
+      }, 500);
     } else {
-      socket.emit(
-        "joinRoomAsGuest",
-        {
-          roomId: roomId,
-        },
-        (res) => {
-          if (res.status === "success") {
-            console.log("joined room");
-          } else {
-            console.warn(`join room rejected: ${res.reason}`);
+      setTimeout(() => {
+        socket.emit(
+          "joinRoomAsGuest",
+          {
+            roomId: roomId,
+          },
+          (res) => {
+            if (res.status === "success") {
+              console.log("joined room");
+            } else {
+              console.warn(`join room rejected: ${res.reason}`);
+            }
           }
-        }
-      );
+        );
+      }, 500);
     }
 
     return () => {
