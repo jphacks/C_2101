@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import { useSetCommentsHandler } from "../../lib/hooks/useSyncComment";
 import { useSetTimerHandler } from "../../lib/hooks/useSyncTimer";
 import { useSetTimetableHandler } from "../../lib/hooks/useSyncTimetable";
 import { useSetRoomStateHandler } from "../../lib/hooks/useSyncMembers";
 import { socket } from "../../lib/hooks/socket";
 import { UserInfo } from "@api-schema/types/user";
-import { selector } from "recoil";
 import { useSetReactionHandler } from "../../lib/hooks/useSyncReaction";
-import {
-  connectVideoPeer,
-  disconnectScreenPeer,
-  disconnectVideoPeer,
-} from "../../lib/hooks/skyway";
+
 import {
   useSetCameraCredential,
   useSetListenCredential,
@@ -34,11 +29,6 @@ export type UserParam =
   | {
       type: "guest";
     };
-
-const socketIdState = selector({
-  key: "socketRoot-socketIdState",
-  get: ({ get }) => {},
-});
 
 export const SocketRoot: React.VFC<SocketRootProps> = ({
   children,
@@ -113,16 +103,17 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
 
     return () => {
       socket.emit("leaveRoom");
-      void disconnectVideoPeer();
       // setRoomJoined(false);
       allRefresher();
     };
-  }, [allRefresher, roomId, setListenCredential, userParam]);
-
-  // useEffect(() => {
-  //   if (!roomJoined) return;
-  //   userParam.type === "user";
-  // }, []);
+  }, [
+    allRefresher,
+    roomId,
+    setCameraCredential,
+    setListenCredential,
+    setScreenCredential,
+    userParam,
+  ]);
 
   return <>{children}</>;
 };

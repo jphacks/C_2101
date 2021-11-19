@@ -6,9 +6,8 @@ import {
 } from "../../lib/hooks/useCredential";
 import Peer, { SfuRoom } from "skyway-js";
 import { useRoomId } from "../../lib/hooks/useRoom";
-import { SkywayCredentialsModel } from "@api-schema/api/@types";
 import { socket } from "../../lib/hooks/socket";
-import { useStreamValue } from "../../lib/hooks/useSyncStream";
+
 type Props = {
   children: React.ReactNode;
 };
@@ -33,12 +32,18 @@ const skywayRooms: {
   screenRoom: null,
 };
 
+const sharingStreams: {
+  video: MediaStream | null;
+  screen: MediaStream | null;
+} = {
+  video: null,
+  screen: null,
+};
+
 const skywayApiKey = "401e1886-919c-4988-ba47-ac85cae091a5";
 
 export const SkywayRoot: React.VFC<Props> = ({ children }) => {
   const listenCredential = useListenCredentialValue();
-  const cameraCredential = useCameraCredentialValue();
-  const screenCredential = useScreenCredentialValue();
 
   const roomId = useRoomId();
 
@@ -81,47 +86,6 @@ export const SkywayRoot: React.VFC<Props> = ({ children }) => {
   return <>{children}</>;
 };
 
-export const joinSkywayRoomVideo = async (
-  roomId: number,
-  stream?: MediaStream
-) => {
-  const peer = await getVideoPeer();
-  if (!peer) {
-    console.warn("peer not connected");
-    return;
-  }
-
-  if (await getVideoRoom()) {
-    await leaveSkywayRoomVideo();
-  }
-
-  const room = peer.joinRoom(String(roomId), {
-    mode: "sfu",
-    stream: stream,
-  });
-
-  skywayRooms.videoRoom = new Promise<SfuRoom>((resolve) => {
-    room.once("open", () => {
-      resolve(room);
-    });
-  });
-
-  return skywayRooms.videoRoom;
-};
-
-export const leaveSkywayRoomVideo = async () => {
-  const room = await getVideoRoom();
-  if (!room) return;
-
-  room.close();
-
-  await new Promise<void>((resolve) => {
-    room.once("close", () => {
-      resolve();
-    });
-  });
-};
-
 export const getListenRoom = async () => {
   return skywayRooms.listenRoom;
 };
@@ -150,23 +114,19 @@ export const useScreenShareAction = () => {
     console.log("endScreenShare");
     const room = await getScreenRoom();
     if (room) {
-      await new Promise<void>((resolve) => {
+      sharingStreams.screen?.getTracks().forEach((track) => track.stop());
+      sharingStreams.screen = null;
+
+      const promise = new Promise<void>((resolve) => {
         room.once("close", () => {
           resolve();
         });
       });
       room.close();
+      await promise;
+      skywayRooms.screenRoom = null;
     }
-
-    const peer = await getScreenPeer();
-    if (peer) {
-      await new Promise<void>((resolve) => {
-        peer.once("close", () => {
-          resolve();
-        });
-      });
-      peer.destroy();
-    }
+    console.log("closed");
   }, []);
 
   const start = useCallback(async () => {
@@ -187,28 +147,38 @@ export const useScreenShareAction = () => {
 
     if (!screenMedia) return;
 
-    const screenPeer = new Peer(screenCredential.peerId, {
-      key: skywayApiKey,
-      credential: screenCredential,
-    });
-
-    screenPeer.once("open", () => {
-      //これいる?
-      skywayPeers.screenPeer = Promise.resolve(screenPeer);
-
-      const room = screenPeer.joinRoom(String(roomId), {
-        mode: "sfu",
-        stream: screenMedia,
+    let peer = await getScreenPeer();
+    if (!peer) {
+      const screenPeer = new Peer(screenCredential.peerId, {
+        key: skywayApiKey,
+        credential: screenCredential,
       });
 
+      await new Promise<Peer>((resolve) => {
+        screenPeer.once("open", () => {
+          resolve(screenPeer);
+        });
+      });
+      skywayPeers.screenPeer = Promise.resolve(screenPeer);
+      peer = screenPeer;
+    }
+
+    const room = peer.joinRoom(String(roomId), {
+      mode: "sfu",
+      stream: screenMedia,
+    });
+
+    await new Promise((resolve) => {
       room.once("open", () => {
+        sharingStreams.screen = screenMedia;
         socket.emit("setUserMediaStream", {
           screenStreamId: screenMedia.id,
         });
         //これいる?
-        skywayRooms.screenRoom = Promise.resolve(room);
+        resolve(room);
       });
     });
+    skywayRooms.screenRoom = Promise.resolve(room);
   }, [end, roomId, screenCredential]);
 
   return {
@@ -236,23 +206,19 @@ export const useCameraShareAction = (cameraMediaConfig: {
     console.log("endCameraShare");
     const room = await getVideoRoom();
     if (room) {
-      await new Promise<void>((resolve) => {
+      sharingStreams.video?.getTracks().forEach((track) => track.stop());
+      sharingStreams.video = null;
+
+      const promise = new Promise<void>((resolve) => {
         room.once("close", () => {
           resolve();
         });
       });
       room.close();
+      await promise;
+      skywayRooms.videoRoom = null;
     }
-
-    const peer = await getVideoPeer();
-    if (peer) {
-      await new Promise<void>((resolve) => {
-        peer.once("close", () => {
-          resolve();
-        });
-      });
-      peer.destroy();
-    }
+    console.log("closed");
   }, []);
 
   const start = useCallback(async () => {
@@ -273,28 +239,38 @@ export const useCameraShareAction = (cameraMediaConfig: {
 
     if (!cameraMedia) return;
 
-    const videoPeer = new Peer(cameraCredential.peerId, {
-      key: skywayApiKey,
-      credential: cameraCredential,
-    });
-
-    videoPeer.once("open", () => {
-      //これいる?
-      skywayPeers.videoPeer = Promise.resolve(videoPeer);
-
-      const room = videoPeer.joinRoom(String(roomId), {
-        mode: "sfu",
-        stream: cameraMedia,
+    let peer = await getVideoPeer();
+    if (!peer) {
+      const videoPeer = new Peer(cameraCredential.peerId, {
+        key: skywayApiKey,
+        credential: cameraCredential,
       });
 
+      await new Promise<Peer>((resolve) => {
+        videoPeer.once("open", () => {
+          resolve(videoPeer);
+        });
+      });
+      skywayPeers.videoPeer = Promise.resolve(videoPeer);
+      peer = videoPeer;
+    }
+
+    const room = peer.joinRoom(String(roomId), {
+      mode: "sfu",
+      stream: cameraMedia,
+    });
+
+    await new Promise((resolve) => {
       room.once("open", () => {
+        sharingStreams.video = cameraMedia;
         socket.emit("setUserMediaStream", {
           videoStreamId: cameraMedia.id,
         });
         //これいる?
-        skywayRooms.videoRoom = Promise.resolve(room);
+        resolve(room);
       });
     });
+    skywayRooms.videoRoom = Promise.resolve(room);
   }, [
     roomId,
     cameraCredential,

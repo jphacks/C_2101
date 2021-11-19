@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { useScreenStreamId } from "../../../../lib/hooks/useSyncStream";
 import { useIsCurrentOwnSession } from "../../../../lib/hooks/useSyncTimetable";
@@ -38,9 +38,11 @@ export const ScreenBlockContainer: React.VFC = () => {
               console.log("roomStreams", remoteStreams);
 
               if (Object.entries(remoteStreams).length > 0) {
+                console.log("already set");
                 resolve(remoteStreams);
                 return;
               } else {
+                console.log("wait stream event...");
                 room?.once("stream", () => {
                   resolve({
                     ...room?.remoteStreams,

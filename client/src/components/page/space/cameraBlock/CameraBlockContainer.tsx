@@ -1,22 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { CameraBlock } from "./CameraBlock";
-import {
-  useScreenStreamId,
-  useVideoStreamId,
-} from "../../../../lib/hooks/useSyncStream";
+import { useVideoStreamId } from "../../../../lib/hooks/useSyncStream";
 import { useIsCurrentOwnSession } from "../../../../lib/hooks/useSyncTimetable";
-import { socket } from "../../../../lib/hooks/socket";
-import { useRoomId } from "../../../../lib/hooks/useRoom";
-import { useAsync } from "react-use";
 import {
   getListenRoom,
-  getVideoRoom,
-  joinSkywayRoomVideo,
-  leaveSkywayRoomVideo,
   useCameraShareAction,
-  useScreenShareAction,
 } from "../../../function/SkywayRoot";
-import { ScreenBlockMenu } from "../screenBlock/ScreenBlockMenu";
 import { RoomStream } from "skyway-js";
 import {
   useCameraEnabled,
@@ -101,7 +90,15 @@ export const CameraBlockContainer: React.VFC = () => {
     } else {
       start();
     }
-  }, [audioEnabled, cameraEnabled, end, isOwnSession, start]);
+  }, [
+    audioEnabled,
+    cameraEnabled,
+    end,
+    isOwnSession,
+    setCameraEnabled,
+    setMicEnabled,
+    start,
+  ]);
 
   return <CameraBlock srcRef={videoDomRef} muted={isOwnSession} />;
 };
