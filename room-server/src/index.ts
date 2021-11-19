@@ -61,12 +61,13 @@ io.on("connection", (socket) => {
       return;
     }
 
-    const videoCredential = await roomService.authenticateRoom(
+    const listenCredential = await roomService.authenticateRoom(
       roomId,
       userId,
-      auth
+      auth,
+      "listen"
     );
-    if (!videoCredential) {
+    if (!listenCredential) {
       res({
         status: "failure",
         reason: "credential could not get",
@@ -78,14 +79,14 @@ io.on("connection", (socket) => {
       user,
       socket.id,
       roomInfo,
-      videoCredential
+      listenCredential
     );
 
     await socket.join(String(roomId));
 
     res({
       status: "success",
-      credential: videoCredential,
+      credential: listenCredential,
     });
 
     socket.emit("joinedRoom", roomId);
@@ -166,13 +167,45 @@ io.on("connection", (socket) => {
     const screenCredential = await roomService.authenticateRoom(
       userSession.roomId,
       userSession.userId,
-      auth
+      auth,
+      "screen"
     );
     if (!screenCredential) {
       return;
     }
 
     res(screenCredential);
+  });
+
+  socket.on("getCameraCredential", async (auth, res) => {
+    console.log("[getVideoCredential] is called");
+
+    // ユーザ情報を取得
+    const userSession = await userSessionService.getUserSession(socket.id);
+    if (!userSession || userSession.isGuest) {
+      return;
+    }
+
+    // ルーム情報を取得
+    const roomSession = await roomSessionService.getActiveRoomSession(
+      socket.id
+    );
+    if (!roomSession) {
+      return;
+    }
+
+    // クレデンシャルを発行
+    const cameraCredential = await roomService.authenticateRoom(
+      userSession.roomId,
+      userSession.userId,
+      auth,
+      "camera"
+    );
+    if (!cameraCredential) {
+      return;
+    }
+
+    res(cameraCredential);
   });
 
   socket.on("postComment", async (comment) => {
@@ -208,6 +241,7 @@ io.on("connection", (socket) => {
     // ユーザ情報を取得
     const userSession = await userSessionService.getUserSession(socket.id);
     if (!userSession || userSession.isGuest) {
+      console.warn("user not authed");
       return;
     }
 
@@ -216,6 +250,7 @@ io.on("connection", (socket) => {
       socket.id
     );
     if (!roomSession) {
+      console.warn("room not found");
       return;
     }
 
@@ -231,12 +266,16 @@ io.on("connection", (socket) => {
       socket.id
     );
     if (!updatedRoomSession) {
+      console.warn("room not found 2");
       return;
     }
+
+    console.log("emit updateMembersState");
 
     const socketRoomId = String(userSession.roomId);
     io.to(socketRoomId).emit("updateMembersState", updatedRoomSession.members);
 
+    console.log("emit updateStreamState");
     //本当は変化があるときだけ配信した方がよい
     io.to(socketRoomId).emit(
       "updateStreamState",

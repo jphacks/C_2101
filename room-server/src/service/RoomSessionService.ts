@@ -131,7 +131,7 @@ export class RoomSessionService {
    * @param userId
    */
   async setMemberStream(
-    streams: MemberStreamIds,
+    streams: Partial<MemberStreamIds>,
     socketId: string,
     userId: UserId
   ): Promise<void> {
@@ -145,7 +145,10 @@ export class RoomSessionService {
       produce(member, (draft) => {
         if (member.user.id !== userId) return;
         if (draft.type !== "Speaker" || !draft.connection.isOnline) return;
-        draft.connection.streamIds = streams;
+        draft.connection.streamIds = {
+          ...draft.connection.streamIds,
+          ...streams,
+        };
       })
     );
 

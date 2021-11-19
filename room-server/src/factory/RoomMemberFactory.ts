@@ -33,10 +33,6 @@ export class RoomMemberFactory {
           videoStreamId: null,
           screenStreamId: null,
         },
-        skywayPeerIds: {
-          videoPeerId: credential.peerId,
-          screenPeerId: null,
-        },
       },
     };
   }

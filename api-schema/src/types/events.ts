@@ -58,6 +58,16 @@ export interface ClientToServerEventsMap {
   ) => void;
 
   /**
+   * カメラ共有用のskywayCredentialを要求
+   * ownerとspeakerのみ
+   * @param res
+   */
+  getCameraCredential: (
+    auth: string,
+    credential: EmitResponse<SkywayCredentialsModel>
+  ) => void;
+
+  /**
    * コメントを投稿
    * @param comment
    */
@@ -73,7 +83,7 @@ export interface ClientToServerEventsMap {
    * ユーザの画面共有mediaIdをセット
    * @param mediaScreenId
    */
-  setUserMediaStream: (streams: MemberStreamIds) => void;
+  setUserMediaStream: (streams: Partial<MemberStreamIds>) => void;
 
   /**
    * タイムテーブルをセット

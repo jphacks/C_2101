@@ -15,37 +15,47 @@ export const skywayConnections: {
   screenRoom: null,
 };
 
-export const connectVideoPeer = async (
+export const connectVideoPeer = (
   credential: SkywayCredentialsModel,
   roomId: number,
   mediaStream?: MediaStream
 ): Promise<void> =>
-  new Promise((resolve, reject) => {
-    const peer = new Peer({
-      key: skywayApiKey,
-      credential: credential,
-    });
-
-    peer.once("open", () => {
-      console.log("skyway video peer opened");
-      const room: SfuRoom = peer.joinRoom(String(roomId), {
-        mode: "sfu",
-        stream: mediaStream,
-      });
-
-      room.once("open", () => {
-        console.log("skyway video room opened");
+  disconnectVideoPeer().then(
+    () =>
+      new Promise((resolve, reject) => {
+        console.log("try connect skyway peer", credential.peerId);
+        const peer = new Peer(credential.peerId, {
+          key: skywayApiKey,
+          credential: credential,
+        });
         skywayConnections.videoPeer = peer;
-        skywayConnections.videoRoom = room;
-        resolve();
-      });
-    });
+        console.log("set skywayConnections.videoPeer");
 
-    peer.on("error", (err) => {
-      console.log("skyway video error");
-      console.log(err);
-    });
-  });
+        peer.once("open", () => {
+          console.log("skyway video peer opened");
+          const room: SfuRoom = peer.joinRoom(String(roomId), {
+            mode: "sfu",
+            stream: mediaStream,
+          });
+
+          room.once("open", () => {
+            console.log("skyway video room opened", room);
+            skywayConnections.videoRoom = room;
+
+            resolve();
+          });
+
+          room.once("stream", (stream) => {
+            console.log("skyway stream received", stream.id);
+          });
+        });
+
+        peer.on("error", (err) => {
+          console.log("skyway video error");
+          console.log(err);
+        });
+      })
+  );
 
 export const connectScreenPeer = async (
   credential: SkywayCredentialsModel,
@@ -77,6 +87,21 @@ export const connectScreenPeer = async (
       console.log("skyway screen error");
       console.log(err);
     });
+  });
+
+export const disconnectVideoPeer = () =>
+  new Promise<void>((resolve) => {
+    if (!skywayConnections.videoPeer) {
+      resolve();
+      return;
+    }
+    console.log("disconnect video peer", skywayConnections.videoPeer);
+    skywayConnections.videoPeer.once("disconnected", () => {
+      console.log("disconnected", skywayConnections.videoPeer);
+      skywayConnections.videoPeer = null;
+      resolve();
+    });
+    skywayConnections.videoPeer.destroy();
   });
 
 export const disconnectScreenPeer = async () => {
