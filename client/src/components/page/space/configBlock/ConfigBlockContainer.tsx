@@ -6,6 +6,7 @@ import {
   useSetCameraEnabled,
   useSetMicEnabled,
 } from "../../../../lib/hooks/useStreamConfig";
+import { useIsCurrentOwnSession } from "../../../../lib/hooks/useSyncTimetable";
 
 export const ConfigBlockContainer: React.VFC = () => {
   const cameraValue = useCameraEnabled();
@@ -13,12 +14,15 @@ export const ConfigBlockContainer: React.VFC = () => {
   const setCameraValue = useSetCameraEnabled();
   const setMicValue = useSetMicEnabled();
 
+  const isOwnSession = useIsCurrentOwnSession();
   return (
     <ConfigBlock
       cameraValue={cameraValue}
       micValue={micValue}
       onChangeCameraValue={setCameraValue}
       onChangeMicValue={setMicValue}
+      micDisabled={!isOwnSession}
+      cameraDisabled={!isOwnSession}
     />
   );
 };
