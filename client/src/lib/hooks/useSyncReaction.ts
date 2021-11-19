@@ -1,7 +1,7 @@
 import { atomFamily, useRecoilCallback, useRecoilValue } from "recoil";
 import { ReactionItem } from "@api-schema/types/reaction";
 import { UserId } from "@api-schema/types/user";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { socket } from "./socket";
 
 const reactionState = atomFamily<ReactionItem | null, UserId>({
@@ -21,9 +21,12 @@ export const useSetReactionHandler = () => {
 
   useEffect(() => {
     const listener = (reaction: ReactionItem) => {
-      console.log("handle broadcastReaction");
+      console.log("handle broadcastReaction", reaction);
       setState(reaction.userId, reaction);
 
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
       timerRef.current = setTimeout(() => {
         setState(reaction.userId, null);
       }, 5000);
@@ -37,6 +40,12 @@ export const useSetReactionHandler = () => {
       }
     };
   }, [setState]);
+};
+
+export const useSubmitReaction = () => {
+  return useCallback((reaction: ReactionItem) => {
+    socket.emit("postReaction", reaction);
+  }, []);
 };
 
 export const useReactionValue = (userId: UserId) => {

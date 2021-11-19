@@ -8,6 +8,7 @@ import { useRoom } from "../../../lib/hooks/useRoom";
 import { MemberBlockContainer } from "./memberBlock/MemberBlockContainer";
 import { TimetableBlockContainer } from "./timetableBlock/TimetableBlockContainer";
 import { CommentBlockContainer } from "./commentBlock/CommentBlockContainer";
+import { ReactionBlockContainer } from "./reactionBlock/ReactionBlockContainer";
 
 const Video = chakra("video");
 
@@ -60,6 +61,8 @@ export const LTContainer: React.VFC<LTPageProps> = () => {
           </Box>
           <ConfigBlock />
           <TimerBlockContainer />
+          <ReactionBlockContainer />
+          あうあうあ
           <CommentBlockContainer />
         </VStack>
       </Stack>

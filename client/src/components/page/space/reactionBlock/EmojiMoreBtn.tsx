@@ -45,7 +45,7 @@ const EmojiMoreBtn: React.VFC = () => {
                   <EmojiBtn
                     emoji={emoji}
                     key={emoji}
-                    onClick={() => {
+                    onClickEmoji={() => {
                       setTimeout(() => close(), 10);
                     }}
                   />
