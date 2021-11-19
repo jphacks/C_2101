@@ -1,4 +1,4 @@
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import { useSetCommentsHandler } from "../../lib/hooks/useSyncComment";
 import { useSetTimerHandler } from "../../lib/hooks/useSyncTimer";
 import { useSetTimetableHandler } from "../../lib/hooks/useSyncTimetable";
@@ -13,6 +13,7 @@ import {
   useSetScreenCredential,
 } from "../../lib/hooks/useCredential";
 import { useSetStreamHandler } from "../../lib/hooks/useSyncStream";
+import { useRouter } from "next/router";
 
 type SocketRootProps = {
   children: React.ReactNode;
@@ -49,6 +50,8 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
   const setScreenCredential = useSetScreenCredential();
 
   // const [roomJoined, setRoomJoined] = useState<boolean>(false);
+  const router = useRouter();
+  console.log(router.query);
 
   useEffect(() => {
     // if (roomJoined) return;
@@ -82,6 +85,7 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
             );
           } else {
             console.warn(`join room rejected: ${res.reason}`);
+            void router.push(`/explore/${router.query.room_id}`);
           }
         }
       );
@@ -96,6 +100,7 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
             console.log("joined room");
           } else {
             console.warn(`join room rejected: ${res.reason}`);
+            void router.push(`/explore/${router.query.room_id}`);
           }
         }
       );
@@ -109,6 +114,7 @@ export const SocketRoot: React.VFC<SocketRootProps> = ({
   }, [
     allRefresher,
     roomId,
+    router,
     setCameraCredential,
     setListenCredential,
     setScreenCredential,
