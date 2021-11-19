@@ -17,6 +17,7 @@ type ConfigBlockProps = {
   cameraValue: boolean;
   onChangeMicValue: (value: boolean) => void;
   onChangeCameraValue: (value: boolean) => void;
+  onClickPreference: () => void;
   micDisabled: boolean;
   cameraDisabled: boolean;
 };
@@ -26,6 +27,7 @@ export const ConfigBlock: React.VFC<ConfigBlockProps> = ({
   cameraValue,
   onChangeMicValue,
   onChangeCameraValue,
+  onClickPreference,
   micDisabled,
   cameraDisabled,
 }) => {
@@ -93,6 +95,7 @@ export const ConfigBlock: React.VFC<ConfigBlockProps> = ({
         <IconButton
           aria-label={"setting"}
           bg={"gray.200"}
+          onClick={onClickPreference}
           icon={<Icon w={8} h={8} as={(props) => <CogIcon {...props} />} />}
         />
       </HStack>

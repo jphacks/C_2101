@@ -21,6 +21,7 @@ export const ConfigBlockContainer: React.VFC = () => {
       micValue={micValue}
       onChangeCameraValue={setCameraValue}
       onChangeMicValue={setMicValue}
+      onClickPreference={() => {}}
       micDisabled={!isOwnSession}
       cameraDisabled={!isOwnSession}
     />
