@@ -11,8 +11,8 @@ import {
 } from "../../../function/SkywayRoot";
 import { RoomStream } from "skyway-js";
 import {
-  useCameraEnabled,
-  useMicEnabled,
+  useAudioDeviceParam,
+  useCameraDeviceParam,
   useSetCameraEnabled,
   useSetMicEnabled,
 } from "../../../../lib/hooks/useStreamConfig";
@@ -73,8 +73,9 @@ export const CameraBlockContainer: React.VFC = () => {
 
   //画面共有
   const isOwnSession = useIsCurrentOwnSession();
-  const audioEnabled = useMicEnabled();
-  const cameraEnabled = useCameraEnabled();
+  //デバイス変更時にも更新されたいのでuseParam
+  const audioEnabled = useAudioDeviceParam();
+  const cameraEnabled = useCameraDeviceParam();
   const { start, end } = useCameraShareAction({
     audio: audioEnabled,
     video: cameraEnabled,

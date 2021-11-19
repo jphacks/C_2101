@@ -7,6 +7,11 @@ import {
 import Peer, { SfuRoom } from "skyway-js";
 import { useRoomId } from "../../lib/hooks/useRoom";
 import { socket } from "../../lib/hooks/socket";
+import {
+  useAudioDeviceParam,
+  useCameraDeviceParam,
+} from "../../lib/hooks/useStreamConfig";
+import { getNavigator } from "../../lib/navigator";
 
 type Props = {
   children: React.ReactNode;
@@ -141,7 +146,9 @@ export const useScreenShareAction = () => {
 
     await end(true);
 
-    const screenMedia = await navigator.mediaDevices
+    const navi = getNavigator();
+    if (!navi) return;
+    const screenMedia = await navi.mediaDevices
       .getDisplayMedia({
         audio: true,
         video: true,
@@ -207,6 +214,8 @@ export const useCameraShareAction = (cameraMediaConfig: {
 }) => {
   const roomId = useRoomId();
   const cameraCredential = useCameraCredentialValue();
+  const cameraParam = useCameraDeviceParam();
+  const audioParam = useAudioDeviceParam();
 
   const end = useCallback(async (reconnect: boolean = false) => {
     console.log("endCameraShare");
@@ -238,10 +247,12 @@ export const useCameraShareAction = (cameraMediaConfig: {
 
     await end(true);
 
-    const cameraMedia = await navigator.mediaDevices
+    const navi = getNavigator();
+    if (!navi) return;
+    const cameraMedia = await navi.mediaDevices
       .getUserMedia({
-        audio: cameraMediaConfig.audio,
-        video: cameraMediaConfig.video,
+        audio: audioParam,
+        video: cameraParam,
       })
       .catch((err) => {
         console.warn(err);
@@ -282,13 +293,7 @@ export const useCameraShareAction = (cameraMediaConfig: {
       });
     });
     skywayRooms.videoRoom = Promise.resolve(room);
-  }, [
-    roomId,
-    cameraCredential,
-    end,
-    cameraMediaConfig.audio,
-    cameraMediaConfig.video,
-  ]);
+  }, [roomId, cameraCredential, end, audioParam, cameraParam]);
 
   return {
     start,
