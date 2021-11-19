@@ -1,6 +1,7 @@
 // const
 
 import { atom, useRecoilValue, useSetRecoilState } from "recoil";
+import { recoilPersist } from "recoil-persist";
 
 const cameraEnableState = atom<boolean>({
   key: "useStreamConfig-cameraEnableState",
@@ -26,4 +27,43 @@ export const useSetCameraEnabled = () => {
 
 export const useSetMicEnabled = () => {
   return useSetRecoilState(micEnableState);
+};
+
+const { persistAtom } = recoilPersist();
+const cameraDeviceIdState = atom<string | null>({
+  key: "useStreamConfig-cameraDeviceState",
+  default: navigator.mediaDevices
+    .enumerateDevices()
+    .then(
+      (devices) =>
+        devices.find((device) => device.kind === "videoinput")?.deviceId ?? null
+    ),
+  effects_UNSTABLE: [persistAtom],
+});
+
+const audioDeviceIdState = atom<string | null>({
+  key: "useStreamConfig-audioDeviceState",
+  default: navigator.mediaDevices
+    .enumerateDevices()
+    .then(
+      (devices) =>
+        devices.find((device) => device.kind === "audioinput")?.deviceId ?? null
+    ),
+  effects_UNSTABLE: [persistAtom],
+});
+
+export const useCameraDeviceID = () => {
+  return useRecoilValue(cameraDeviceIdState);
+};
+
+export const useAudioDeviceID = () => {
+  return useRecoilValue(audioDeviceIdState);
+};
+
+export const useSetCameraDeviceId = () => {
+  return useSetRecoilState(cameraDeviceIdState);
+};
+
+export const useSetAudioDeviceId = () => {
+  return useSetRecoilState(audioDeviceIdState);
 };
