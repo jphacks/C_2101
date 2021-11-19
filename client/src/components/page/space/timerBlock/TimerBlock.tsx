@@ -28,7 +28,7 @@ export const TimerBlock: React.VFC<TimerBlockProps> = ({
         >
           {remainTimeText}
         </Text>
-        <Text fontSize={"3xl"} fontWeight={"bold"}>
+        <Text fontSize={"2xl"} fontWeight={"bold"} noOfLines={1}>
           {sectionTitle}
         </Text>
         <Spacer />

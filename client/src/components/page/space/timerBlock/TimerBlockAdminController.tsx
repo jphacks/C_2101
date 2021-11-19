@@ -20,19 +20,19 @@ export const TimerBlockAdminController: React.VFC<TimerBlockAdminControllerProps
   }) => {
     return (
       <HStack>
-        <Button colorScheme={"blue"} onClick={onClickPrevSection}>
+        <Button colorScheme={"blue"} width={28} onClick={onClickPrevSection}>
           Prev Section
         </Button>
-        <Button colorScheme={"blue"} onClick={onClickNextSection}>
+        <Button colorScheme={"blue"} width={28} onClick={onClickNextSection}>
           Next Section
         </Button>
         {isTimerEnable && (
-          <Button colorScheme={"blue"} onClick={onClickPauseTimer}>
+          <Button colorScheme={"blue"} width={20} onClick={onClickPauseTimer}>
             Pause
           </Button>
         )}
         {!isTimerEnable && (
-          <Button colorScheme={"blue"} onClick={onClickResumeTimer}>
+          <Button colorScheme={"blue"} width={20} onClick={onClickResumeTimer}>
             Resume
           </Button>
         )}
