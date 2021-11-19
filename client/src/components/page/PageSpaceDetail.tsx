@@ -50,7 +50,6 @@ export const PageSpaceDetail: React.VFC<{
   const [titleFormValue, setTitleFormValue] = useState<string>();
   const [userType, setUserType] = useState(1);
   const toast = useToast();
-
   if (!room || !roomId) {
     return (
       <Layout>
@@ -75,6 +74,10 @@ export const PageSpaceDetail: React.VFC<{
   const secToMinutes = (second: number) => {
     return Math.floor((second * 10) / 60) / 10;
   };
+
+  const startAt = new Date(room.startAt);
+  const finishAt = new Date(room.finishAt);
+
   const Thumbnail: React.VFC<{ imageUrl: string }> = ({ imageUrl }) => {
     const Img = () => (
       <Image
@@ -191,17 +194,14 @@ export const PageSpaceDetail: React.VFC<{
             </Box>
 
             <UnorderedList align="left" pl={5}>
+              <ListItem>開催日：{transform(startAt, "YYYY/MM/DD")}</ListItem>
               <ListItem>
-                開催日：{transform(new Date(room.startAt), "YYYY/MM/DD")}
-              </ListItem>
-              <ListItem>
-                開催時間：{transform(new Date(room.startAt), "HH:mm")}
+                開催時間：{transform(startAt, "HH:mm")}
                 {` ~ `}
-                {new Date(room.startAt).getDate() !==
-                new Date(room.finishAt).getDate()
-                  ? `${transform(new Date(room.finishAt), "DD")}日 `
+                {startAt.getDate() !== finishAt.getDate()
+                  ? `${transform(finishAt, "DD")}日 `
                   : ""}
-                {transform(new Date(room.finishAt), "HH:mm")}
+                {transform(finishAt, "HH:mm")}
               </ListItem>
               <ListItem>
                 発表時間：{secToMinutes(room.presentationTimeLimit)}分
