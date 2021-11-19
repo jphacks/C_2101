@@ -199,7 +199,7 @@ export const PageSpaceDetail: React.VFC<{
                 開催時間：{transform(startAt, "HH:mm")}
                 {` ~ `}
                 {startAt.getMonth() !== finishAt.getMonth() &&
-                startAt.getMonth() !== finishAt.getMonth()
+                startAt.getDate() !== finishAt.getDate()
                   ? `${transform(finishAt, "MM/DD")}日 `
                   : startAt.getDate() !== finishAt.getDate()
                   ? `${transform(finishAt, "DD")}日 `
