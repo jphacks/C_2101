@@ -5,6 +5,7 @@ import { useSetRoomId } from "../../../lib/hooks/useRoom";
 import { useAuthHeader } from "../../../lib/hooks/useAuth";
 import { SocketRoot } from "../../function/SocketRoot";
 import { useUser } from "../../../lib/hooks/useUser";
+import { SkywayRoot } from "../../function/SkywayRoot";
 
 export const Space: React.VFC<{
   roomId: number;
@@ -33,7 +34,9 @@ export const Space: React.VFC<{
           auth: auth.Authorization,
         }}
       >
-        <LTContainer />
+        <SkywayRoot>
+          <LTContainer />
+        </SkywayRoot>
       </SocketRoot>
     </Suspense>
   );

@@ -17,10 +17,6 @@ export type RoomMember = {
     | {
         isOnline: true;
         socketId: string;
-        skywayPeerIds: {
-          videoPeerId: string;
-          screenPeerId: string | null;
-        };
         streamIds: MemberStreamIds;
       };
 };

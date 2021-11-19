@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   IconButton,
   Popover,
@@ -16,10 +16,22 @@ const Emojis = Array.from(
   "😄😍😘😂😭😱😎🥺😇😺😸😻😽😼🙀😿😹😾👎👌👊✊🙏👏💩🔥✨💢👀❤️❌⭕❗❓🔰🎉🍣💯"
 ).filter((c) => c.charCodeAt(0) !== 65039); //ハートマークの後に処理しきれない謎Unicodeが入るため除外
 
-const EmojiMoreBtn: React.VFC = () => {
+type Props = {
+  onClickEmoji: (emoji: string) => void;
+};
+
+const EmojiMoreBtn: React.VFC<Props> = ({ onClickEmoji }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const open = () => setIsOpen(!isOpen);
   const close = () => setIsOpen(false);
+
+  const handleClickEmoji = useCallback(
+    (emoji: string) => {
+      onClickEmoji(emoji);
+      setTimeout(() => close(), 10);
+    },
+    [onClickEmoji]
+  );
 
   return (
     <>
@@ -45,9 +57,7 @@ const EmojiMoreBtn: React.VFC = () => {
                   <EmojiBtn
                     emoji={emoji}
                     key={emoji}
-                    onClick={() => {
-                      setTimeout(() => close(), 10);
-                    }}
+                    onClickEmoji={handleClickEmoji}
                   />
                 );
               })}

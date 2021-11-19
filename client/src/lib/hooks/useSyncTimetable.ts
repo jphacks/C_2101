@@ -6,6 +6,7 @@ import {
   atom,
   selector,
   useRecoilCallback,
+  useRecoilState,
   useRecoilValue,
   useSetRecoilState,
 } from "recoil";
@@ -13,6 +14,7 @@ import { useCallback, useEffect } from "react";
 import { socket } from "./socket";
 import { TimetableCardProps } from "../../components/page/space/timetableBlock/TimetableCard";
 import { memberMapState } from "./useSyncMembers";
+import { userState } from "./useUser";
 
 /**
  * 直接コンポーネントから参照しない
@@ -42,25 +44,35 @@ export const useSetTimetableHandler = () => {
     return () => {
       socket.off("updateTimetable", listener);
     };
-  });
+  }, [setState]);
 };
 
 export const useTimetableAction = () => {
-  const setState = useSetRecoilState(timetableState);
+  const [state, setState] = useRecoilState(timetableState);
 
   const moveNextSection = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      cursor: Math.max(0, Math.min(prev.cursor + 1, prev.sections.length - 1)),
-    }));
-  }, [setState]);
+    const nextState = {
+      ...state,
+      cursor: Math.max(
+        0,
+        Math.min(state.cursor + 1, state.sections.length - 1)
+      ),
+    };
+    setState(nextState);
+    socket.emit("setTimetable", nextState);
+  }, [setState, state]);
 
   const movePrevSection = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      cursor: Math.max(0, Math.min(prev.cursor - 1, prev.sections.length - 1)),
-    }));
-  }, [setState]);
+    const nextState = {
+      ...state,
+      cursor: Math.max(
+        0,
+        Math.min(state.cursor - 1, state.sections.length - 1)
+      ),
+    };
+    setState(nextState);
+    socket.emit("setTimetable", nextState);
+  }, [setState, state]);
 
   return {
     moveNextSection,
@@ -125,4 +137,20 @@ const timetableCurrentSectionState = selector<TimetableSection | null>({
 
 export const useTimetableCurrentSection = () => {
   return useRecoilValue(timetableCurrentSectionState);
+};
+
+const isCurrentOwnSessionState = selector<boolean>({
+  key: "timetableCurrentSectionState-isCurrentOwnSessionState",
+  get: ({ get }) => {
+    const currentSection = get(timetableCurrentSectionState);
+    const user = get(userState);
+    if (!currentSection || !user) return false;
+    return (
+      currentSection.type === "speaking" && currentSection.userId == user.id
+    );
+  },
+});
+
+export const useIsCurrentOwnSession = () => {
+  return useRecoilValue(isCurrentOwnSessionState);
 };

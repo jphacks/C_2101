@@ -39,12 +39,14 @@ export class RoomService {
    * @param {UserId} userId
    * @param {string} auth
    *
+   * @param type
    * @returns SkyWayクレデンシャル
    */
   async authenticateRoom(
     roomId: number,
     userId: UserId,
-    auth: string
+    auth: string,
+    type: "listen" | "screen" | "camera"
   ): Promise<SkywayCredentialsModel | null> {
     try {
       const timestamp = Date.now();
@@ -54,7 +56,7 @@ export class RoomService {
         .authenticate.$post({
           body: {
             // NOTE: peerIdをユニーク化
-            peerId: `${userId}-video-${timestamp}`,
+            peerId: `${userId}-${type}-${timestamp}`,
           },
           config: {
             headers: {

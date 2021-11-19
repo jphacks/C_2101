@@ -22,6 +22,8 @@ import {
   Radio,
   RadioGroup,
   Image,
+  ListItem,
+  UnorderedList,
 } from "@chakra-ui/react";
 import { transform } from "../../utils/datetime";
 import React, { useState } from "react";
@@ -48,7 +50,6 @@ export const PageSpaceDetail: React.VFC<{
   const [titleFormValue, setTitleFormValue] = useState<string>();
   const [userType, setUserType] = useState(1);
   const toast = useToast();
-
   if (!room || !roomId) {
     return (
       <Layout>
@@ -70,6 +71,13 @@ export const PageSpaceDetail: React.VFC<{
     await fetchUnJoin();
     refreshRoom();
   };
+  const secToMinutes = (second: number) => {
+    return Math.floor((second * 10) / 60) / 10;
+  };
+
+  const startAt = new Date(room.startAt);
+  const finishAt = new Date(room.finishAt);
+
   const Thumbnail: React.VFC<{ imageUrl: string }> = ({ imageUrl }) => {
     const Img = () => (
       <Image
@@ -131,7 +139,17 @@ export const PageSpaceDetail: React.VFC<{
                   <></>
                 )}
 
-                <Button my={2} type={"submit"}>
+                <Button
+                  type={"submit"}
+                  my={3}
+                  marginRight={"7px"}
+                  bg={"teal.400"}
+                  color={"white"}
+                  _hover={{
+                    bg: "teal.500",
+                  }}
+                  onClick={onOpen}
+                >
                   登録
                 </Button>
               </FormControl>
@@ -178,7 +196,33 @@ export const PageSpaceDetail: React.VFC<{
                   str === "" ? <br key={index} /> : <p key={index}>{str}</p>
                 )}
             </Box>
+            <br />
+            <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
+              <Heading fontSize="1.5rem" textAlign={"start"}>
+                日程
+              </Heading>
+            </Box>
 
+            <UnorderedList align="left" pl={5}>
+              <ListItem>開催日：{transform(startAt, "YYYY/MM/DD")}</ListItem>
+              <ListItem>
+                開催時間：{transform(startAt, "HH:mm")}
+                {` ~ `}
+                {startAt.getMonth() !== finishAt.getMonth() &&
+                startAt.getDate() !== finishAt.getDate()
+                  ? `${transform(finishAt, "MM/DD")}日 `
+                  : startAt.getDate() !== finishAt.getDate()
+                  ? `${transform(finishAt, "DD")}日 `
+                  : ""}
+                {transform(finishAt, "HH:mm")}
+              </ListItem>
+              <ListItem>
+                発表時間：{secToMinutes(room.presentationTimeLimit)}分
+              </ListItem>
+              <ListItem>
+                質問時間：{secToMinutes(room.questionTimeLimit)}分
+              </ListItem>
+            </UnorderedList>
             <br />
             <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
               <Heading fontSize="1.5rem" textAlign={"start"}>

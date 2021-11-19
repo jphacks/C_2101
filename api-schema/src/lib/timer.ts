@@ -34,7 +34,7 @@ export const timerStateReducer = (
       if (state.timerEnabled) {
         return {
           timerEnabled: false,
-          accTime: Date.now() - state.startTime,
+          accTime: state.accTime + Date.now() - state.startTime,
         };
       } else {
         return state;
