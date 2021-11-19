@@ -46,7 +46,7 @@ export const ConfigBlock: React.VFC<ConfigBlockProps> = ({
     [onChangeCameraValue]
   );
   const [MediaQuery] = useMediaQuery("(min-width: 1300px)");
-  const IconSize = MediaQuery ? 8 : 4;
+  const IconSize = MediaQuery ? 8 : 6;
   const ToggleSize = MediaQuery ? "lg" : "md";
 
   return (
