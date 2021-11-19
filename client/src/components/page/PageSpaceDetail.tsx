@@ -70,6 +70,9 @@ export const PageSpaceDetail: React.VFC<{
     await fetchUnJoin();
     refreshRoom();
   };
+  const secToMinutes = (second: number) => {
+    return Math.floor((second * 10) / 60) / 10;
+  };
   const Thumbnail: React.VFC<{ imageUrl: string }> = ({ imageUrl }) => {
     const Img = () => (
       <Image
@@ -178,7 +181,26 @@ export const PageSpaceDetail: React.VFC<{
                   str === "" ? <br key={index} /> : <p key={index}>{str}</p>
                 )}
             </Box>
-
+            <br />
+            <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
+              <Heading fontSize="1.5rem" textAlign={"start"}>
+                日程
+              </Heading>
+            </Box>
+            <Text align="left" pl={5}>
+              <ul>
+                <li>
+                  開催日：{transform(new Date(room.finishAt), "YYYY/MM/DD")}
+                </li>
+                <li>
+                  開催時間：{transform(new Date(room.startAt), "HH:mm")}
+                  {` ~ `}
+                  {transform(new Date(room.finishAt), "HH:mm")}
+                </li>
+                <li>発表時間：{secToMinutes(room.presentationTimeLimit)}分</li>
+                <li>質問時間：{secToMinutes(room.questionTimeLimit)}分</li>
+              </ul>
+            </Text>
             <br />
             <Box width="100%" borderBottom="4px" borderColor={"teal.400"}>
               <Heading fontSize="1.5rem" textAlign={"start"}>
