@@ -68,7 +68,7 @@ export const SkywayRoot: React.VFC<Props> = ({ children }) => {
         skywayRooms.listenRoom = new Promise<SfuRoom>((resolve1) => {
           const room = peer.joinRoom(String(roomId), {
             mode: "sfu",
-          });
+          }) as SfuRoom;
           room.once("open", () => {
             resolve1(room);
           });
