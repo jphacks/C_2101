@@ -6,15 +6,25 @@ export type TimetableCardProps = {
   user: UserInfo;
   title: string;
   tags: string[];
+  isCurrentSection: boolean;
 };
 
 export const TimetableCard: React.VFC<TimetableCardProps> = ({
   title,
   tags,
   user,
+  isCurrentSection,
 }) => {
   return (
-    <Stack bg={"white"} w={64} h={"full"} rounded={8} p={4}>
+    <Stack
+      bg={"white"}
+      w={64}
+      h={"full"}
+      rounded={8}
+      p={4}
+      borderColor={isCurrentSection ? "teal" : "white"}
+      borderWidth={"3px"}
+    >
       <HStack h={4} spacing={4} align={"left"}>
         {tags.map((item, i) => (
           <Tag key={`timetable-card-${title}-${item}-${i}`}>{item}</Tag>
