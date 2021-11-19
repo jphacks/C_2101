@@ -139,7 +139,17 @@ export const PageSpaceDetail: React.VFC<{
                   <></>
                 )}
 
-                <Button my={2} type={"submit"}>
+                <Button
+                  type={"submit"}
+                  my={3}
+                  marginRight={"7px"}
+                  bg={"teal.400"}
+                  color={"white"}
+                  _hover={{
+                    bg: "teal.500",
+                  }}
+                  onClick={onOpen}
+                >
                   登録
                 </Button>
               </FormControl>
