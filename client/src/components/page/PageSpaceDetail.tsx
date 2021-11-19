@@ -198,6 +198,7 @@ export const PageSpaceDetail: React.VFC<{
                   {transform(new Date(room.finishAt), "HH:mm")}
                 </li>
                 <li>発表時間：{secToMinutes(room.presentationTimeLimit)}分</li>
+                <li>質問時間：{secToMinutes(room.questionTimeLimit)}分</li>
               </ul>
             </Text>
             <br />
