@@ -1,7 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CameraBlock } from "./CameraBlock";
 import { useVideoStreamId } from "../../../../lib/hooks/useSyncStream";
-import { useIsCurrentOwnSession } from "../../../../lib/hooks/useSyncTimetable";
+import {
+  useIsCurrentOwnSession,
+  useSpeakingMember,
+} from "../../../../lib/hooks/useSyncTimetable";
 import {
   getListenRoom,
   useCameraShareAction,
@@ -19,8 +22,17 @@ export const CameraBlockContainer: React.VFC = () => {
   const videoStreamId = useVideoStreamId();
   const videoDomRef = useRef<HTMLVideoElement>(null);
 
+  const [isAudioEnabled, setIsAudioEnabled] = useState<boolean>(false);
+  const [isCameraEnabled, setIsCameraEnabled] = useState<boolean>(false);
+
   const setStreamToVideo = (stream: MediaStream | null) => {
     console.log("setStreamToVideo", stream?.id);
+
+    console.log(stream?.getVideoTracks());
+    console.log(stream?.getAudioTracks());
+    setIsCameraEnabled(!!stream && stream.getVideoTracks().length > 0);
+    setIsAudioEnabled(!!stream && stream.getAudioTracks().length > 0);
+
     if (!videoDomRef.current) {
       return;
     }
@@ -91,5 +103,16 @@ export const CameraBlockContainer: React.VFC = () => {
     start,
   ]);
 
-  return <CameraBlock srcRef={videoDomRef} muted={isOwnSession} />;
+  //バー表示用
+  const speakingMember = useSpeakingMember();
+
+  return (
+    <CameraBlock
+      srcRef={videoDomRef}
+      muted={isOwnSession}
+      user={speakingMember?.user}
+      isAudioEnabled={isAudioEnabled}
+      isCameraEnabled={isCameraEnabled}
+    />
+  );
 };
