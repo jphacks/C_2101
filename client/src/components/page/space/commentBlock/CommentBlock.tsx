@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import {
   Box,
   IconButton,
@@ -19,12 +19,40 @@ export const CommentBlock: React.VFC<CommentBlockProps> = ({
   comments,
   onSubmit,
 }) => {
+  const [shouldFollowScroll, setShouldFollowScroll] = useState<boolean>(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollTargetRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    //現在のスクロール値が最大値なら追従する
+    if (shouldFollowScroll) {
+      scrollTargetRef?.current?.scrollIntoView();
+    }
+  }, [comments, shouldFollowScroll]);
+
+  const handleScroll = () => {
+    //現在のスクロール値が最大値かどうか
+    if (!containerRef?.current) return;
+    setShouldFollowScroll(
+      containerRef.current.scrollHeight - containerRef.current.clientHeight ===
+        containerRef.current.scrollTop
+    );
+  };
+
   return (
     <VStack w={"full"} minH={64} h={"512px"} bg={"gray.200"} rounded={8} p={2}>
-      <VStack w={"full"} h={"full"} overflowY={"scroll"}>
+      <VStack
+        w={"full"}
+        h={"full"}
+        overflowY={"scroll"}
+        ref={containerRef}
+        onScroll={handleScroll}
+      >
         {comments.map((item, index) => (
           <CommentItem {...item} key={`comment-${index}`} />
         ))}
+        <div ref={scrollTargetRef} />
       </VStack>
       <Spacer />
       <CommentForm onSubmit={onSubmit} />
