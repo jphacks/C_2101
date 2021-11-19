@@ -3,6 +3,7 @@ import {
   selector,
   useRecoilCallback,
   useRecoilValue,
+  useRecoilValueLoadable,
   useSetRecoilState,
 } from "recoil";
 import { CommentItem } from "@api-schema/types/comment";
@@ -28,10 +29,12 @@ export const commentsState = atom<CommentItem[]>({
 });
 
 export const useSetCommentsHandler = () => {
+  const valueLoadable = useRecoilValueLoadable(commentsState);
   const setState = useSetRecoilState(commentsState);
 
   useEffect(() => {
     const listener = (commentItem: CommentItem) => {
+      // await valueLoadable.toPromise();
       setState((prev) => {
         return [...prev, commentItem];
       });
@@ -41,7 +44,7 @@ export const useSetCommentsHandler = () => {
     return () => {
       socket.off("broadcastComment", listener);
     };
-  }, [setState]);
+  }, [setState, valueLoadable]);
 };
 
 export const useCommentsAction = () => {

@@ -23,7 +23,12 @@ export const CommentItem: React.VFC<CommentProps> = ({
   timestamp,
   ...props
 }) => {
-  const name = props.type === "user" ? props.user.name : "Guest";
+  const name =
+    props.type === "user"
+      ? props.user.name
+      : props.type === "system"
+      ? "System"
+      : "Guest";
   const src = props.type === "user" ? props.user.iconUrl : undefined;
 
   const timeStr = new Date(timestamp).toLocaleTimeString();
