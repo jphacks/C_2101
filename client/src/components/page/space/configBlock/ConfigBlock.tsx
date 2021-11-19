@@ -1,4 +1,11 @@
-import { Icon, Box, HStack, Switch, StackDivider } from "@chakra-ui/react";
+import {
+  Icon,
+  Box,
+  HStack,
+  Switch,
+  StackDivider,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import React, { ChangeEvent, useCallback } from "react";
 import VolumeHighIcon from "mdi-react/VolumeHighIcon";
 import MicrophoneIcon from "mdi-react/MicrophoneIcon";
@@ -30,29 +37,51 @@ export const ConfigBlock: React.VFC<ConfigBlockProps> = ({
     },
     [onChangeCameraValue]
   );
+  const [MediaQuery] = useMediaQuery("(min-width: 1300px)");
+  const IconSize = MediaQuery ? 8 : 4;
+  const ToggleSize = MediaQuery ? "lg" : "md";
+  const Height = MediaQuery ? "80px" : "70px";
 
   return (
-    <Box bg={"gray.200"} w={"full"} rounded={8}>
-      <HStack p={4} divider={<StackDivider borderColor={"gray.400"} />}>
+    <Box bg={"gray.200"} w={"full"} rounded={8} minWidth={0}>
+      <HStack
+        p={IconSize / 2}
+        minWidth={0}
+        w={"full"}
+        justify="space-around"
+        divider={<StackDivider borderColor={"gray.400"} />}
+      >
         <HStack rounded={4} py={2} bg={"gray.200"} gridGap={1}>
-          <Icon w={8} h={8} as={(props) => <MicrophoneIcon {...props} />} />
+          <Icon
+            w={IconSize}
+            h={IconSize}
+            as={(props) => <MicrophoneIcon {...props} />}
+          />
           <Switch
             isChecked={micValue}
             onChange={handleChangeMic}
-            size={"lg"}
+            size={ToggleSize}
             colorScheme={"teal"}
           />
         </HStack>
         <HStack rounded={4} p={2} bg={"gray.200"} gridGap={1}>
-          <Icon w={8} h={8} as={(props) => <VolumeHighIcon {...props} />} />
-          <Switch size={"lg"} colorScheme={"teal"} />
+          <Icon
+            w={IconSize}
+            h={IconSize}
+            as={(props) => <VolumeHighIcon {...props} />}
+          />
+          <Switch size={ToggleSize} colorScheme={"teal"} />
         </HStack>
         <HStack rounded={4} p={2} bg={"gray.200"} gridGap={1}>
-          <Icon w={8} h={8} as={(props) => <VideocamIcon {...props} />} />
+          <Icon
+            w={IconSize}
+            h={IconSize}
+            as={(props) => <VideocamIcon {...props} />}
+          />
           <Switch
             isChecked={cameraValue}
             onChange={handleChangeCamera}
-            size={"lg"}
+            size={ToggleSize}
             colorScheme={"teal"}
           />
         </HStack>

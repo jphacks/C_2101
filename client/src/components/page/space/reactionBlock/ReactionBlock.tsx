@@ -13,7 +13,7 @@ export const ReactionBlock: React.VFC<ConfigBlockProps> = ({
   onEmojiSubmit,
 }) => {
   return (
-    <Box bg={"gray.200"} w={"full"} rounded={8}>
+    <Box bg={"gray.200"} w={"full"} rounded={8} minWidth={0}>
       <HStack p={4} justifyContent="space-between">
         {defaultEmojis.map((emoji) => {
           return (

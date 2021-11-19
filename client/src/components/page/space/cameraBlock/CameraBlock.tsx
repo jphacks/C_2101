@@ -33,10 +33,16 @@ export const CameraBlock: React.VFC<Props> = ({
   isAudioEnabled,
 }) => {
   return (
-    <Box bg={"gray.200"} w={"100%"} h={"336px"} rounded={8} p={2}>
-      <VStack align={"end"} h={"full"}>
-        <Box h={"full"}>
-          <Video w={"full"} ref={srcRef} muted={muted} rounded={8} />
+    <Box bg={"gray.200"} w={"full"} rounded={8} p={2}>
+      <VStack align={"end"}>
+        <Box h={"full"} m="auto">
+          <Video
+            w={"100%"}
+            h={"150px"}
+            ref={srcRef}
+            muted={muted}
+            rounded={8}
+          />
         </Box>
         <HStack w={"full"} px={2}>
           {user && <Avatar name={user.name} src={user.iconUrl} size={"sm"} />}
