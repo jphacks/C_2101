@@ -166,7 +166,7 @@ export const useScreenShareAction = () => {
     const room = peer.joinRoom(String(roomId), {
       mode: "sfu",
       stream: screenMedia,
-    });
+    }) as SfuRoom;
 
     await new Promise((resolve) => {
       room.once("open", () => {
@@ -258,7 +258,7 @@ export const useCameraShareAction = (cameraMediaConfig: {
     const room = peer.joinRoom(String(roomId), {
       mode: "sfu",
       stream: cameraMedia,
-    });
+    }) as SfuRoom;
 
     await new Promise((resolve) => {
       room.once("open", () => {
