@@ -20,7 +20,7 @@ export const ReactionBlock: React.VFC<ConfigBlockProps> = ({
             <EmojiBtn emoji={emoji} onClickEmoji={onEmojiSubmit} key={emoji} />
           );
         })}
-        <EmojiMoreBtn />
+        <EmojiMoreBtn onClickEmoji={onEmojiSubmit} />
       </HStack>
     </Box>
   );
