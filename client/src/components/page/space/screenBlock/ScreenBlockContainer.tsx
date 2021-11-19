@@ -31,28 +31,25 @@ export const ScreenBlockContainer: React.VFC = () => {
       getListenRoom()
         .then(
           (room) =>
-            new Promise<Record<string, RoomStream>>((resolve) => {
+            new Promise<RoomStream>((resolve) => {
               const remoteStreams = {
                 ...room?.remoteStreams,
               };
-              console.log("roomStreams", remoteStreams);
 
-              if (Object.entries(remoteStreams).length > 0) {
-                console.log("already set");
-                resolve(remoteStreams);
+              const stream = remoteStreams[screenStreamId];
+              console.log("roomStreams", remoteStreams);
+              if (stream) {
+                resolve(stream);
                 return;
               } else {
-                console.log("wait stream event...");
                 room?.once("stream", () => {
-                  resolve({
-                    ...room?.remoteStreams,
-                  });
+                  resolve(room?.remoteStreams[screenStreamId]);
                 });
               }
             })
         )
-        .then((remoteStreams) => {
-          const stream = remoteStreams[screenStreamId];
+        .then((stream) => {
+          console.log("stream", stream?.id);
           setStreamToVideo(stream ?? null);
         });
     }
