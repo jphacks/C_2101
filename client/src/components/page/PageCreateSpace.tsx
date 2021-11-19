@@ -219,7 +219,13 @@ export const PageCreateSpace = () => {
         </Text>
         <input type="file" accept="image/*" onChange={handleFileSelected} />
         {fileUrl && (
-          <Image src={fileUrl} alt="preview" width={100} height={100} />
+          <Image
+            src={fileUrl}
+            alt="preview"
+            height={120}
+            align="left"
+            objectFit="contain"
+          />
         )}
         <Button
           marginTop="42px"
