@@ -11,6 +11,7 @@ import {
   useAudioDeviceParam,
   useCameraDeviceParam,
 } from "../../lib/hooks/useStreamConfig";
+import { getNavigator } from "../../lib/navigator";
 
 type Props = {
   children: React.ReactNode;
@@ -145,7 +146,9 @@ export const useScreenShareAction = () => {
 
     await end(true);
 
-    const screenMedia = await navigator.mediaDevices
+    const navi = getNavigator();
+    if (!navi) return;
+    const screenMedia = await navi.mediaDevices
       .getDisplayMedia({
         audio: true,
         video: true,
@@ -244,7 +247,9 @@ export const useCameraShareAction = (cameraMediaConfig: {
 
     await end(true);
 
-    const cameraMedia = await navigator.mediaDevices
+    const navi = getNavigator();
+    if (!navi) return;
+    const cameraMedia = await navi.mediaDevices
       .getUserMedia({
         audio: audioParam,
         video: cameraParam,

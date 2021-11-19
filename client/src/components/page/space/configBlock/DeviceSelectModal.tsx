@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import React, { ChangeEvent, useCallback, useState } from "react";
 import { useAsync } from "react-use";
+import { getNavigator } from "../../../../lib/navigator";
 
 type Props = {
   isOpen: boolean;
@@ -34,7 +35,9 @@ export const DeviceSelectModal: React.VFC<Props> = ({
   const [videoOptions, setVideoOptions] = useState<MediaDeviceInfo[]>();
 
   useAsync(async () => {
-    const devices = await navigator.mediaDevices.enumerateDevices();
+    const navi = getNavigator();
+    if (!navi) return;
+    const devices = await navi.mediaDevices.enumerateDevices();
     setAudioOptions(devices.filter((device) => device.kind === "audioinput"));
     setVideoOptions(devices.filter((device) => device.kind === "videoinput"));
   }, []);
